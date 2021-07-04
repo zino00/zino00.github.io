@@ -182,8 +182,126 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2021/07/04/lab2_datalab/" target="_self">
+        <a href="/2021/07/04/lab3_bomb_lab/" target="_self">
+          lab3_bomblab
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2021/07/04/lab3_bomb_lab/" target="_self">
           
+          
+            
+          
+          lab3 bomb lab1. phase_1
+汇编代码： 
+
+
+
+指令思路:   
+将地址$0x402400存到%esi中
+调用函数将用户输入的内容与寄存器%esi中的值比较，结果返回至%eax，若相同，则返回0，反之返回1；
+test  将两个数相与，若为0，则ZF标志位变为1，反之ZF为0；
+若ZF为1，则je指令跳转，跳过 了explode_bomb函数，破解成功，反之不跳转，爆炸。
+
+解
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-07-04 15:59" pubdate>
+              2021-07-04
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/">计算机系统</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/">计算机系统</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2021/07/04/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" target="_self">
+          计算机系统笔记
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2021/07/04/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" target="_self">
+          
+          
+            
+          
+          计算机组成原理基础知识
+
+
+终端
+.c  -&gt;  .i    (预处理)           gcc -E hello.c -o hello.i    
+.i   -&gt;  .s（汇编语言）     gcc -S hello.o -o hello.s
+.s  -&gt;  .o（机器代码）     gcc -c  hello.o -o hello.o
+查看.o    objdump he
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-07-04 15:51" pubdate>
+              2021-07-04
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/">计算机系统</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/">计算机系统</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2021/07/04/lab2_datalab/" target="_self">
+          lab2_datalab
         </a>
       </h1>
 
@@ -208,6 +326,20 @@
           </div>
         
         
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/">计算机系统</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/">计算机系统</a>
+            
+          </div>
         
       </div>
     </article>
@@ -220,7 +352,7 @@
       <h1 class="index-header">
         
         <a href="/2021/07/02/Attack_lab/" target="_self">
-          Attack lab
+          lab4_attack lab
         </a>
       </h1>
 
@@ -259,43 +391,6 @@
               <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/">计算机系统</a>
             
           </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/07/02/hello-world/" target="_self">
-          Hello World
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/07/02/hello-world/" target="_self">
-          
-          
-            
-          
-          Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-07-02 15:28" pubdate>
-              2021-07-02
-            </time>
-          </div>
-        
-        
         
       </div>
     </article>
