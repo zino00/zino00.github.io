@@ -20,7 +20,9 @@
     
     <tags>
       
-      <tag>fuzzing syzkaller</tag>
+      <tag>fuzzing</tag>
+      
+      <tag>syzkaller</tag>
       
     </tags>
     
