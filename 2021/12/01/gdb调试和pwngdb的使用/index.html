@@ -14,11 +14,11 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="">
+  <meta name="description" content="记录linux的基本命令的使用以及gdb插件pwndbg的简单安装">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-  <title>Zino&#39;s Blog</title>
+  <title>pwndbg的安装和gdb使用 - Zino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
@@ -163,7 +163,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="">
+            <span class="h2" id="subtitle" title="pwndbg的安装和gdb使用">
               
             </span>
 
@@ -233,13 +233,10 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none"></h1>
+            <h1 style="display: none">pwndbg的安装和gdb使用</h1>
             
             <div class="markdown-body">
-              <hr>
-<p>title:pwndbg的安装和gdb使用<br>tag:[gdb,linux]<br>categories:linux基础<br>expert:记录linux的基本命令的使用以及gdb插件pwndbg的简单安装</p>
-<hr>
-<h2 id="一、pwndbg安装"><a href="#一、pwndbg安装" class="headerlink" title="一、pwndbg安装"></a>一、pwndbg安装</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs terminal">git clone https://github.com/pwndbg/pwndbg<br>cd pwndbg<br>./setup.sh<br></code></pre></td></tr></table></figure>
+              <h2 id="一、pwndbg安装"><a href="#一、pwndbg安装" class="headerlink" title="一、pwndbg安装"></a>一、pwndbg安装</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs terminal">git clone https://github.com/pwndbg/pwndbg<br>cd pwndbg<br>./setup.sh<br></code></pre></td></tr></table></figure>
 
 <p>然后我们可以查看.gdbinit中的内容</p>
 <figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli">cat <span class="hljs-string">.gdbinit</span><br></code></pre></td></tr></table></figure>
@@ -417,6 +414,22 @@
             <div>
               <div class="post-metas mb-3">
                 
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/linux%E5%9F%BA%E7%A1%80/">linux基础</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/linux/">linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/gdb/">gdb</a>
+                    
+                  </div>
                 
               </div>
               
