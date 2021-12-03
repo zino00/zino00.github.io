@@ -97,9 +97,9 @@
     
     <tags>
       
-      <tag>linux</tag>
-      
       <tag>gdb</tag>
+      
+      <tag>linux</tag>
       
     </tags>
     
@@ -124,9 +124,9 @@
     
     <tags>
       
-      <tag>syzkaller</tag>
-      
       <tag>Fuzz</tag>
+      
+      <tag>syzkaller</tag>
       
     </tags>
     
