@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      737 字
+      731 字
     </span>
   
 
@@ -236,33 +236,51 @@
             <h1 style="display: none">虚拟机网络托管消失的问题</h1>
             
             <div class="markdown-body">
-              <p>如图所示，Ubuntu20.04频繁出现网络为托管的现象，右上角网络连接图标消失</p>
+              <p>如图所示，Ubuntu20.04频繁出现网络未托管的现象，右上角网络连接图标消失</p>
 <p><img src="/2021/11/27/%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%BD%91%E7%BB%9C%E6%9C%AA%E6%89%98%E7%AE%A1%E7%9A%84%E9%97%AE%E9%A2%98/image-20211127204523849.png" srcset="/img/loading.gif" lazyload alt="image-20211127204523849"></p>
-<p><strong>在Desktop版本中，除了可以修改/etc/network/interfaces来进行配置以外；还可以直接在network-manager中配置。通过 interfaces修改的方法参照Server版本。network-manager的配置很直观，按照提示一步一步操作即可，有兴趣的朋友，可以自行Google或者Baidu。</strong></p>
-<p><strong>但如果修改了interfaces，又配置了network-manager（以下简称nm），你就会发现出现了一些莫名其妙的问题：</strong></p>
-<p><strong>1，interfaces和 nm中的网络设置不一样，系统实际的IP是哪个？</strong></p>
-<p><strong>2，有时候莫名其妙的，界面右上角的网络连接图标就丢失了。</strong></p>
-<p><strong>3，明明在nm中配置了正确的网络设置，为什么就上不了网呢？</strong></p>
-<p><strong>其实，我们要知道 interfaces和 nm之间的关系，这些问题就不难解释了。</strong></p>
-<p><strong>首先，当系统内没有第三方网络管理工具（比如nm）时，系统默认使用interfaces文件内的参数进行网络配置。（就像Server版本一样）</strong></p>
-<p><strong>接着，当系统内安装了 nm之后，nm默认接管了系统的网络配置，使用nm 自己的网络配置参数来进行配置。</strong></p>
-<p><strong>但是，如果用户在安装nm之后（Desktop版本默认安装了nm），自己手动修改了interfaces 文件，那nm 就自动停止对系统网络的管理，系统改使用interfaces 文件内的参数进行网络配置。</strong></p>
-<p><strong>此时，再去修改nm 内的参数，不影响系统实际的网络配置。若要让nm 内的配置生效，必须重新启用nm 接管系统的网络配置。</strong></p>
-<p><strong>现在知道了两者之间的工作关系，再看上面的三个问题：</strong></p>
-<p><strong>1，要看nm是否接管，如果没有接管，系统实际的IP设置以interfaces 中的为准。反之，以nm 中的为准。</strong></p>
-<p><strong>2，当nm 停止接管的时候，网络连接图标就丢失了。</strong></p>
-<p><strong>3，同样是接管的问题。</strong></p>
-<p><strong>如果用户希望在Desktop版本中，直接使用interfaces 进行网络配置，那最好删除network-manager 。</strong></p>
-<p><strong>如果在出现上述问题之后，希望能继续使用nm 来进行网络配置，则需要进行如下操作：</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs terminal"># 停止 nm服务<br>sudo service network-manager stop <br># 移除nm 的状态文件<br>sudo rm /var/lib/NetworkManager/NetworkManager.state <br># 打开nm 的配置文件(具体配置文件名字进入目录看，可能不太一样)<br>sudo gedit /etc/NetworkManager/nm-system-settings.conf <br></code></pre></td></tr></table></figure>
+<p>虚拟机的网络除了可以修改/etc/network/interfaces来进行配置以外；还可以直接在network-manager中配置。</p>
+<ul>
+<li><p>通过 interfaces修改的方法参照Server版本。</p>
+</li>
+<li><p>network-manager的配置很直观，按照提示一步一步操作即可，有兴趣的朋友，可以自行Google或者Baidu。</p>
+</li>
+</ul>
+<p>但如果修改了interfaces，又配置了network-manager（以下简称nm），就可能会出现了一些莫名其妙的问题:</p>
+<ol>
+<li><p>interfaces和 nm中的网络设置不一样，系统实际的IP是哪个？</p>
+</li>
+<li><p>有时候莫名其妙的，界面右上角的网络连接图标就丢失了。</p>
+</li>
+<li><p>明明在nm中配置了正确的网络设置，为什么就上不了网呢？</p>
+</li>
+</ol>
+<p>首先，当系统内没有第三方网络管理工具（比如nm）时，系统默认使用interfaces文件内的参数进行网络配置。（就像Server版本一样）</p>
+<p>接着，当系统内安装了 nm之后，nm默认接管了系统的网络配置，使用nm 自己的网络配置参数来进行配置。</p>
+<p>但是，如果用户在安装nm之后，自己手动修改了interfaces 文件，那nm就自动停止对系统网络的管理，系统改使用interfaces 文件内的参数进行网络配置。</p>
+<p>此时，再去修改nm 内的参数，不影响系统实际的网络配置。若要让nm 内的配置生效，必须重新启用nm 接管系统的网络配置。</p>
+<p>现在知道了两者之间的工作关系，再看上面的三个问题：</p>
+<ol>
+<li><p>要看nm是否接管，如果没有接管，系统实际的IP设置以interfaces 中的为准。反之，以nm 中的为准。</p>
+</li>
+<li><p>当nm 停止接管的时候，网络连接图标就丢失了。</p>
+</li>
+<li><p>同样是接管的问题。</p>
+</li>
+</ol>
+<p>如果用户希望直接使用interfaces 进行网络配置，那最好删除network-manager 。</p>
+<p>如果在出现上述问题之后，希望能继续使用nm 来进行网络配置，则需要进行如下操作：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs terminal"># 停止 nm服务<br>sudo service network-manager stop <br># 打开nm 的配置文件(具体配置文件名字进入目录看，可能不太一样)<br>sudo vim /etc/NetworkManager/NetworkManager.conf <br></code></pre></td></tr></table></figure>
 
 <p><strong>里面有一行：managed=true</strong></p>
 <p><strong>如果你手工改过/etc/network/interfaces，nm会自己把这行改成：managed=false</strong></p>
 <p><strong>将false 修改成true</strong> </p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs terminal">#重启nm服务<br>sudo service network-manager start<br></code></pre></td></tr></table></figure>
 
-<p>然后reboot重启电脑，或者直接</p>
+<p>然后</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs terminal"># 开启NM托管<br>nmcli n on<br></code></pre></td></tr></table></figure>
+
+<p>有时候开关机后网络连接图标仍会消失，查看配置文件已经设置为了true,这时候再执行一遍下面三条命令后可以成功恢复网络。</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver">sudo service network-manager <span class="hljs-built_in">stop</span><br>sudo service network-manager <span class="hljs-built_in">start</span><br>nmcli n <span class="hljs-keyword">on</span><br></code></pre></td></tr></table></figure>
 
 <p><strong>参考链接</strong></p>
 <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/vic_qxz/article/details/118863177?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_title~default-2&spm=1001.2101.3001.4242.1"> NetworkManager设置_networkmanager配置文件</a></p>
