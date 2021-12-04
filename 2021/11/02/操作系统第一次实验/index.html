@@ -1,0 +1,852 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.jpg">
+  <link rel="icon" href="/img/favicon.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="linux系统安装及初级命令熟悉、文件目录与操作、权限">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+  <title>操作系统实验一 - Zino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"zino-wza.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"d1745c2e21adaa6ae90b93f4f4d22da9","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Zino's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/post.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="操作系统实验一">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-11-02 07:00" pubdate>
+        2021年11月2日 早上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4.7k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      51
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">操作系统实验一</h1>
+            
+            <div class="markdown-body">
+              <h2 id="实验1-linux系统安装及初级命令熟悉"><a href="#实验1-linux系统安装及初级命令熟悉" class="headerlink" title="实验1 linux系统安装及初级命令熟悉"></a>实验1 linux系统安装及初级命令熟悉</h2><h3 id="一、实验目的"><a href="#一、实验目的" class="headerlink" title="一、实验目的"></a>一、实验目的</h3><ol>
+<li>掌握Ubuntu的安装过程。</li>
+<li>熟悉Linux命令的格式。</li>
+<li>熟悉一些常用的命令。</li>
+<li>熟悉如何使用帮助。</li>
+</ol>
+<h3 id="二、实验要求"><a href="#二、实验要求" class="headerlink" title="二、实验要求"></a>二、实验要求</h3><p>本次实验要求完成以下内容：</p>
+<ul>
+<li>用root登录进入Linux系统，创建自己的账号</li>
+<li>执行常用的命令</li>
+<li>使用特殊控制键，进行命令行的编辑</li>
+<li>使用man命令，来查找特定命令的帮助信息</li>
+</ul>
+<h3 id="三、实验预备知识"><a href="#三、实验预备知识" class="headerlink" title="三、实验预备知识"></a>三、实验预备知识</h3><p>准备Ubuntu镜像，本次实验采用Ubuntu 20.04版本</p>
+<h3 id="四、实验内容"><a href="#四、实验内容" class="headerlink" title="四、实验内容"></a>四、实验内容</h3><h4 id="1-安装linux操作系统"><a href="#1-安装linux操作系统" class="headerlink" title="1. 安装linux操作系统"></a>1. <strong>安装linux操作系统</strong></h4><p>如图所示，Ubuntu系统已经预先安装完成。中文语言输入法均已安装。</p>
+<h4 id><a href="#" class="headerlink" title></a><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029092634926.png" srcset="/img/loading.gif" lazyload alt="image-20211029092634926"></h4><h4 id="2-基本命令"><a href="#2-基本命令" class="headerlink" title="2. 基本命令"></a>2. <strong>基本命令</strong></h4><h5 id="⑴-在终端用户下为自己创建一个用户"><a href="#⑴-在终端用户下为自己创建一个用户" class="headerlink" title="⑴ 在终端用户下为自己创建一个用户"></a>⑴ 在终端用户下为自己创建一个用户</h5><p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029095025375.png" srcset="/img/loading.gif" lazyload alt="image-20211029095025375"></p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029095100329.png" srcset="/img/loading.gif" lazyload alt="image-20211029095100329"></p>
+<h5 id="⑵-为yuliya用户创建一个密码"><a href="#⑵-为yuliya用户创建一个密码" class="headerlink" title="⑵ 为yuliya用户创建一个密码"></a>⑵ 为yuliya用户创建一个密码</h5><p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029095125075.png" srcset="/img/loading.gif" lazyload alt="image-20211029095125075"></p>
+<h5 id="⑶-登录创建的用户"><a href="#⑶-登录创建的用户" class="headerlink" title="⑶ 登录创建的用户"></a>⑶ 登录创建的用户</h5><p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029095223103.png" srcset="/img/loading.gif" lazyload alt="image-20211029095223103"></p>
+<h5 id="⑷-查看当前用户"><a href="#⑷-查看当前用户" class="headerlink" title="⑷ 查看当前用户"></a>⑷ 查看当前用户</h5><p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029095400878.png" srcset="/img/loading.gif" lazyload alt="image-20211029095400878"></p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029095241084.png" srcset="/img/loading.gif" lazyload alt="image-20211029095241084"></p>
+<h5 id="⑸-查明具体用户"><a href="#⑸-查明具体用户" class="headerlink" title="⑸ 查明具体用户"></a>⑸ 查明具体用户</h5><p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029095318256.png" srcset="/img/loading.gif" lazyload alt="image-20211029095318256"></p>
+<h5 id="⑹-退出当前用户"><a href="#⑹-退出当前用户" class="headerlink" title="⑹ 退出当前用户"></a>⑹ 退出当前用户</h5><p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029095338451.png" srcset="/img/loading.gif" lazyload alt="image-20211029095338451"></p>
+<h5 id="⑺-在命令行下进行关机操作"><a href="#⑺-在命令行下进行关机操作" class="headerlink" title="⑺ 在命令行下进行关机操作"></a>⑺ 在命令行下进行关机操作</h5><p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029095831358.png" srcset="/img/loading.gif" lazyload alt="image-20211029095831358"></p>
+<h5 id="⑻-重新启动"><a href="#⑻-重新启动" class="headerlink" title="⑻ 重新启动"></a>⑻ 重新启动</h5><p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029102955840.png" srcset="/img/loading.gif" lazyload alt="image-20211029102955840"></p>
+<h4 id="3-特殊键的使用"><a href="#3-特殊键的使用" class="headerlink" title="3. 特殊键的使用"></a>3. 特殊键的使用</h4><p>回车键RETURN或者CONTROL-m或CTL-m，它表示输入行结束<br>CTL-d   它表示终端的输入结束；<br>CTL-g   控制终端响铃；<br>CTL-h   称为退格键，用于改正输入的错误；<br>CTL-i    常称作Tab键<br>DELETE键表示立即终止程序<br>BREAK键与DELETE键、CTL-c的功能</p>
+<h4 id="4-linux下的帮助命令"><a href="#4-linux下的帮助命令" class="headerlink" title="4. linux下的帮助命令"></a>4. linux下的帮助命令</h4><h5 id="⑴-man-命令"><a href="#⑴-man-命令" class="headerlink" title="⑴ #man 命令"></a>⑴ #man 命令</h5><p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029103608022.png" srcset="/img/loading.gif" lazyload alt="image-20211029103608022"></p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029103551797.png" srcset="/img/loading.gif" lazyload alt="image-20211029103551797"></p>
+<h5 id="⑵-help"><a href="#⑵-help" class="headerlink" title="⑵ #help"></a>⑵ #help</h5><p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029103740702.png" srcset="/img/loading.gif" lazyload alt="image-20211029103740702"></p>
+<h5 id="⑶-命令-–help"><a href="#⑶-命令-–help" class="headerlink" title="⑶ #命令 –help"></a>⑶ #命令 –help</h5><p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029103908087.png" srcset="/img/loading.gif" lazyload alt="image-20211029103908087"></p>
+<h4 id="5-文本编辑器"><a href="#5-文本编辑器" class="headerlink" title="5. 文本编辑器"></a>5. 文本编辑器</h4><p>要在linux下编写文本或语言程序，可以选择适用vi，pico，joe，jove，mc编辑器等这样的文本模式，还可以使用像Gedit，Kate等视窗环境下的编辑器，或是使用KDevelop，它是在linux下的XWindow下执行的C/C++整合式开发环境。</p>
+<h2 id="实验2-文件目录与操作"><a href="#实验2-文件目录与操作" class="headerlink" title="实验2 文件目录与操作"></a>实验2 文件目录与操作</h2><h3 id="一、实验目的-1"><a href="#一、实验目的-1" class="headerlink" title="一、实验目的"></a>一、实验目的</h3><p>使学生熟悉目录与文件的操作</p>
+<h3 id="二、实验要求-1"><a href="#二、实验要求-1" class="headerlink" title="二、实验要求"></a>二、实验要求</h3><p>本次实验要求完成下列内容：</p>
+<ul>
+<li>显示当前目录的目录名</li>
+<li>改变当前目录</li>
+<li>使用ls命令的各种选项查看文件与目录属性</li>
+<li>创建和删除目录</li>
+<li>创建0长度的文件</li>
+<li>拷贝、移动、重命名及删除文件</li>
+<li>查看文件的内容</li>
+<li>对文件和目录进行压缩和解压缩</li>
+</ul>
+<h3 id="三、实验预备知识-1"><a href="#三、实验预备知识-1" class="headerlink" title="三、实验预备知识"></a>三、实验预备知识</h3><h4 id="1-什么是文件"><a href="#1-什么是文件" class="headerlink" title="1. 什么是文件"></a>1. 什么是文件</h4><p>从通常意义上来说，文件是一些数据的集合，这些数据通常是文本或机器操作码。用户所创建的大多数文件都是文本文件，而在Linux上运行的大多数程序则是机器操作码文件。每当执行一条Linux命令时，就是告诉计算机去执行某个文件或某组文件中的命令，这样的文件以半永久的形式存储在像磁盘或磁带这样的稳定介质中。</p>
+<p> 在Linux系统中，除了通常意义上的文件外，每个物理实体也都是以文件的形式出现的。Linux系统视所有文件为简单的数据字节序列，但用户或应用程序可以对文件内容附加特定的结构。</p>
+<h4 id="2-什么是目录"><a href="#2-什么是目录" class="headerlink" title="2. 什么是目录"></a>2. 什么是目录</h4><p>目录是文件系统中的一个单元，它存放着各种文件。事实上，Linux系统中的每个文件都是包含在某个目录中的。这样的安排保持了文件的组织，并减少系统寻找某一特定文件所花的时间。</p>
+<p>在Linux系统中，目录实际上也是一种文件。它不包含文本或可执行的机器操作码，但它具有文件名列表和有关这些文件的其它信息。</p>
+<p>由于目录也是一种文件，因此也可以把一个目录放到另一个目录中。这有助于作为整体解释文件系统，因为系统实际上是目录和文件组成的层次结构。</p>
+<h4 id="3-文件的命名规则"><a href="#3-文件的命名规则" class="headerlink" title="3. 文件的命名规则"></a>3. 文件的命名规则</h4><p>为了区别各个文件，必须给每个文件取个名字。在Linux系统中，一个合格的文件名由字母、数字和某些特殊符号组成。文件名中不应该包含空格、制表符、换行符和退格符，也不应该包含任何对shell有特定含义的字符，这些特定字符包括：`!@#$%^&amp;*()|[]{}’”;&lt;&gt;/</p>
+<h4 id="4-文件系统的层次结构"><a href="#4-文件系统的层次结构" class="headerlink" title="4. 文件系统的层次结构"></a>4. 文件系统的层次结构</h4><p>Linux的文件系统是一个包含文件和目录的层次结构，被称为目录树。目录树的最顶端只有一个目录，被称为根（root）目录。根目录以斜线字符（/）表示，由它再分支出若干其他目录和文件，。这些目录中的每一个又可能再分支出其他的一些目录和文件。下图显示了一个典型的Linux文件系统的部分结构。</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029104920799.png" srcset="/img/loading.gif" lazyload alt="image-20211029104920799"></p>
+<p>在图中，home是/的子目录，jame、john和sjp是home的子目录。相应地，/是bin、dev、lib、home和usr等的父目录，home又是jame、john和sjp的父目录。</p>
+<h4 id="5-Linux一些主要的标准目录"><a href="#5-Linux一些主要的标准目录" class="headerlink" title="5. Linux一些主要的标准目录"></a>5. Linux一些主要的标准目录</h4><p>/bin目录保存引导系统所需要的全部可执行程序以及最常用的Linux命令。</p>
+<p>/boot目录用来存放Linux启动时所需要的一些数据和文件。</p>
+<p>/dev目录包含有链接硬件设备的文件。</p>
+<p>/etc目录含用于管理Linux系统的文件和工具。</p>
+<p>/home目录用来存放各个用户的主目录。</p>
+<p>/lib目录含有C编译程序所需要的函数库。</p>
+<p>/usr目录包含X Windows系统的可执行程序、函数库以及游戏等。</p>
+<h3 id="四、实验内容-1"><a href="#四、实验内容-1" class="headerlink" title="四、实验内容"></a>四、实验内容</h3><h4 id="1-显示当前目录的目录名"><a href="#1-显示当前目录的目录名" class="headerlink" title="1. 显示当前目录的目录名"></a>1. 显示当前目录的目录名</h4><p>使用pwd命令，确认你现在所处的目录。命令pwd可以告诉用户目前是在哪个目录中，这一命令将显示当前目录的全路径名。</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029111012656.png" srcset="/img/loading.gif" lazyload alt="image-20211029111012656"></p>
+<h4 id="2-改变当前目录"><a href="#2-改变当前目录" class="headerlink" title="2. 改变当前目录"></a>2. 改变当前目录</h4><p>命令cd使用方式为cd [目录路径名]，用于变换工作目录至指定目录，[目录路径名]可为相对路径，也可以为绝对路径。</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029111604450.png" srcset="/img/loading.gif" lazyload alt="image-20211029111604450"></p>
+<h4 id="3-使用ls命令的各种选项查看文件与目录属性"><a href="#3-使用ls命令的各种选项查看文件与目录属性" class="headerlink" title="3. 使用ls命令的各种选项查看文件与目录属性"></a>3. 使用ls命令的各种选项查看文件与目录属性</h4><p>用户经常要查看某个目录中有哪些文件和子目录，这可以使用ls命令来完成。ls命令有非常多的选项，用来修正ls命令的行为，以便满足<br>用户的不同需求。</p>
+<ul>
+<li><p>在最简单的情况下，ls命令可以不带任何实参。这时ls命令将以字母顺序列出当前目录中的所有文件和子目录的名字。</p>
+<ul>
+<li>命令为：$ls </li>
+</ul>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029112513317.png" srcset="/img/loading.gif" lazyload alt="image-20211029112513317"></p>
+</li>
+<li><p>使用带参数“l”(小写的“L”)的ls命令可以显示当前目录下所有的文件名、文件的类型、文件的访问权限、文件的链接数、文件拥有者及其所属的组、文件大小和文件最近一次被修改的日期和时间等属性。</p>
+<ul>
+<li>命令为：$ls -l</li>
+</ul>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029112536299.png" srcset="/img/loading.gif" lazyload alt="image-20211029112536299"></p>
+</li>
+<li><p>有些情况下命令ls任何输出，并不表示该目录中没有文件和子目录，因为通常情况下ls命令并不显示隐含文件(或目录) 。要显示隐含文件，可以使用参数“a”的ls命令。</p>
+<ul>
+<li>命令为：$ls -a</li>
+</ul>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029112607485.png" srcset="/img/loading.gif" lazyload alt="image-20211029112607485"></p>
+</li>
+<li><p>要列出某个目录下的所有文件，包括其任何一层子目录下的文件，可以用带参数“R”的ls命令实现。该命令递归地显示指定目录(或当前目录)下的所有内容。</p>
+<ul>
+<li>命令为：$ls -R</li>
+</ul>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029112705638.png" srcset="/img/loading.gif" lazyload alt="image-20211029112705638"></p>
+</li>
+</ul>
+<h4 id="4-创建和删除目录"><a href="#4-创建和删除目录" class="headerlink" title="4. 创建和删除目录"></a>4. 创建和删除目录</h4><h5 id="1-创建目录"><a href="#1-创建目录" class="headerlink" title="(1) 创建目录"></a>(1) 创建目录</h5><p>每个用户在实际中都需要创建自己的目录，这是通过mkdir命令来完成的。</p>
+<p>语法形式为：$ mkdir [-p] dirName，<br>用于建立名称为dirName 之子目录。其中，参数-p确保目录名称存在，不存在的就建一个。</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029113441518.png" srcset="/img/loading.gif" lazyload alt="image-20211029113441518"></p>
+<h5 id="2-删除目录"><a href="#2-删除目录" class="headerlink" title="(2) 删除目录"></a>(2) 删除目录</h5><p>删除目录的命令为rmdir，使用语法为：$rmdir [dirName]</p>
+<p>作用是删除目录名为dirName的目录。</p>
+<ul>
+<li>注意：rmdir命令不能删除一个非空的目录。</li>
+</ul>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029113655911.png" srcset="/img/loading.gif" lazyload alt="image-20211029113655911"></p>
+<h4 id="5-创建0长度的文件"><a href="#5-创建0长度的文件" class="headerlink" title="5. 创建0长度的文件"></a>5. 创建0长度的文件</h4><p>touch命令用于改变档案的时间记录。touch使用方式touch [-acfm] [-r reference-file] [-t MMDDhhmm [[CC][YY][.ss]] [-dtime] [–date=time] [–time] [–version]file1 [file2 …]</p>
+<p>其中，touch命令的参数为：a改变档案的读取时间记录。m改变档案的修改时间记录。c假如目的档案不存在，不会建立新的档案。r使用参考文件的时间记录。d设定时间与日期。t设定档案的时间记录。</p>
+<p>touch的另外一个功能就是创建一个0长度的文件。<br>例如，使用touch命令在OS目录创建名为myfile1,myfile2的两个文件：<br>$ touch myfile1 myfile2</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029114053508.png" srcset="/img/loading.gif" lazyload alt="image-20211029114053508"></p>
+<h4 id="6-拷贝、移动、重命名及删除文件"><a href="#6-拷贝、移动、重命名及删除文件" class="headerlink" title="6. 拷贝、移动、重命名及删除文件"></a>6. 拷贝、移动、重命名及删除文件</h4><h5 id="1-文件的拷贝"><a href="#1-文件的拷贝" class="headerlink" title="(1) 文件的拷贝"></a>(1) 文件的拷贝</h5><p>使用cp命令可以将某个文件复制一份，cp命令的一般语法形式为如下：cp &lt;原文件路径名&gt; &lt;新文件路径名&gt;</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029114825468.png" srcset="/img/loading.gif" lazyload alt="image-20211029114825468"></p>
+<h5 id="2-文件的移动和文件的重命名"><a href="#2-文件的移动和文件的重命名" class="headerlink" title="(2) 文件的移动和文件的重命名"></a>(2) 文件的移动和文件的重命名</h5><ul>
+<li><p>命令mv可以对某个文件进行改名，以及将某个文件从一个文件夹移动到另一个文件夹。<br>使用方式：mv [-i] &lt;文件原路径&gt; &lt;文件新路径&gt;<br>说明：将一个档案移至另一档案，或将数个档案移至另一目录。<br>参数：-i 若目的地已有同名档案，则先询问是否覆盖旧档</p>
+</li>
+<li><p>改名</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029115420223.png" srcset="/img/loading.gif" lazyload alt="image-20211029115420223"></p>
+</li>
+<li><p>移动</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029115710886.png" srcset="/img/loading.gif" lazyload alt="image-20211029115710886"></p>
+</li>
+</ul>
+<h5 id="3-删除文件"><a href="#3-删除文件" class="headerlink" title="(3) 删除文件"></a>(3) 删除文件</h5><p>删除文件命令为：rm<br>使用方式：rm [-options] 文件名</p>
+<p>options参数：<br>-i 删除前逐一询问确认。<br>-f 直接删除档案，无需逐一确认。<br>-r 将目录及以下之档案逐一删除。</p>
+<p>示例：</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029120134543.png" srcset="/img/loading.gif" lazyload alt="image-20211029120134543"></p>
+<h4 id="7-查看文件的内容"><a href="#7-查看文件的内容" class="headerlink" title="7. 查看文件的内容"></a>7. 查看文件的内容</h4><p>cat和more这两个命令可以查看文件的内容。</p>
+<h5 id="1-cat命令"><a href="#1-cat命令" class="headerlink" title="(1) cat命令"></a>(1) cat命令</h5><ul>
+<li><p>使用方式：cat [-option] fileName</p>
+</li>
+<li><p>参数：</p>
+<p>-n 由1开始对所有输出的行数编号</p>
+<p>-b 和-n 相似，不过对于空白行不编号</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029120548660.png" srcset="/img/loading.gif" lazyload alt="image-20211029120548660"></p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029120612315.png" srcset="/img/loading.gif" lazyload alt="image-20211029120612315"></p>
+</li>
+</ul>
+<h5 id="2-more命令"><a href="#2-more命令" class="headerlink" title="(2) more命令"></a>(2) more命令</h5><ul>
+<li><p>使用方式：more [-option] [+/pattern] [+linenum] [fileNames]</p>
+</li>
+<li><p>使用范例</p>
+<p>从第20 行开始显示testfile 之档案内容</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029120937071.png" srcset="/img/loading.gif" lazyload alt="image-20211029120937071"></p>
+<p>查看/etc/passwd文件的内容：</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029121012612.png" srcset="/img/loading.gif" lazyload alt="image-20211029121012612"></p>
+</li>
+</ul>
+<h4 id="8-对文件和目录进行压缩和解压缩"><a href="#8-对文件和目录进行压缩和解压缩" class="headerlink" title="8. 对文件和目录进行压缩和解压缩"></a>8. 对文件和目录进行压缩和解压缩</h4><ul>
+<li><p>压缩文件可以减少所需的存储空间，也可以减少网络传输文件所需的时间，因此压缩和解压缩在Linux中很常用。Linux中压缩和解压缩的指令很多，如gzip、zip、bzip2等等，这里介绍比较常用的gzip指令。</p>
+</li>
+<li><p>使用方法：gzip [-option] [-S &lt;压缩字尾字 符串&gt;] [-&lt;压缩效率&gt;] [–best/fast] [文件]</p>
+</li>
+<li><p>补充说明：gzip是个使用广泛的压缩程序，文件经它压缩过后，其名称后面会多出”.gz”的扩展名。</p>
+</li>
+<li><p>使用范例：</p>
+<ul>
+<li><p>对文件np使用gzip命令进行压缩：<br>$ gzip np</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029121428777.png" srcset="/img/loading.gif" lazyload alt="image-20211029121428777"></p>
+</li>
+<li><p>将np压缩后的文件进行解压缩并列出详细信息<br>$ gzip -dv np.gz</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029121510000.png" srcset="/img/loading.gif" lazyload alt="image-20211029121510000"></p>
+</li>
+<li><p>将goodstuff目录下的所有文件进行压缩：<br>$ gzip -r goodstuff</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029121702889.png" srcset="/img/loading.gif" lazyload alt="image-20211029121702889"></p>
+</li>
+<li><p>对goodstuff目录进行解压缩：<br>$ gzip –dr g oodstuff</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029121727712.png" srcset="/img/loading.gif" lazyload alt="image-20211029121727712"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="实验3-权限"><a href="#实验3-权限" class="headerlink" title="实验3 权限"></a>实验3 权限</h2><h3 id="一、实验目的-2"><a href="#一、实验目的-2" class="headerlink" title="一、实验目的"></a>一、实验目的</h3><p>给学生一个操作文件与目录权限的机会。作完这些练习之后，使学生能够对LINUX中文件所有者的概念和权限的概念有基本的理解。</p>
+<h3 id="二、实验要求-2"><a href="#二、实验要求-2" class="headerlink" title="二、实验要求"></a>二、实验要求</h3><p>本次实验要求完成下列内容：</p>
+<ul>
+<li>使用长列表命令来查看文件与目录的信息</li>
+<li>能够解释文件与目录权限中各位的含义</li>
+<li>能够对普通文件与目录的权限进行操作</li>
+<li>能够更改文件和目录所属的用户和</li>
+</ul>
+<h3 id="三、实验预备知识-2"><a href="#三、实验预备知识-2" class="headerlink" title="三、实验预备知识"></a>三、实验预备知识</h3><p>在linux系统中，每个文件或者一个目录属于一个用户或一个组。Linux权限通过允许每个文件系统对象设置三种独立的权限级别来工作。3种独立的权限级别为：</p>
+<ul>
+<li>文件拥有者(u)；</li>
+<li>文件拥有者所在用户组中的其它成员(g)；</li>
+<li>所有其它用户(o)。</li>
+</ul>
+<p>每个文件均拥有下列三种权限：</p>
+<ul>
+<li>read (r): 查看文件内容</li>
+<li>write (w): 修改文件</li>
+<li>execute (x): 如同命令一样执行文件</li>
+</ul>
+<p>每个目录均拥有下列三种权限：</p>
+<ul>
+<li>read (r): 列出目录内容</li>
+<li>write (w): 在目录中增删文件</li>
+<li>execute (x): 访问目录中的文件</li>
+</ul>
+<p>当你创建一个文件的时候，系统保存了有关该文件的全部信息，包括：</p>
+<ul>
+<li>文件的位置。</li>
+<li>文件类型。</li>
+<li>文件长度。</li>
+<li>哪位用户拥有该文件，哪些用户可以访问该文件。</li>
+<li>i节点。</li>
+<li>文件的修改时间。</li>
+<li>文件的权限位。</li>
+</ul>
+<p>在进行各种操作时，首先必须弄清楚自己所在的目录。如果你对自己目前的位置失去了感觉，那么各种命令可能都会失效。最有效的方法就是，经常使用pwd命令，来查看你所在的当前目录。</p>
+<h3 id="四、实验内容-2"><a href="#四、实验内容-2" class="headerlink" title="四、实验内容"></a>四、实验内容</h3><h4 id="1-使用长列表命令来查看文件与目录的信息"><a href="#1-使用长列表命令来查看文件与目录的信息" class="headerlink" title="1. 使用长列表命令来查看文件与目录的信息"></a>1. 使用长列表命令来查看文件与目录的信息</h4><p>对一个文件使用ls –l 命令，就会按如下顺序显示下列信息：</p>
+<ul>
+<li><p>文件类型（第1个字符）</p>
+<ul>
+<li>-: 普通文件</li>
+<li>d: 目录</li>
+<li>l: 符号链接</li>
+<li>c: 字符型设备节点</li>
+<li>b: 块设备节点</li>
+</ul>
+</li>
+<li><p>文件访问权限（接下来的9个字符，每3个一组依次代表user、group和other）</p>
+</li>
+<li><p>文件的硬链接数 </p>
+</li>
+<li><p>文件拥有user的用户名</p>
+</li>
+<li><p>文件所属group的用户组名</p>
+</li>
+<li><p>文件的字符数size (bytes)</p>
+</li>
+<li><p>文件的date and time (mtime)</p>
+</li>
+<li><p>文件的name</p>
+</li>
+</ul>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029162532418.png" srcset="/img/loading.gif" lazyload alt="image-20211029162532418"></p>
+<h4 id="2-解释文件与目录权限中各位的含义"><a href="#2-解释文件与目录权限中各位的含义" class="headerlink" title="2. 解释文件与目录权限中各位的含义"></a>2. 解释文件与目录权限中各位的含义</h4><p>对于文件a.out</p>
+<p>第一个字符为-，表示它是一个普通文件，接下来9个字符每三位分别代表所有者权限、同组用户权限和其他用户权限，在上例中，九个字符分别为：rwx、rwx、r-x，因此a.out文件具有所有者类中的读写和执行权限，对于组类也有读写和执行权限，而对于其他用户类也只有读和执行权限。</p>
+<p>后面的信息依次表示a.out文件的硬链接数为1，文件所属的用户名为zino，文件所属组名为zino，文件大小为16696byte，最后是文件创建的时间为6月21日19:22和文件名为a.out。</p>
+<h4 id="3-对普通文件与目录的权限进行操作"><a href="#3-对普通文件与目录的权限进行操作" class="headerlink" title="3. 对普通文件与目录的权限进行操作"></a>3. 对普通文件与目录的权限进行操作</h4><p>改变文件权限的命令是chmod</p>
+<ul>
+<li><p>chmod命令的一般格式为:  chmod [who] operator [permission] filename</p>
+</li>
+<li><p>who 的含义是：</p>
+<ul>
+<li>u 文件属主权限。</li>
+<li>g 同组用户权限。</li>
+<li>o 其他用户权限。</li>
+<li>a 所有用户(所有者、同组用户及其他用户)。</li>
+</ul>
+</li>
+<li><p>operator的含义：</p>
+<ul>
+<li>+  增加权限。</li>
+<li>-   取消权限。</li>
+<li>=  设定权限。</li>
+</ul>
+</li>
+<li><p>permission的含义：</p>
+<ul>
+<li>r 读权限。</li>
+<li>w 写权限。</li>
+<li>x 执行权限。</li>
+<li>s 文件属主和组set-ID。</li>
+<li>t 粘性位*。</li>
+<li>l 给文件加锁，使其他用户无法访问。</li>
+</ul>
+</li>
+<li><p>举例：<br>$chmod a-x  a.out  收回所有用户的执行权限</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029165852610.png" srcset="/img/loading.gif" lazyload alt="image-20211029165852610"></p>
+<p>$chmod u+x myfile  赋予文件属主执行</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029165929699.png" srcset="/img/loading.gif" lazyload alt="image-20211029165929699"></p>
+</li>
+</ul>
+<p>上面所述的改变用户权限的方法被称为权限符号法，还有一种更为简便的方法用来更改用户权限：<strong>二进制掩码法</strong>(绝对方法)。</p>
+<ul>
+<li><p>含义</p>
+<p>绝对方法就是使用八进制数字作为掩码来设置不同的文件权限。每个八进制数字应用于一种用户类。你可以将这个数字想象为从所有者类开始从左到右与权限类别相匹配。</p>
+<p><strong>第一个八进制数字应用于所有者类，第二个是同组类，而第三个是其他用户类</strong>。</p>
+<p>你所选择的实际的八进制数字可以为每个用户类确定读、写和执行权限。从这一点上说，需要了解八进制数字是如何转换为二进制格式的。<br>可以认为首先将八进制数转换为二进制格式，然后每个三位二进制数字用于设置读、写和执行权限。每个二进制数字从左到右和相应的权限相匹配。如果一个二进制数字是0，那么该权限则被禁止，如果是1则被打开。第一个二进制位设置了读权限的打开与关闭，第二个设置了写权限，第三个设置了执行权限。<br>例如，一个八进制数字6转换为二进制数字110。这会将读写权限打开，执行权限关闭</p>
+<p>由八进制到二进制的转换很麻烦，这里有个简便方法：如果赋予读权限，算4；如果赋予写权限，算2；如果赋予执行权，算1；将这些数字累加起来，如果同时拥有读取和写权限，<br>那就是2+4=6，也就是二进制里面的110。</p>
+</li>
+<li><p>举例：</p>
+<p>$chmod 666 myfile ：<br>赋予所有用户读和写的权限(读+写=2+4=6)</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029170150062.png" srcset="/img/loading.gif" lazyload alt="image-20211029170150062"></p>
+<p>$chmod 744 myfile ：<br>赋予文件所有者读、写和执行的权限(读+写+执行=1+2+4=7)，所有其他用户读的权限(读＝4)。</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029170209608.png" srcset="/img/loading.gif" lazyload alt="image-20211029170209608"></p>
+</li>
+</ul>
+<h4 id="4-更改文件和目录所属的用户和组"><a href="#4-更改文件和目录所属的用户和组" class="headerlink" title="4. 更改文件和目录所属的用户和组"></a>4. 更改文件和目录所属的用户和组</h4><p>改变文件所有者的命令是chown</p>
+<ul>
+<li><p>chown命令的一般形式为：chown -R -h owner file</p>
+</li>
+<li><p>-R选项意味着对所有子目录下的文件也都进行同样的操作。</p>
+</li>
+<li><p>-h选项意味着在改变符号链接文件的属主时不影响该链接所指向的目标文件。</p>
+</li>
+<li><p>举例</p>
+<p>在终端中运行：$ls –l a.out<br>我们可以看到文件的拥有者是zino。<br>接着运行：$ chown root a.out<br>运行完成后我们继续运行：$ ls –l a.out<br>我们可以看到文件的拥有者是root。</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029171209781.png" srcset="/img/loading.gif" lazyload alt="image-20211029171209781"></p>
+</li>
+</ul>
+<p>改变文件所有组的命令为chgrp</p>
+<ul>
+<li><p>chgrp命令的使用方式与chown基本相同：chgrp –R –h group file</p>
+</li>
+<li><p>-R选项意味着对所有子目录下的文件也都进行同样的操作。</p>
+</li>
+<li><p>-h选项意味着在改变符号链接文件的所属组时不影响该链接所指向的目标文件。</p>
+</li>
+<li><p>举例：在终端中运行：$ ls –l a.out<br>我们可以看出文件所属的用户组为zino。<br>接着运行：$ chgrp root a.out<br>然后继续运行：$ ls –l a.out<br>可以看出文件的所属的组为root。</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029171327096.png" srcset="/img/loading.gif" lazyload alt="image-20211029171327096"></p>
+</li>
+<li><p>提示： </p>
+<ul>
+<li><p>如果你想知道自己属于哪几个用户组，可以使用group<br>和id命令：<br>$ group 或<br>$ id</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029172200328.png" srcset="/img/loading.gif" lazyload alt="image-20211029172200328"></p>
+</li>
+<li><p>如果想要知道其它用户属于哪几个用户组，就在group<br>命令后面接上用户名，如：<br>$ group aifi<br>​$ users admin general<br>上面的命令告诉我们，aifi属于users、admin和general这三个用户组。</p>
+</li>
+<li><p>cat /etc/group  查看分组</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211029172141101.png" srcset="/img/loading.gif" lazyload alt="image-20211029172141101"></p>
+</li>
+</ul>
+</li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，著作权归作者所有，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">操作系统实验二</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/10/29/Shellshock_Attack_lab/">
+                        <span class="hidden-mobile">Shellshock Attack lab</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://zino-wza.github.io/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/';
+          this.page.identifier = '/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a  rel="nofollow noopener"><span>Copyrights © 2021</span></a> <i class="iconfont icon-love"></i> <a  target="_blank" rel="nofollow noopener"><span>Zino</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d1745c2e21adaa6ae90b93f4f4d22da9";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?d1745c2e21adaa6ae90b93f4f4d22da9";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

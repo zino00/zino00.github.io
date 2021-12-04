@@ -1,0 +1,888 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.jpg">
+  <link rel="icon" href="/img/favicon.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="shell初步、控制进程、C编程和调试">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+  <title>操作系统实验二 - Zino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"zino-wza.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"d1745c2e21adaa6ae90b93f4f4d22da9","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Zino's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/post.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="操作系统实验二">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-11-02 08:00" pubdate>
+        2021年11月2日 早上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      6.8k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      77
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">操作系统实验二</h1>
+            
+            <div class="markdown-body">
+              <h1 id="操作系统第二次实验"><a href="#操作系统第二次实验" class="headerlink" title="操作系统第二次实验"></a>操作系统第二次实验</h1><h2 id="实验4-shell初步"><a href="#实验4-shell初步" class="headerlink" title="实验4 shell初步"></a>实验4 shell初步</h2><h3 id="一、实验目的"><a href="#一、实验目的" class="headerlink" title="一、实验目的"></a>一、实验目的</h3><ul>
+<li>熟悉shell的基本操作</li>
+<li>使用LINUX中最常用的数据处理命令</li>
+</ul>
+<h3 id="二、实验要求"><a href="#二、实验要求" class="headerlink" title="二、实验要求"></a>二、实验要求</h3><ul>
+<li>使用通配符来进行文件名的查找</li>
+<li>重定向标准输入、标准输出、标准错误输出</li>
+<li>使用管道操作，将一个进程的输出作为另一个进程的输入</li>
+<li>使用群命令和命令行续行符</li>
+<li>在指定的目录中，对满足条件的文件名进行递归查找</li>
+<li>了解vi编辑器的基本用法</li>
+<li>在文本文件中，查找符合指定模式的文本行</li>
+<li>将文本文件中的各行，按顺序排列</li>
+<li>显示一个文本文件的前几行或者后几行</li>
+</ul>
+<h3 id="三、实验预备知识"><a href="#三、实验预备知识" class="headerlink" title="三、实验预备知识"></a>三、实验预备知识</h3><h4 id="1-shell简介"><a href="#1-shell简介" class="headerlink" title="1. shell简介"></a>1. shell简介</h4><p>shell是一个命令解释程序， 它提供了操作系统与用户之间的主要界面，控制用户与内核之间的交互作用。</p>
+<p>除了解释用户从键盘上键入的命令外，shell也可以解释存储在文件中的命令。在Linux中，存储命令的文本文件称为shell脚本，可以具有任意的扩展名。shell实际上是一种编程语言，shell编程广泛地用于获取经常执行的命令和过程。</p>
+<h4 id="2-shell特殊变量"><a href="#2-shell特殊变量" class="headerlink" title="2. shell特殊变量"></a>2. shell特殊变量</h4><p>$?——上一条命令的执行情况<br>$#——命令行参数的个数<br>$*——所有命令行参数的内容<br>$@——所有命令行参数的内容<br>​$n——命令行的第n个参数<br>$$——当前shell程序的pid<br>$!——最近一个在后台运行的命令的pid<br>$-——当前选项标志<br>$_——上一条命令的最后一个参数</p>
+<h4 id="3-shell脚本"><a href="#3-shell脚本" class="headerlink" title="3. shell脚本"></a>3. shell脚本</h4><ul>
+<li>建立shell脚本<br>可以用来建立文本文件的方法都可以用来建立shell脚本。例如，可以用vi编辑器或是emacs编辑器来建立一个shell脚本，也可以通过重定向标准输入和输出在命令行上直接建立shell脚本文件。<br>如下使用cat命令建立shell脚本：<br>cat &gt; print_user<br>echo User name:$LOGNAME<br>echo Home directory: ​$HOME<br>echo Current shell PID: $$<br>&lt;Ctrl+D&gt;</li>
+<li>执行shell脚本<br>(1)用子shell执行shell脚本文件要用子shell执行的脚本文件print_user，可以键入如下命令：<br>$sh print_user<br>(2)用“.”命令执行shell脚本文件<br>“.”命令的一般形式为：<br>​$ . shell脚本文件名<br>(3)用exec命令执行shell脚本文件<br>该命令的一般形式为：<br>​$ exec .／shell脚本文件名</li>
+</ul>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030085349663.png" srcset="/img/loading.gif" lazyload alt="image-20211030085349663"></p>
+<h3 id="四、实验内容"><a href="#四、实验内容" class="headerlink" title="四、实验内容"></a>四、实验内容</h3><h4 id="1-通配符"><a href="#1-通配符" class="headerlink" title="1. 通配符"></a>1. 通配符</h4><ul>
+<li>通配符用于模式匹配，如文件名匹配、路经名搜索、字符串查找等。常用的通配符有*、?和括在方括号[ ]中的字符序列。用户可以在作为命令参数的文件名中包</li>
+<li>含这些通配符，构成一个所谓的“模式串”，在执行过程中进行模式匹配。</li>
+<li>*代表任何字符串（长度可以不等，可以为空字符串）。<br>例如：“a*”匹配以a打头的任意字符串。</li>
+<li>？代表任何单个字符。</li>
+<li>[ ]代表指定的一个字符范围，只要文件名中[ ]位置处的字符在[ ]中指定的范围之内，那么这个文件名就与这个模式串匹配。</li>
+</ul>
+<h4 id="2-重定向"><a href="#2-重定向" class="headerlink" title="2. 重定向"></a>2. 重定向</h4><p>重定向就是将标准输入、标准输出甚至标准报错重定向到一个文件。也就是说，可以让命令从某个文件中读取参数和数据，命令的输出结果也可以送至某个文件中而不是在终端上显示出来。实现重定向的最简单的方法是使用改向操作符。改向操作符可以将标准输入、标准输出和标准报错改向到某个文件。</p>
+<blockquote>
+<p>例：将显示结果重定向到file文件当中。</p>
+<p>$ls –l &gt; file</p>
+</blockquote>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030094311466.png" srcset="/img/loading.gif" lazyload alt="image-20211030094311466"></p>
+<p>另一 种实现重定向的方法是使用管道(|)，它将一条命令的输出发送到另一条命令的输入。</p>
+<blockquote>
+<p>例：将文件junk作为信件的内容，给自己发个mail</p>
+<p>$cat junk|mail 用户名</p>
+</blockquote>
+<h4 id="3-管道及tee"><a href="#3-管道及tee" class="headerlink" title="3. 管道及tee"></a>3. 管道及tee</h4><p>管道操作符将一条命令的输出定向到另一条命令的输入，而不是定向到终端或文件。</p>
+<blockquote>
+<p> 例：使用一个管道操作来计算当前目录中的文件数目</p>
+<p> $ls | wc -w</p>
+</blockquote>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030100427858.png" srcset="/img/loading.gif" lazyload alt="image-20211030100427858"></p>
+<p>tee命令作用可以用字母T来形象地表示。它把输出的一个副本输送到标准输出，另一个副本拷贝到相应的文件中。</p>
+<blockquote>
+<p>例：将上述命令的结果同时输出到文件junk当中<br>$ls | wc –w | tee junk </p>
+</blockquote>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030100611018.png" srcset="/img/loading.gif" lazyload alt="image-20211030100611018"></p>
+<h4 id="4-群命令及续行符"><a href="#4-群命令及续行符" class="headerlink" title="4. 群命令及续行符"></a>4. 群命令及续行符</h4><p>如果希望在成功地执行一个命令之后再执行另一个命令，或者在一个命令失败后再执行另一个命令，&amp;&amp;和||可以完成这样的功能。相应的命令可以是系统命令或shell脚本。</p>
+<p>shell还提供了在当前shell或子shell中执行一组命令的方法，即使用（）和{ }。</p>
+<blockquote>
+<p>例：调用如下命令：显示日期；显示已经登录到系统中的所有用户名；显示当前目录的名称；显示当前目录中的所有文件名。<br>$ date; who; pwd; ls -a<br>这组命令将按顺序执行，不管前一命令是否出错，后一命令继续执行</p>
+</blockquote>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030100659567.png" srcset="/img/loading.gif" lazyload alt="image-20211030100659567"></p>
+<blockquote>
+<p>例：将file1中的内容拷贝到file2当中，如果拷贝成功 ，则回应一个消息。<br>$cp file1 file2 &amp;&amp; echo “cp is successful!”</p>
+</blockquote>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030100841129.png" srcset="/img/loading.gif" lazyload alt="image-20211030100841129"></p>
+<blockquote>
+<p>例：使用||，实现若拷贝操作不成功，则返回一个消息。<br>$cp file3 file1 || echo “cp is failed!”</p>
+</blockquote>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030101131852.png" srcset="/img/loading.gif" lazyload alt="image-20211030101131852"></p>
+<blockquote>
+<p>例：在上面的例子当中，若拷贝失败，则回应一个消息，并给自己发送一封邮件，最后退出。<br>$cp file3 file1 || (echo“cp is failed!”；mail chen ;  exit)</p>
+</blockquote>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030103318759.png" srcset="/img/loading.gif" lazyload alt="image-20211030103318759"></p>
+<h4 id="5-find命令"><a href="#5-find命令" class="headerlink" title="5. find命令"></a>5. find命令</h4><p>find是一个非常有效的工具，它可以遍历当前目录甚至于整个文件系统来查找某些文件或目录。</p>
+<p>find命令的一般形式为：find pathname -options [-print – exec –ok]</p>
+<ul>
+<li>pathname：find命令所查找的目录路径。</li>
+<li>-print：find命令将匹配的文件输出到标准输出。</li>
+<li>-exec：find命令对匹配的文件执行该参数所给出的shell命令。</li>
+<li>-ok 和- exec的作用相同，只不过在执行每一个命<br>令之前，都会给出提示，让用户来确定是否执行</li>
+</ul>
+<blockquote>
+<p>例：在你的用户主目录中查找所有以字母s开头的件名。而后，对它们自动执行ls –l命令<br>$ find ~ -name “s*” -type f -exec ls -l {} \；</p>
+</blockquote>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030104212448.png" srcset="/img/loading.gif" lazyload alt="image-20211030104212448"></p>
+<blockquote>
+<p>例：重复上一步的查找。不同的是，对查找的文件名执行ls –l命令时，采用与用户进行交互的方式。<br>$ find ~ -name “s*” -type f -ok ls -l {} \；</p>
+</blockquote>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030104507621.png" srcset="/img/loading.gif" lazyload alt="image-20211030104507621"></p>
+<blockquote>
+<p>例：在/usr目录中，查找所有用户zino拥有的文件。而后，计算出这些文件的个数。并将所有的错误信息重定向到一个名为errfile的文件中。<br>$ find /usr/ -user zino -print 2&gt; errfile | wc -l</p>
+</blockquote>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030104831707.png" srcset="/img/loading.gif" lazyload alt="image-20211030104831707"></p>
+<h4 id="6-vi编辑器"><a href="#6-vi编辑器" class="headerlink" title="6. vi编辑器"></a>6. vi编辑器</h4><p>vi编辑器是UNIX的强有力的文本文件编辑工具，利用它可以建立、修改文本文件。</p>
+<h5 id="1-vi编辑器的进入："><a href="#1-vi编辑器的进入：" class="headerlink" title="(1) vi编辑器的进入："></a>(1) vi编辑器的进入：</h5><p>vi 文件名(自动进入命令方式)。</p>
+<img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030105126128.png" srcset="/img/loading.gif" lazyload alt="image-20211030105126128" style="zoom: 80%;">
+
+<h5 id="2-vi编辑器的退出："><a href="#2-vi编辑器的退出：" class="headerlink" title="(2) vi编辑器的退出："></a>(2) vi编辑器的退出：</h5><p>在指令模式下键入:q，:q!，:wq或:x(注意:号), 就会退出vi。其中:wq和:x是存盘退出，而:q是直接退出。</p>
+<img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030105205014.png" srcset="/img/loading.gif" lazyload alt="image-20211030105205014" style="zoom:80%;">
+
+<h5 id="3-基本编辑指令"><a href="#3-基本编辑指令" class="headerlink" title="(3) 基本编辑指令"></a>(3) 基本编辑指令</h5><ul>
+<li><p>新增 (append)</p>
+<ul>
+<li>a ：从光标所在位置后面开始新增资料。</li>
+<li>A： 从光标所在列最后面的地方开始新增加资料</li>
+</ul>
+</li>
+<li><p>插入 (insert)</p>
+<ul>
+<li>i： 从光标所在位置前面开始插入资料。</li>
+<li>I ：从光标所在列的第一个非空白字元前面开始插入资料。</li>
+</ul>
+</li>
+<li><p>开始 (open)</p>
+<ul>
+<li>o ：在光标所在列下新增一列并进入输入模式。</li>
+<li>O: 在光标所在列上方新增一列并进入输入模式。</li>
+<li>x： 删除光标所在字符。</li>
+<li>dd ：删除光标所在的列。</li>
+<li>r ：修改光标所在字元，r 后接著要修正的字符。</li>
+<li>R：进入取替换状态，新增文字会覆盖原先文字，直到按[ESC] 回到指令模式下为止。</li>
+<li>s： 删除光标所在字元，并进入输入模式。</li>
+<li>S： 删除光标所在的列，并进入输入模式。</li>
+</ul>
+</li>
+</ul>
+<h4 id="7-grep命令"><a href="#7-grep命令" class="headerlink" title="7. grep命令"></a>7. grep命令</h4><p>grep命令从指定的输入文件中查找与指定的正则表达式相匹配的行。默认情况下，grep命令将输出所找到<br>的匹配行。</p>
+<p>grep命令的一般形式如下：grep [options] [regular-expression] [file1, file2, …]</p>
+<p>其中，options指定grep命令的各种选项，regularexpression指定用来查找的正则表达式，file1，file2，…等参数是要查找的输入文件名。在最简单的情况下，用来查找的正则表达式可以是简单的字符串。</p>
+<blockquote>
+<p>例：在文件/etc/passwd中，找出所有以nm开头的用户名所在的文本行。<br>$ grep ‘^nm’ /etc/passwd</p>
+</blockquote>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030105817077.png" srcset="/img/loading.gif" lazyload alt="image-20211030105817077"></p>
+<blockquote>
+<p>例：在文件/etc/passwd中，找出所有以nologin结尾的文本行。<br>$grep ‘nologin$’ /etc/passwd</p>
+</blockquote>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030105940431.png" srcset="/img/loading.gif" lazyload alt="image-20211030105940431"></p>
+<blockquote>
+<p>例：在文件/etc/passwd中，找出所有包含root的文体行，并将输出重定向到passwd.out文件当中<br>$grep ‘root’ /etc/passwd &gt; passwd</p>
+</blockquote>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030110907325.png" srcset="/img/loading.gif" lazyload alt="image-20211030110907325"></p>
+<h4 id="8-sort命令"><a href="#8-sort命令" class="headerlink" title="8. sort命令"></a>8. sort命令</h4><p>sort命令的功能是对文件中的各行进行排序，并结果显示在标准输出上。如不指定输入文件或使用“-”，则表示排序内容来自标准输入。</p>
+<p>sort 命令的一般形式为：sort [options] file</p>
+<blockquote>
+<p>例：以字母顺序显示/etc/passwd文件的内容。然后，以逆序显示其内容。<br>$ sort /etc/passwd<br>$ sort -r /etc/passwd</p>
+</blockquote>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030111144737.png" srcset="/img/loading.gif" lazyload alt="image-20211030111144737"></p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030111139595.png" srcset="/img/loading.gif" lazyload alt="image-20211030111139595"></p>
+<h4 id="9-head命令与tail命令"><a href="#9-head命令与tail命令" class="headerlink" title="9. head命令与tail命令"></a>9. head命令与tail命令</h4><blockquote>
+<p>例： 显示/etc/passwd文件的前10行的内容<br>$ head -10 /etc/passwd</p>
+</blockquote>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030111210783.png" srcset="/img/loading.gif" lazyload alt="image-20211030111210783"></p>
+<blockquote>
+<p>例：显示/etc/passwd文件的前5行的内容<br>$ head -5 /etc/passwd</p>
+</blockquote>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030111238931.png" srcset="/img/loading.gif" lazyload alt="image-20211030111238931"></p>
+<blockquote>
+<p>例：显示/etc/passwd文件的后10行的内容<br>$ tail -10 /etc/passwd</p>
+</blockquote>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030111258622.png" srcset="/img/loading.gif" lazyload alt="image-20211030111258622"></p>
+<h2 id="实验5-控制进程"><a href="#实验5-控制进程" class="headerlink" title="实验5 控制进程"></a>实验5 控制进程</h2><h3 id="一、实验目的-1"><a href="#一、实验目的-1" class="headerlink" title="一、实验目的"></a>一、实验目的</h3><ul>
+<li>熟悉进程的操作与控制</li>
+<li>掌握使用linux命令管理和操作进程的方法</li>
+</ul>
+<h3 id="二、实验要求-1"><a href="#二、实验要求-1" class="headerlink" title="二、实验要求"></a>二、实验要求</h3><ul>
+<li>使用ps与jobs命令监视进程</li>
+<li>使用kill与jobs命令控制进程</li>
+<li>显示当前进程的ID</li>
+</ul>
+<h3 id="三、实验预备知识-1"><a href="#三、实验预备知识-1" class="headerlink" title="三、实验预备知识"></a>三、实验预备知识</h3><h4 id="1、多用户"><a href="#1、多用户" class="headerlink" title="1、多用户"></a>1、多用户</h4><p>LINUX操作系统的一个优点就是，它完全是作为一个多用户的系统设计的，LINUX操作系统提供了分时操作功能。多用户功能，不仅仅在于同时为多个用户提供计算支持，它还应包括为系统中的各个用户的数据提供保护方案。在多用户的支持下，用户们可以在同一台计算机上同时进行不同的操作，还可以同时协调完成同一任务。</p>
+<h4 id="2、多任务"><a href="#2、多任务" class="headerlink" title="2、多任务"></a>2、多任务</h4><p>多任务是指在同一时间内可以同时启动多个程序，各个程序同时运行，协调地使用系统资源。多任务的实现需要由操作系统来支持，不同程序的运行需要由操作系统来调度。从多任务实现的角度来说，多任务分为两类：协作式多任务和抢占式多任务。</p>
+<h4 id="3、进程"><a href="#3、进程" class="headerlink" title="3、进程"></a>3、进程</h4><p>进程是操作系统中可以独立调度的单元，每个执行的任务都成为进程，可以看作是程序的一次执行</p>
+<p>程序和进程的概念差别在于：程序是一些数据和指令的集合，它通常是以文件的形式存在，并且一旦程序生成后，除非删除它，否则它将一直存在。而进程是一个动态的概念，它是程序的一次执行。从系统的角度来说，进程是操作系统用于调度的基本单位，进程是可以独立拥有系统资源的单位。它具有几个特性：并行性、异步性、互斥性。</p>
+<h4 id="4、作业"><a href="#4、作业" class="headerlink" title="4、作业"></a>4、作业</h4><p>作业（job）这个概念最早出现在批处理系统中。作业是用户向计算机系统提交一项工作的基本单位，是用户在一次事务处理或计算过程中要求计算机所做工作的总和。</p>
+<h4 id="5、进程和作业"><a href="#5、进程和作业" class="headerlink" title="5、进程和作业"></a>5、进程和作业</h4><p>作业是用户向计算机系统提交一项工作的基本单位，是用户在一次事务处理或计算过程中要求计算机所做工作的总和，是描述用户向系统提交工作任务的实体单位 。进程是一个具有一定独立功能的程序关于某个数据集合的一次运行活动，是操作系统分配资源和进行调度的基本单位，是系统完成工作任务时程序执行的实体单位。</p>
+<h4 id="6、前台和后台"><a href="#6、前台和后台" class="headerlink" title="6、前台和后台"></a>6、前台和后台</h4><p>前台进程是指正在对它进行交互操作的进程——它从键盘接收输入，并将输出送往屏幕（当然，用户可以对输入输出进行重新定向）。有一些进程需要很长时间才能结束，并且运行起来很单调乏味。编译程序就是一个这样的进程。在后台运行它们就可以了。</p>
+<h4 id="7、进程状态及转换"><a href="#7、进程状态及转换" class="headerlink" title="7、进程状态及转换"></a>7、进程状态及转换</h4><h5 id="⑴-进程的基本状态"><a href="#⑴-进程的基本状态" class="headerlink" title="⑴ 进程的基本状态"></a>⑴ 进程的基本状态</h5><p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030112916303.png" srcset="/img/loading.gif" lazyload alt="image-20211030112916303"></p>
+<h5 id="⑵-linux系统进程状态"><a href="#⑵-linux系统进程状态" class="headerlink" title="⑵ linux系统进程状态"></a>⑵ linux系统进程状态</h5><p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030112940312.png" srcset="/img/loading.gif" lazyload alt="image-20211030112940312"></p>
+<h4 id="8、父子进程"><a href="#8、父子进程" class="headerlink" title="8、父子进程"></a>8、父子进程</h4><p>进程在其执行过程中，能通过系统调用创建多个新进程。创建进程成为父进程，而新进程称为该进程的子进程。</p>
+<h4 id="9、命令简介"><a href="#9、命令简介" class="headerlink" title="9、命令简介"></a>9、命令简介</h4><h5 id="⑴-Ps（Process-Status）"><a href="#⑴-Ps（Process-Status）" class="headerlink" title="⑴ Ps（Process Status）"></a>⑴ Ps（Process Status）</h5><p>查看目前的系统中有哪些进程正在执行，以及它们的执行情况。<br>语法：ps [任选参数]<br>常用参数:<br>ps或ps -x 查看系统中，属于自己的进程。<br>ps -au 查看系统中，所有用户的进程。<br>ps -aux 查看系统中，包含系统内部的及所有用户的进程。</p>
+<h5 id="⑵-top"><a href="#⑵-top" class="headerlink" title="⑵ top"></a>⑵ top</h5><p>动态显示进程，实时监测进程状态。<br>常用操作：<br>q：退出top命令。<br>m：切换显示内存信息。<br>t：切换显示进程和CPU状态信息。<br>c：切换显示命令名称和完整命令行。<br>W：将当前设置写入~/.toprc文件中。这是写top配置文件的推荐方法。</p>
+<h5 id="⑶-kill"><a href="#⑶-kill" class="headerlink" title="⑶ kill"></a>⑶ kill</h5><p>Kill命令可以传送的信号有很多种，但以SIGTERM（15）或SIGKILL（9）居多，它们都是用来结束进程执行的。<br>语法：kill [-9] PID<br>PID：利用ps 命令所查出的进程号。<br>例如:<br>kill 456或kill -9 456 终止进程号为456 的进程。<br>语法：kill %n<br>n：利用jobs命令查看出的后台作业号<br>结束或终止后台中的进程</p>
+<h5 id="⑷-amp"><a href="#⑷-amp" class="headerlink" title="⑷ &amp;"></a>⑷ &amp;</h5><p>在后台执行进程的方式<br>语法：命令&amp;</p>
+<h5 id="⑸-jobs"><a href="#⑸-jobs" class="headerlink" title="⑸ jobs"></a>⑸ jobs</h5><p>显示当前会话的作业状态。<br>语法<br>jobs [ -l | -n | -p ] [ JobID … ]</p>
+<h5 id="⑹-外壳变量"><a href="#⑹-外壳变量" class="headerlink" title="⑹ 外壳变量"></a>⑹ 外壳变量</h5><p>查看外壳变量的设定值<br>语法：set 查看所有外壳变量的设定值。<br>语法：echo $变量名显示指定的外壳变量的设定值。</p>
+<p>设定外壳变量<br>语法：set var = value<br>删除外壳变量<br>语法：unset var</p>
+<h5 id="⑺-查看系统中的用户"><a href="#⑺-查看系统中的用户" class="headerlink" title="⑺ 查看系统中的用户"></a>⑺ 查看系统中的用户</h5><p>Who命令主要用于查看当前登录的用户情况。<br>语法： who [-imqsuwHT][- -count][- -heading][- -help][- -<br>message][- -mesg][- -version][- -writable][file][am i]<br>⑻查看当前系统上所有工作站的用户<br>语法: rusers<br>按Ctrl+D&gt; 结束</p>
+<h3 id="四、实验内容-1"><a href="#四、实验内容-1" class="headerlink" title="四、实验内容"></a>四、实验内容</h3><h4 id="1-进程的结构"><a href="#1-进程的结构" class="headerlink" title="1. 进程的结构"></a>1. 进程的结构</h4><p><strong>(1) 登录进程系统，显示当前的进程ID</strong></p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030125913051.png" srcset="/img/loading.gif" lazyload alt="image-20211030125913051"></p>
+<p><strong>(2) 创建一个子shell</strong></p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030130010739.png" srcset="/img/loading.gif" lazyload alt="image-20211030130010739"></p>
+<p><strong>(3) 执行<code>ls -R / &gt; outfile2 2&gt;&gt; errfile &amp;</code>命令后，立即再运行一个命令，列出你的所有正在运行的进程。</strong></p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030130949729.png" srcset="/img/loading.gif" lazyload alt="image-20211030130949729"></p>
+<p><strong>(4) 使用exit命令，中止你的子shell进程。如果再次使用exit命令，退出你的登录shell，此时，发生了什么？</strong></p>
+<p>一次exit后回到用户，连续用两次exit后终端关闭。</p>
+<p><strong>(5) 显示出当前进程环境中的所有变量</strong></p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030131133059.png" srcset="/img/loading.gif" lazyload alt="image-20211030131133059"></p>
+<p><strong>(6) 创建一个变量x，并将它的值赋为10,查看变量x的值,再次列出你的当前进程环境中的所有变量</strong></p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030131337702.png" srcset="/img/loading.gif" lazyload alt="image-20211030131337702"></p>
+<p>我们发现x=10出现在了环境变量中</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030131444720.png" srcset="/img/loading.gif" lazyload alt="image-20211030131444720"></p>
+<p><strong>(7) 创建一个子shell。查看子shell中变量x的值。它的值是多少？列出子shell中所有的当前变量，有变量x吗？</strong></p>
+<p>子shell中变量x值为空，子shell中没有变量x</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030132032214.png" srcset="/img/loading.gif" lazyload alt="image-20211030132032214"></p>
+<p><strong>(8) 返回到父进程。将变量x的值传递给子进程。创建一个子shell，并且查看变量x的值。</strong></p>
+<p>子shell中变量x变成了10</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030132658588.png" srcset="/img/loading.gif" lazyload alt="image-20211030132658588"></p>
+<p><strong>(9) 在子shell中将200赋给变量x。查看变量的值是否已经改变了</strong></p>
+<p>变成了200</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030132753073.png" srcset="/img/loading.gif" lazyload alt="image-20211030132753073"></p>
+<p><strong>(10) 回到父进程中。查看当前环境中，变量x的值。子shell中对变量x的值的改变，上传到了父shell中吗</strong></p>
+<p>父进程仍然为10， 子shell对变量x的改变没有上传到父shell。</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030132838620.png" srcset="/img/loading.gif" lazyload alt="image-20211030132838620"></p>
+<p><strong>(11) 创建一个shell脚本，将其命名为sc1，它的内容应是：pwd ; cd / ; pwd</strong></p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030133043339.png" srcset="/img/loading.gif" lazyload alt="image-20211030133043339"></p>
+<p><strong>(12) 将文件sc1设置成可执行，而后运行该文件。你现在处于哪个目录中呢？为什么？</strong></p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030133355098.png" srcset="/img/loading.gif" lazyload alt="image-20211030133355098"></p>
+<p>依旧在当前目录</p>
+<p>因为用./方式运行脚本，就相当于启动了一个子进程，在 子进程里进入了根目录，但是当前进程仍在当前目录，脚本执行完的时候子进程结束了 ，会回到当前进程，也就是回到了当前目录。</p>
+<p> <strong>(13) 创建另一个名为sc2的shell脚本。它的内容是：var1=hello;var2=$LOGNAME;export var1 var2</strong> </p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030133517973.png" srcset="/img/loading.gif" lazyload alt="image-20211030133517973"></p>
+<p><strong>(14) 将文件sc2设置成可执行，而后运行该文件。运行结束后，查看变量var1与var2的值。var1与var2的值分别为多少？为什么？</strong></p>
+<p>值为空</p>
+<p>因为用./方式运行脚本，就相当于启动了一个子进程，在脚本里设置的环境变量只在这个子进程里有效，脚本执行完的时候子进程结束了 脚本里的环境变量以及别的变量都会消失。</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030133653527.png" srcset="/img/loading.gif" lazyload alt="image-20211030133653527"></p>
+<p><strong>(15) 再次运行文件sc2。 此次，使用’.’命令，强迫该文件在当前shell中运行。运行结束后，查看变量var1与var2的值。现在var1与var2的值分别为多少？为什么？</strong></p>
+<p>. sc2会强制该文件在当前shell执行，所以设置的变量仍在当前shell进程。</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030133737229.png" srcset="/img/loading.gif" lazyload alt="image-20211030133737229"></p>
+<h4 id="2-作业控制"><a href="#2-作业控制" class="headerlink" title="2. 作业控制"></a>2. 作业控制</h4><p><strong>(1) 在前台执行命令ls –R / &gt; outfile 2&gt; errfile</strong></p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030135325815.png" srcset="/img/loading.gif" lazyload alt="image-20211030135325815"></p>
+<p><strong>(2) 暂停这个你刚刚启动的作业</strong></p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030135339362.png" srcset="/img/loading.gif" lazyload alt="image-20211030135339362"></p>
+<p><strong>(3) 将上面暂停的作业转至后台继续运行</strong></p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030135402168.png" srcset="/img/loading.gif" lazyload alt="image-20211030135402168"></p>
+<p><strong>(4) 把这个作业转到前台来</strong></p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030135432502.png" srcset="/img/loading.gif" lazyload alt="image-20211030135432502"></p>
+<p><strong>(5) 当ls命令执行结束时，在后台重新启动它。显示出进程的ID，而后退出系统</strong></p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030140208832.png" srcset="/img/loading.gif" lazyload alt="image-20211030140208832"></p>
+<p><strong>(6) 重新登录进来，查看该后台进程是否仍在运行</strong></p>
+<p>没有在继续执行</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030140339679.png" srcset="/img/loading.gif" lazyload alt="image-20211030140339679"></p>
+<p><strong>(7) 创建一个包含如下内容的shell脚本文件sc3</strong></p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030142215744.png" srcset="/img/loading.gif" lazyload alt="image-20211030142215744"></p>
+<p><strong>将它置为可执行。使用nohup命令运行该文件，并将其放在后台运行（将输出重定向到sc3.out，将错误输出重定向到sc3err）。然后退出系统。</strong></p>
+<p>用ps打印当前正在执行的进程，记下进程号，然后关闭</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030143202728.png" srcset="/img/loading.gif" lazyload alt="image-20211030143202728"></p>
+<p><strong>(8) 再次登录进来，用top查看进程是否仍在运行</strong></p>
+<p>用top -p 12062查看指定的sleep进程发现进程仍在运行</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030143224175.png" srcset="/img/loading.gif" lazyload alt="image-20211030143224175"></p>
+<p><strong>(9) 进程完成后，显示输出文件outfile的内容</strong></p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030142118969.png" srcset="/img/loading.gif" lazyload alt="image-20211030142118969"></p>
+<p>文件过大，无法完全显示</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030142054634.png" srcset="/img/loading.gif" lazyload alt="image-20211030142054634"></p>
+<h4 id="3-结束一个进程"><a href="#3-结束一个进程" class="headerlink" title="3. 结束一个进程"></a>3. 结束一个进程</h4><p><strong>(1) 使用ls –R / 命令（将错误重定向，将输出重定向），在后台启动这个运行时间很长的作业。请记录该后台进程的ID号</strong></p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030144817392.png" srcset="/img/loading.gif" lazyload alt="image-20211030144817392"></p>
+<p><strong>(2) 在知道进程ID的情况下，杀死这个进程。确认你已经杀死了该进程</strong><br><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030144834597.png" srcset="/img/loading.gif" lazyload alt="image-20211030144834597"></p>
+<h4 id="4-查看用户信息"><a href="#4-查看用户信息" class="headerlink" title="4. 查看用户信息"></a>4. 查看用户信息</h4><p><strong>(1) 查看目前在系统中登录的所有用户清单</strong><br><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030145609431.png" srcset="/img/loading.gif" lazyload alt="image-20211030145609431"><br><strong>(2) 显示登陆者信息</strong><br><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030145623590.png" srcset="/img/loading.gif" lazyload alt="image-20211030145623590"></p>
+<h2 id="实验6-C编程和调试"><a href="#实验6-C编程和调试" class="headerlink" title="实验6 C编程和调试"></a>实验6 C编程和调试</h2><h3 id="一、实验目的-2"><a href="#一、实验目的-2" class="headerlink" title="一、实验目的"></a>一、实验目的</h3><ul>
+<li>使用户熟悉C编程工具gcc、gdb、make</li>
+<li>熟练掌握gcc、gdb、make ，为后续项目作准备</li>
+</ul>
+<h3 id="二、实验要求-2"><a href="#二、实验要求-2" class="headerlink" title="二、实验要求"></a>二、实验要求</h3><ul>
+<li>熟悉gcc编译四阶段，习惯gcc界面与查错，用gcc编译一个示例程序。</li>
+<li>熟悉gdb常见调试命令，用gdb调试一个示例程序，熟悉调试环境。</li>
+<li>熟悉make和makefile规则，通过查看一个示例程序makefile，学会用makefile管理自己的项目。</li>
+</ul>
+<h3 id="三、实验预备知识-2"><a href="#三、实验预备知识-2" class="headerlink" title="三、实验预备知识"></a>三、实验预备知识</h3><h4 id="1-Gcc"><a href="#1-Gcc" class="headerlink" title="1. Gcc"></a>1. Gcc</h4><p>GNU C编译器（GCC）是一个在Unix或linux等系统上运行的功能强大的编译器，主要用于对C/C++/Object C等语言的编译。</p>
+<h5 id="1-GCC提供的各种程序以及各个头文件的位置"><a href="#1-GCC提供的各种程序以及各个头文件的位置" class="headerlink" title="(1) GCC提供的各种程序以及各个头文件的位置"></a>(1) GCC提供的各种程序以及各个头文件的位置</h5><ul>
+<li>/usr/lib/gcc-lib/target/version/及其子目录 ，大部分的编译器都被放在这个地方 。</li>
+<li>/usr/bin/gcc 这里装的是编译器的驱动程序。</li>
+<li>/lib与/usr/lib 这两个目录与另外的一些目录都是本地系统的程序库目录。</li>
+<li>/usr/include/及其子目录 这些目录下的头文件大部分都是由libe套件（libe binary package）所提供的。</li>
+</ul>
+<h5 id="2-GCC用法"><a href="#2-GCC用法" class="headerlink" title="(2) GCC用法"></a>(2) GCC用法</h5><p>使用GCC时通常在其后面跟上一些编译选项以及要编译的文件名，以下给出的是GCC的基本用法：gcc [option] [filename]</p>
+<h5 id="3-GCC的主要选项"><a href="#3-GCC的主要选项" class="headerlink" title="(3) GCC的主要选项"></a>(3) GCC的主要选项</h5><ul>
+<li>-x language 指定使用的语言（c、c++或汇编）；</li>
+<li>-c 只对文件进行编译和汇编，但不连接；</li>
+<li>-S 只对文件进行编译，但不汇编和连接；</li>
+<li>-E 只对文件进行预处理，但不编译、汇编和连接；</li>
+<li>-O[file1] file2 将文件file2编译成可执行文件file1;</li>
+<li>-l library 用来指定所使用的库文件；</li>
+<li>-I directory 为include文件的搜索指定目录；</li>
+<li>-W 禁止警告信息</li>
+<li>-pedantic 严格要求符合ANSI标准；</li>
+<li>-Wall 显示附加的警告信息。</li>
+<li>-g 显示排错信息以用于gdb；</li>
+<li>-p 产生prof所需的信息；</li>
+<li>-pg 产生gprof 所使用的信息；</li>
+</ul>
+<h4 id="2-Gdb"><a href="#2-Gdb" class="headerlink" title="2. Gdb"></a>2. Gdb</h4><p>gdb是一个用来调试c和c++程序的功能比较强大的调试器。</p>
+<h5 id="1-在gdb中有关调试过程中显示数据的命令有以下几条"><a href="#1-在gdb中有关调试过程中显示数据的命令有以下几条" class="headerlink" title="(1) 在gdb中有关调试过程中显示数据的命令有以下几条"></a>(1) 在gdb中有关调试过程中显示数据的命令有以下几条</h5><ul>
+<li>display命令，用来显示一些表达式的值。</li>
+<li>info display命令，用来显示当前所有的要显示值的表达式的有关情况。</li>
+<li>delete display命令 用来删除一个要显示值的表达式 。</li>
+<li>disable display 使一个要显示值的表达式暂时无效，但并不删除该表达式的显示。</li>
+<li>enable display 它与disable display命令相反，使显示值被屏蔽的表达式恢复显示 。</li>
+<li>undisplay 这个命令用来结束某个表达式值的显示，它的功能和delete display基本一致 。</li>
+<li>whatis 用来显示某个表达式的数据类型。</li>
+<li>set命令 用来为变量赋值。</li>
+</ul>
+<h5 id="2-gdb中有关文件的命令"><a href="#2-gdb中有关文件的命令" class="headerlink" title="(2) gdb中有关文件的命令"></a>(2) gdb中有关文件的命令</h5><ul>
+<li>add-shared-symbol-files 用来从动态的连接映射的共享目标文件中装入符号表。</li>
+<li>add-symbol-file 用来从已经动态装入的文件中装入符号表。</li>
+<li>cd 用来改变当前工作目录，和shell里的cd命令是一样的。</li>
+<li>core-file 使某个文件成为core dump，从而可以检验内存和寄存器。</li>
+<li>directory 用来向源文件搜索路径中增加一个目录。</li>
+<li>pwd pwd命令和shell中的pwd命令的功能是一样的，二者都是用来显示当前工作路径的。</li>
+</ul>
+<h5 id="3-gdb中有关程序运行的命令"><a href="#3-gdb中有关程序运行的命令" class="headerlink" title="(3) gdb中有关程序运行的命令"></a>(3) gdb中有关程序运行的命令</h5><ul>
+<li>cont cont命令和continue命令的功能是一样的，它使程序在信号发生后或是停在断点之后再继续运行。</li>
+<li>handle 用来对信号设置处理函数。</li>
+<li>jump 指定程序开始调试的指令或地址。</li>
+<li>kill kill命令用来结束当前程序的调试。</li>
+<li>next是用来继续程序的运行。</li>
+<li>nexti 用来单步执行一条指令的。</li>
+<li>step用来执行一条语句。</li>
+<li>stepi 用来执行一条指令。</li>
+</ul>
+<h4 id="3-make"><a href="#3-make" class="headerlink" title="3. make"></a>3. make</h4><p>make命令通过makefile文件来描述源程序之间的相互关系并自动维护编译工作。<br>make命令本身可带有四种参数：标志、宏定义、描述文件名和目标文件名。</p>
+<p>其标准形式为：make [flags] [macro definitions] [targets]。</p>
+<h3 id="四、实验内容-2"><a href="#四、实验内容-2" class="headerlink" title="四、实验内容"></a>四、实验内容</h3><h4 id="1-Gcc-1"><a href="#1-Gcc-1" class="headerlink" title="1. Gcc"></a>1. Gcc</h4><p><strong>(1) 用熟悉的编辑器输入清单1所示的代码:</strong></p>
+<p>清单1：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">//hello.c</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">printf</span> (<span class="hljs-string">&quot;Hello world, Linux programming!\n&quot;</span>);<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>然后执行下面的命令编译和运行这段程序：</p>
+<p>$ gcc hello.c -o hello</p>
+<p>$./hello</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030151540494.png" srcset="/img/loading.gif" lazyload alt="image-20211030151540494"><br>使用GCC编译程序时，编译过程可被细分为四个阶段 ：<br>预处理（Pre-Processing） # gcc -E hello.c -o hello.i<br>编译（Compiling） # gcc -c hello.i -o hello.o<br>汇编（Assembling）<br>链接（Linking) # gcc hello.o -o hello</p>
+<p><strong>(2) 使用gcc发现程序错误</strong></p>
+<p>清单2：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">//illcode.c</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">long</span> <span class="hljs-keyword">long</span> <span class="hljs-keyword">int</span> var = <span class="hljs-number">1</span>;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;It is not standard C code!\n&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>当GCC在编译不符合ANSI/ISO C语言标准的源代码时，如果加上了-pedantic选项，那么使用了扩展语法的地方将产生相应的警告信息：</p>
+<p>$ gcc -pedantic illcode.c -o illcode</p>
+<p>illcode.c: In function ‘main’:<br>illcode.c:9: ISO C89 does not support ‘long long’<br>illcode.c:8: return type of ‘main’ is not ‘int’</p>
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211030152031454.png" srcset="/img/loading.gif" lazyload alt="image-20211030152031454"></p>
+<h4 id="2-Gdb-1"><a href="#2-Gdb-1" class="headerlink" title="2. Gdb"></a>2. Gdb</h4><p>下面用一个实例介绍怎样用gdb调试程序。程序清单见教程。<br>用gcc编译它：gcc -g -o test test.c</p>
+<p>程序执行时显示如下结果：<br>The string is hello there<br>The string printed backward is</p>
+<p>输出的第一行是正确的，但第二行打印出并不是我们所期望的。my_print2 函数没有正常工作。现在，让我们用gdb看看问题究竟出在哪儿，先输入如下命令：<br>gdb greeting。</p>
+<p>如果输入命令时忘了把要调试的程序作为参数传给gdb，可以在gdb提示符下用file命令加载它：(gdb) file greeting。这个命令加载greeting可执行文件，就像在gdb命令行里加载它一样</p>
+<p>选择自己的test.c文件调试</p>
+<p>-g 加入调试信息并进入调试界面：  <img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/clip_image018.png" srcset="/img/loading.gif" lazyload alt="img">  直接运行：  <img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/clip_image020.png" srcset="/img/loading.gif" lazyload alt="img">  加入断点并查看断点：  <img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/clip_image022.png" srcset="/img/loading.gif" lazyload alt="img">  用run执行，并用next查看下一条指令：  <img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/clip_image024.png" srcset="/img/loading.gif" lazyload alt="img">  用step深入函数内部：  <img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/clip_image026.png" srcset="/img/loading.gif" lazyload alt="img">  用list查看函数代码：  <img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/clip_image028.png" srcset="/img/loading.gif" lazyload alt="img">  用delete 1 删除断点并用info break重新查看断点:  <img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/clip_image030.png" srcset="/img/loading.gif" lazyload alt="img">  用print查看某一变量具体的值：  <img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/clip_image032.png" srcset="/img/loading.gif" lazyload alt="img">  用x查看某一内存地址具体的值：  <img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/clip_image034.png" srcset="/img/loading.gif" lazyload alt="img">  用disas反汇编某一函数：  <img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/clip_image036.png" srcset="/img/loading.gif" lazyload alt="img">  <img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/clip_image038.png" srcset="/img/loading.gif" lazyload alt="img">     </p>
+<h4 id="3-make-1"><a href="#3-make-1" class="headerlink" title="3. make"></a>3. make</h4><p>在Linux系统中，专门提供了一个make命令来自动维护目标文件。<br>以下是一个简单的Makefile的简单例子：<br>prog:prog1.o prog2.o<br>gcc prog1.o prog2.o -o prog<br>prog1.o:prog1.c lib.h<br>gcc -c -I. -o prog1.o prog1.c<br>prog2.o:prog2.c<br>gcc -c prog2.c</p>
+<p>测试例子</p>
+<p>makefile</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs makefile"><span class="hljs-section">test: test1.o test2.o </span><br>	gcc -Wall test1.o test2.o -o test<br>    <br><span class="hljs-section">test1.o: test1.c test2.h</span><br>	gcc -c -Wall test1.c -o test1.o<br><br><span class="hljs-section">test2.o: test2.c test2.h</span><br>	gcc -c -Wall test2.c -o test2.o<br><br><span class="hljs-section">clean: </span><br>    rm -rf *.o test<br><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">//test1.h</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&quot;test2.h&quot;</span></span><br> <br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;This is test1!\n&quot;</span>);<br>    PrintTest2();<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">//test2.h</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&quot;test2.h&quot;</span></span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">PrintTest2</span><span class="hljs-params">()</span> </span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;This is test2!\n&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">//test2.h</span><br><br> <span class="hljs-meta">#<span class="hljs-meta-keyword">ifndef</span> TEST2_H_</span><br> <span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> TEST2_H_</span><br> <br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">PrintTest2</span><span class="hljs-params">()</span></span>;<br><br> <span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span><br></code></pre></td></tr></table></figure>
+
+<p><img src="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/image-20211102154641480.png" srcset="/img/loading.gif" lazyload alt="image-20211102154641480"></p>
+<p><strong>#使用缩写的Makefile</strong><br>prog:prog1.o prog2.o<br>gcc prog1.o prog2.o -o $@<br>prog1.o:prog1.c lib.h<br>gcc -c -I. -o $@ $&lt;<br>prog2.o:prog2.c<br>gcc -c $*.c</p>
+<p><strong>#使用缩写和宏的Makefile</strong></p>
+<p>MARCO = prog1.o prog2.o<br>prog:$(MARCO)<br>gcc prog1.o prog2.o -o $@<br>prog1.o:prog1.c lib.h<br>gcc -c -I. -o $@ $&lt;<br>prog2.o:prog2.c<br>gcc -c $*.c</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，著作权归作者所有，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/11/13/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%89%E6%AC%A1%E5%AE%9E%E9%AA%8C%E4%B8%AD%E6%96%AD%E5%A4%84%E7%90%86/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">操作系统实验三-中断处理</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C/">
+                        <span class="hidden-mobile">操作系统实验一</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://zino-wza.github.io/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/';
+          this.page.identifier = '/2021/11/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%AE%9E%E9%AA%8C/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a  rel="nofollow noopener"><span>Copyrights © 2021</span></a> <i class="iconfont icon-love"></i> <a  target="_blank" rel="nofollow noopener"><span>Zino</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d1745c2e21adaa6ae90b93f4f4d22da9";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?d1745c2e21adaa6ae90b93f4f4d22da9";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
