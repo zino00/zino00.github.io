@@ -14,13 +14,29 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="">
+  <meta name="description" content="IDA使用学习中常用快捷键的记录">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-  <title>归档 - Zino&#39;s Blog</title>
+  <title>IDA常用快捷键 - Zino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
 
 
 
@@ -48,7 +64,7 @@
 
 
 <body>
-  <header style="height: 60vh;">
+  <header style="height: 70vh;">
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand"
@@ -142,14 +158,59 @@
 </nav>
 
     <div class="banner" id="banner" parallax=true
-         style="background: url('/img/archive.jpg') no-repeat center center;
+         style="background: url('/img/post.jpg') no-repeat center center;
            background-size: cover;">
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="归档">
+            <span class="h2" id="subtitle" title="IDA常用快捷键">
               
             </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-12-27 23:07" pubdate>
+        2021年12月27日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      422 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      4
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
 
             
           </div>
@@ -162,100 +223,134 @@
 
   <main>
     
-      <div class="container nopadding-x-md">
-        <div class="py-5" id="board"
-          >
-          
-          <div class="container">
-            <div class="row">
-              <div class="col-12 col-md-10 m-auto">
-                
-
-<div class="list-group">
-  <p class="h4">共计 23 篇文章</p>
-  <hr>
-  
-  
-    
       
-      <p class="h5">2021</p>
-    
-    <a href="/2021/12/27/IDA%E5%BF%AB%E6%8D%B7%E9%94%AE/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">IDA常用快捷键</span>
-      <time style="float: right;">12-27</time>
-    </a>
-  
-    
-    <a href="/2021/12/27/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%E6%8A%A5%E5%91%8A/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">恶意样本分析初探</span>
-      <time style="float: right;">12-27</time>
-    </a>
-  
-    
-    <a href="/2021/12/21/AFL%E6%BA%90%E7%A0%81%E6%B3%A8%E9%87%8A/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">AFL源码注释（待完成）</span>
-      <time style="float: right;">12-21</time>
-    </a>
-  
-    
-    <a href="/2021/12/21/VulDeelLocator/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">论文笔记:《VulDeeLocator:A Deep Learning-based Fine-grained Vulnerability Detector》</span>
-      <time style="float: right;">12-21</time>
-    </a>
-  
-    
-    <a href="/2021/12/03/AFL%E5%AD%A6%E4%B9%A0%E5%B0%8F%E8%AE%B0/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">AFL学习小记</span>
-      <time style="float: right;">12-03</time>
-    </a>
-  
-    
-    <a href="/2021/12/03/Anti-fuzzing%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">论文笔记：《FUZZIFICATION:Anti-Fuzzing Techniques》</span>
-      <time style="float: right;">12-03</time>
-    </a>
-  
-    
-    <a href="/2021/12/01/linux%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">linux命令详解 ./configure、make、make install 命令</span>
-      <time style="float: right;">12-01</time>
-    </a>
-  
-    
-    <a href="/2021/12/01/gdb%E8%B0%83%E8%AF%95%E5%92%8Cpwngdb%E7%9A%84%E4%BD%BF%E7%94%A8/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">pwndbg的安装和gdb使用</span>
-      <time style="float: right;">12-01</time>
-    </a>
-  
-    
-    <a href="/2021/11/30/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85%E9%97%AE%E9%A2%98%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">操作系统实验六-生产者消费者问题</span>
-      <time style="float: right;">11-30</time>
-    </a>
-  
-    
-    <a href="/2021/11/30/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">操作系统实验五-银行家算法</span>
-      <time style="float: right;">11-30</time>
-    </a>
-  
-</div>
 
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">IDA常用快捷键</h1>
+            
+            <div class="markdown-body">
+              <h1 id="常用快捷键"><a class="markdownIt-Anchor" href="#常用快捷键"></a> 常用快捷键</h1>
+<p>IDA中的快捷键都是和菜单栏的各个功能选项一一对应的，基本上你只要能在菜单栏上找到某个功能，也就能看到相应的快捷键，这里记录几个常用的：</p>
+<p>a：将数据转换为字符串</p>
+<p>f5：一键反汇编</p>
+<p>esc：回退键，能够倒回上一部操作的视图（只有在反汇编窗口才是这个作用，如果是在其他窗口按下esc，会关闭该窗口）</p>
+<p>shift+f12：可以打开string窗口，一键找出所有的字符串，右击setup，还能对窗口的属性进行设置</p>
+<p>ctrl+w：保存ida数据库</p>
+<p>ctrl+s：选择某个数据段，直接进行跳转</p>
+<p>ctrl+鼠标滚轮：能够调节流程视图的大小</p>
+<p>x：对着某个函数、变量按该快捷键，可以查看它的交叉引用</p>
+<p>g：直接跳转到某个地址</p>
+<p>n：更改变量的名称</p>
+<p>y：更改变量的类型</p>
+<p>/ ：在反编译后伪代码的界面中写下注释</p>
+<p>\：在反编译后伪代码的界面中隐藏/显示变量和函数的类型描述，有时候变量特别多的时候隐藏掉类型描述看起来会轻松很多</p>
+<p>；：在反汇编后的界面中写下注释</p>
+<p>ctrl+shift+w：拍摄IDA快照</p>
+<p>u：undefine，取消定义函数、代码、数据的定义</p>
+<p>H：在数字上按下H键或者右键进行选择，可以将数字转化为十进制：</p>
+<p>B：按下<strong>B键</strong>转换为二进制也是同理。</p>
+<p>c: 将数据段转化成代码</p>
+<p><strong>参考链接</strong></p>
+<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/4205#toc-0">https://xz.aliyun.com/t/4205#toc-0</a></p>
 
-  <nav aria-label="navigation">
-    <span class="pagination" id="pagination">
-      <span class="page-number current">1</span><a class="page-number" href="/archives/2021/page/2/#board">2</a><a class="page-number" href="/archives/2021/page/3/#board">3</a><a class="extend next" rel="next" href="/archives/2021/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
-    </span>
-  </nav>
-
-
-
-
-              </div>
             </div>
-          </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/IDA/">IDA</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E9%80%86%E5%90%91/">逆向</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，著作权归作者所有，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/12/27/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90%E6%8A%A5%E5%91%8A/">
+                        <span class="hidden-mobile">恶意样本分析初探</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://zino00.github.io/2021/12/27/IDA%E5%BF%AB%E6%8D%B7%E9%94%AE/';
+          this.page.identifier = '/2021/12/27/IDA%E5%BF%AB%E6%8D%B7%E9%94%AE/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+              </article>
+            
+          </article>
         </div>
       </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
     
 
     
@@ -369,9 +464,15 @@
 
 
 
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
 
 
 
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
 
 
 
@@ -402,6 +503,13 @@
 
 
 
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.10/dist/katex.min.css" />
+  
 
 
 
