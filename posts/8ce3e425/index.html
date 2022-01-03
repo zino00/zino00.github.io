@@ -240,13 +240,13 @@
 <h2 id="第1章-导论"><a class="markdownIt-Anchor" href="#第1章-导论"></a> 第1章 导论</h2>
 <h3 id="11-操作系统做什么"><a class="markdownIt-Anchor" href="#11-操作系统做什么"></a> 1.1 操作系统做什么</h3>
 <p>计算机系统可以大致分为4个组成部分：计算机硬件、操作系统、系统程序与应用程序和用户。</p>
-<p><img src="/posts/8ce3e425/image-20211114101353468.png" srcset="/img/loading.gif" lazyload alt="image-20211114101353468"></p>
+<p><img src="/8ce3e425image-20211114101353468.png" srcset="/img/loading.gif" lazyload alt="image-20211114101353468"></p>
 <p><strong>定义操作系统</strong>：</p>
 <p>操作系统是一直运行在计算机上的程序（通常称为内核），其他程序则为系统程序和应用程序。</p>
 <h3 id="12-计算机系统组织"><a class="markdownIt-Anchor" href="#12-计算机系统组织"></a> 1.2 计算机系统组织</h3>
 <p><strong>1.2.1 计算机系统操作</strong></p>
 <p><strong>1.2.2 存储结构</strong></p>
-<p><img src="/posts/8ce3e425/image-20211114104118324.png" srcset="/img/loading.gif" lazyload alt="image-20211114104118324"></p>
+<p><img src="/8ce3e425image-20211114104118324.png" srcset="/img/loading.gif" lazyload alt="image-20211114104118324"></p>
 <p><strong>1.2.3 I/O结构</strong></p>
 <h3 id="13-计算机系统体系结构"><a class="markdownIt-Anchor" href="#13-计算机系统体系结构"></a> 1.3 计算机系统体系结构</h3>
 <p><strong>1.3.1 单处理器系统</strong></p>
@@ -354,7 +354,7 @@
 <p><strong>联系</strong>：一个API可能会需要一个或多个系统调用来完成特定功能。通俗点说就是如果这个api需要跟内核打交道就需要系统调用，否则不需要。 程序员调用的是API（API函数），然后通过与系统调用共同完成函数的功能。</p>
 <p>API是一个提供给应用程序的接口，一组函数，是与程序员进行直接交互的。 系统调用则不与程序员进行交互的，它根据API函数，通过一个软中断机制向内核提交请求，以获取内核服务的接口。</p>
 <p>并不是所有的API函数都一一对应一个系统调用。一个API函数可能需要几个系统调用来共同完成函数的功能。一些API函数不需要调用相应的系统调用（因此它所完成的不是内核提供的服务）</p>
-<p><img src="/posts/8ce3e425/image-20211114112604666.png" srcset="/img/loading.gif" lazyload alt="image-20211114112604666"></p>
+<p><img src="/8ce3e425image-20211114112604666.png" srcset="/img/loading.gif" lazyload alt="image-20211114112604666"></p>
 <h3 id="24-系统调用类型"><a class="markdownIt-Anchor" href="#24-系统调用类型"></a> 2.4 系统调用类型</h3>
 <h4 id="241-进程控制"><a class="markdownIt-Anchor" href="#241-进程控制"></a> 2.4.1 进程控制</h4>
 <ul>
@@ -410,8 +410,8 @@
 <h4 id="263-实现"><a class="markdownIt-Anchor" href="#263-实现"></a> 2.6.3 实现</h4>
 <h3 id="27-操作系统结构"><a class="markdownIt-Anchor" href="#27-操作系统结构"></a> 2.7 操作系统结构</h3>
 <h4 id="271-简单结构"><a class="markdownIt-Anchor" href="#271-简单结构"></a> 2.7.1 简单结构</h4>
-<p><img src="/posts/8ce3e425/image-20211114121729295.png" srcset="/img/loading.gif" lazyload alt="image-20211114121729295"></p>
-<p><img src="/posts/8ce3e425/image-20211114121720130.png" srcset="/img/loading.gif" lazyload alt="image-20211114121720130"></p>
+<p><img src="/8ce3e425image-20211114121729295.png" srcset="/img/loading.gif" lazyload alt="image-20211114121729295"></p>
+<p><img src="/8ce3e425image-20211114121720130.png" srcset="/img/loading.gif" lazyload alt="image-20211114121720130"></p>
 <h4 id="272-分层方法"><a class="markdownIt-Anchor" href="#272-分层方法"></a> 2.7.2 分层方法</h4>
 <ul>
 <li>
@@ -421,7 +421,7 @@
 <p>模块化</p>
 </li>
 </ul>
-<p><img src="/posts/8ce3e425/image-20211114122235688.png" srcset="/img/loading.gif" lazyload alt="image-20211114122235688"></p>
+<p><img src="/8ce3e425image-20211114122235688.png" srcset="/img/loading.gif" lazyload alt="image-20211114122235688"></p>
 <ul>
 <li>
 <p>优点</p>
@@ -470,7 +470,7 @@
 <li>比分层系统更为灵活</li>
 <li>比微内核更高效（不需要调用消息传递来通信）</li>
 </ul>
-<p><img src="/posts/8ce3e425/image-20211114122827683.png" srcset="/img/loading.gif" lazyload alt="image-20211114122827683"></p>
+<p><img src="/8ce3e425image-20211114122827683.png" srcset="/img/loading.gif" lazyload alt="image-20211114122827683"></p>
 <h3 id="28-虚拟机"><a class="markdownIt-Anchor" href="#28-虚拟机"></a> 2.8 虚拟机</h3>
 <h4 id="281-实现"><a class="markdownIt-Anchor" href="#281-实现"></a> 2.8.1 实现</h4>
 <h4 id="282-优点"><a class="markdownIt-Anchor" href="#282-优点"></a> 2.8.2 优点</h4>
@@ -596,8 +596,8 @@
 </li>
 </ul>
 <p>进程包括文本段、堆栈段（包括临时数据，如函数参数、返回地址和局部变量）、数据段（包括全局变量）、堆（进程运行时动态分配的内存）</p>
-<p><img src="/posts/8ce3e425/image-20210622073331434.png" srcset="/img/loading.gif" lazyload alt="image-20210622073331434"></p>
-<p><img src="/posts/8ce3e425/image-20211024142834120.png" srcset="/img/loading.gif" lazyload alt="内存中的进程"></p>
+<p><img src="/8ce3e425image-20210622073331434.png" srcset="/img/loading.gif" lazyload alt="image-20210622073331434"></p>
+<p><img src="/8ce3e425image-20211024142834120.png" srcset="/img/loading.gif" lazyload alt="内存中的进程"></p>
 <h4 id="312-进程状态"><a class="markdownIt-Anchor" href="#312-进程状态"></a> 3.1.2 进程状态</h4>
 <p>进程在执行时会改变状态。进程状态在某种程度上是由当前活动所定义的。每个进程可能处于下列状态之一：</p>
 <ul>
@@ -607,11 +607,11 @@
 <li>就绪：进程等待分配处理器。</li>
 <li>终止：进程完成执行。</li>
 </ul>
-<p><img src="/posts/8ce3e425/image-20211024144135058.png" srcset="/img/loading.gif" lazyload alt="image-20211024144135058"></p>
+<p><img src="/8ce3e425image-20211024144135058.png" srcset="/img/loading.gif" lazyload alt="image-20211024144135058"></p>
 <h4 id="313-进程控制块"><a class="markdownIt-Anchor" href="#313-进程控制块"></a> 3.1.3 进程控制块</h4>
 <p>每个进程在操作系统内用进程控制块（process control block, PCB ，也称为任务控制块）来表示。</p>
 <p>图3.3 给出了一个PCB 的例子， 它包含许多与一个特定进程相关的信息。</p>
-<p><img src="/posts/8ce3e425/image-20211024144308211.png" srcset="/img/loading.gif" lazyload alt="image-20211024144308211"></p>
+<p><img src="/8ce3e425image-20211024144308211.png" srcset="/img/loading.gif" lazyload alt="image-20211024144308211"></p>
 <ul>
 <li>进程状态：状态可包括新的、就绪、运行、等待、停止等。</li>
 <li>程序计数器：计数器表示进程要执行的下个指令的地址。</li>
@@ -621,7 +621,7 @@
 <li>记账信息：这类信息包括CPU时间、实际使用时间、时间界限、记账数据、作业或进程数量等。</li>
 <li>I/O状态信息：这类信息包括分配给进程的I/O设备列表、打开的文件列表等。</li>
 </ul>
-<p><img src="/posts/8ce3e425/image-20211024144700188.png" srcset="/img/loading.gif" lazyload alt="image-20211024144700188"></p>
+<p><img src="/8ce3e425image-20211024144700188.png" srcset="/img/loading.gif" lazyload alt="image-20211024144700188"></p>
 <p><strong>PCB的作用</strong></p>
 <ul>
 <li>PCB可唯一标识一个进程</li>
@@ -645,7 +645,7 @@
 <li>进程可能会由于中断而强制释放CPU， 并被放回到就绪队列中。</li>
 </ul>
 <p>对于前两种情况， 进程最终从等待状态切换到就绪态， 并放回到就绪队列中。进程继续这一循环直到终止， 到时它将从所有队列中删除， 其PCB 和资源将得以释放。</p>
-<p><img src="/posts/8ce3e425/image-20211025195355812.png" srcset="/img/loading.gif" lazyload alt="image-20211025195355812"></p>
+<p><img src="/8ce3e425image-20211025195355812.png" srcset="/img/loading.gif" lazyload alt="image-20211025195355812"></p>
 <h4 id="322-调度程序"><a class="markdownIt-Anchor" href="#322-调度程序"></a> 3.2.2 调度程序</h4>
 <p>进程在其生命周期中会在各种调度队列之间迁移。为了调度， 操作系统必须按某种方式从这些队列中选择进程。进程选择是由相应的<strong>调度程序</strong>（ scheduler ）来执行的。</p>
 <p>通常对于批处理系统， 进程更多地是被提交， 而不是马上执行。这些进程被放到大容量存储设备（通常为磁盘〉的缓冲池中，保存在那里以便以后执行。</p>
@@ -653,7 +653,7 @@
 <p><strong>短期调度程序</strong>（ short-term scheduler ）或CPU 调度程序从准备执行的进程中选择进程， 并为之分配CPU。</p>
 <p>这两个调度程序的<strong>主要差别</strong>是它们执行的频率。</p>
 <p><strong>中期调度程序</strong>的核心思想是能将进程从内存（或从CPU 竞争）中移出， 从而降低多道程序设计的程度。之后， 进程能被重新调入内存， 并从中断处继续执行。</p>
-<p><img src="/posts/8ce3e425/image-20211025200346176.png" srcset="/img/loading.gif" lazyload alt="image-20211025200346176"></p>
+<p><img src="/8ce3e425image-20211025200346176.png" srcset="/img/loading.gif" lazyload alt="image-20211025200346176"></p>
 <h4 id="323-上下文切换"><a class="markdownIt-Anchor" href="#323-上下文切换"></a> 3.2.3 上下文切换</h4>
 <p>当发生一个中断时，系统需要保存当前运行在CPU 中进程的上下文， 从而在其处理完后能恢复上下文， 即先中断进程， 之后再继续。</p>
 <p><strong>进程上下文</strong>用进程的PCB 表示， 它包括CPU 寄存器的值、进程状态（见图3.2） 和内存管理信息等。通常，通过执行一个<strong>状态保存</strong>（ state save） 来保存CPU当前状态（不管它是内核模式还是用户模式）， 之后执行一个<strong>状态恢复</strong>（ state restore）重新开始运行。</p>
@@ -677,14 +677,14 @@
 </li>
 </ul>
 <p>进程创建实质上是生成一个PCB</p>
-<p><img src="/posts/8ce3e425/image-20211114152544023.png" srcset="/img/loading.gif" lazyload alt="image-20211114152544023"></p>
+<p><img src="/8ce3e425image-20211114152544023.png" srcset="/img/loading.gif" lazyload alt="image-20211114152544023"></p>
 <p>当进程创建新进程时， 有两种执行可能：<br>
 ①父进程与子进程并发执行。<br>
 ②父进程等待， 直到某个或全部子进程执行完。</p>
 <p>新进程的地址空间也有两种可能：<br>
 ①子进程是父进程的复制品（具有与父进程相同的程序和数据）。<br>
 ②子进程装入另一个新程序。</p>
-<p><img src="/posts/8ce3e425/image-20211025201136927.png" srcset="/img/loading.gif" lazyload alt="image-20211025201136927"></p>
+<p><img src="/8ce3e425image-20211025201136927.png" srcset="/img/loading.gif" lazyload alt="image-20211025201136927"></p>
 <h4 id="332-进程终止"><a class="markdownIt-Anchor" href="#332-进程终止"></a> 3.3.2 进程终止</h4>
 <p><strong>进程终止的过程</strong></p>
 <ul>
@@ -710,7 +710,7 @@
 <p>释放PCB</p>
 </li>
 </ul>
-<p><img src="/posts/8ce3e425/image-20211114152857377.png" srcset="/img/loading.gif" lazyload alt="image-20211114152857377"></p>
+<p><img src="/8ce3e425image-20211114152857377.png" srcset="/img/loading.gif" lazyload alt="image-20211114152857377"></p>
 <p>当进程完成执行最后的语句并使用系统调用exit()请求操作系统删除自身时， 进程终止。这时， 进程可以返回状态值（通常为整数〉到父进程（通过系统调用wait（））。所有进程资源（包括物理和虚拟内存、打开文件和I/O缓冲〉会被操作系统释放。</p>
 <p>在其他情况下也会出现终止。进程通过适当的系统调用（如Win32 中的TerminatePorcess（）） 能终止另一个进程。通常， 只有被终止进程的父进程才能执行这一系统调用。否则， 用户可以任意地终止彼此的作业。</p>
 <h4 id="333-进程阻塞"><a class="markdownIt-Anchor" href="#333-进程阻塞"></a> 3.3.3 进程阻塞</h4>
@@ -752,13 +752,13 @@
 <p><strong>(2) 消息传递</strong></p>
 <p>在消息传递模式中，通过在协作进程间交换消息来实现通信。</p>
 <p>图3.13 给出了这两种模式的对比。</p>
-<p><img src="/posts/8ce3e425/image-20211026154454752.png" srcset="/img/loading.gif" lazyload alt="image-20211026154454752"></p>
+<p><img src="/8ce3e425image-20211026154454752.png" srcset="/img/loading.gif" lazyload alt="image-20211026154454752"></p>
 <h4 id="341-共享内存系统"><a class="markdownIt-Anchor" href="#341-共享内存系统"></a> 3.4.1 共享内存系统</h4>
 <p>采用共享内存的进程间通信需要通信进程建立<strong>共享内存区域</strong>。通常， 一块共享内存区域驻留在生成共享内存段进程的地址空间。其他希望使用这个共享内存段进行通信的进程必须将此放到它们自己的地址空间上。</p>
 <p>采用共享内存是解决生产者一消费者问题方法中的一种。为了允许生产者进程和消费进程能并发执行， 必须要有一个缓冲来被生产者填充并被消费者所使用。此缓冲驻留在生产者进程和消费者进程的共享内存区域内， 当消费者使用一项时， 生产者能产生另一项。生产者和消费者必须同步， 以免消费者消费一个没有生产出来的项。</p>
 <p>可以使用两种缓冲。<strong>无限缓冲</strong>（unbounded-buffer）对缓冲大小没有限制。消费者可能不得不等待新的项， 但生产者总是可以产生新项。有限缓冲（ bounded-buffer）假设缓冲大小固定。对于这种情况， 如果缓冲为空， 那么消费者必须等待：如果缓冲为满， 那么生产者必须等待。</p>
 <p>共享缓冲是通过循环数组和两个逻辑指针来实现的： in 和out。变量in 指向缓冲中下一个空位： out 指向缓冲中的第一个满位。当in==out 时， 缓冲为空： (in+1)%BUFFER_SIZE= out 时，缓冲为满。</p>
-<p><img src="/posts/8ce3e425/image-20211026155644352.png" srcset="/img/loading.gif" lazyload alt="image-20211026155644352"></p>
+<p><img src="/8ce3e425image-20211026155644352.png" srcset="/img/loading.gif" lazyload alt="image-20211026155644352"></p>
 <h4 id="342-消息传递系统"><a class="markdownIt-Anchor" href="#342-消息传递系统"></a> 3.4.2 消息传递系统</h4>
 <p>消息传递提供一种机制以允许进程不必通过共享地址空间来实现通信和同步。</p>
 <p>消息传递工具提供至少两种操作：发送（消息） 和接收（消息） 。</p>
@@ -839,8 +839,8 @@
 <li>无连接（UDP) Socket 使用了DatagramSocket 类。</li>
 <li>最后一种类型是多点传送Socket 类(MulticastSocket class）， 它是DatagramSocket类的子类。多点传送Socket允许数据发送给多个接收者。</li>
 </ul>
-<p><img src="/posts/8ce3e425/image-20211114161059376.png" srcset="/img/loading.gif" lazyload alt="image-20211114161059376"></p>
-<p><img src="/posts/8ce3e425/image-20211114161112895.png" srcset="/img/loading.gif" lazyload alt="image-20211114161112895"></p>
+<p><img src="/8ce3e425image-20211114161059376.png" srcset="/img/loading.gif" lazyload alt="image-20211114161059376"></p>
+<p><img src="/8ce3e425image-20211114161112895.png" srcset="/img/loading.gif" lazyload alt="image-20211114161112895"></p>
 <p>无论一个Socket通信程序的功能多么齐全、程序多么复杂，其基本结构都是一样的，都包括以下四个基本步骤：</p>
 <ol>
 <li>在客户方和服务器方创建Socket/ServerSocket实例。</li>
@@ -849,13 +849,13 @@
 <li>关闭输入/输出流和Socket。//如果网络的一端已经关闭，另一端读到null</li>
 </ol>
 <p>通常，程序员的主要工作是针对所要完成的功能在第3步进行编程，第1、2、4步对所有的通信程序来说几乎都是一样的。</p>
-<p><img src="/posts/8ce3e425/image-20211114162712864.png" srcset="/img/loading.gif" lazyload alt="image-20211114162712864"></p>
-<p><img src="/posts/8ce3e425/image-20211114162726368.png" srcset="/img/loading.gif" lazyload alt="image-20211114162726368"></p>
+<p><img src="/8ce3e425image-20211114162712864.png" srcset="/img/loading.gif" lazyload alt="image-20211114162712864"></p>
+<p><img src="/8ce3e425image-20211114162726368.png" srcset="/img/loading.gif" lazyload alt="image-20211114162726368"></p>
 <h4 id="362-远程过程调用"><a class="markdownIt-Anchor" href="#362-远程过程调用"></a> 3.6.2 远程过程调用</h4>
-<p><img src="/posts/8ce3e425/image-20211114162954112.png" srcset="/img/loading.gif" lazyload alt="image-20211114162954112"></p>
+<p><img src="/8ce3e425image-20211114162954112.png" srcset="/img/loading.gif" lazyload alt="image-20211114162954112"></p>
 <h4 id="363-远程方法调用"><a class="markdownIt-Anchor" href="#363-远程方法调用"></a> 3.6.3 远程方法调用</h4>
 <p>远程方法调用（remote method invocation, RMI） 是一个类似于RPC 的Java 特性。RMI允许线程调用远程对象的方法。如果对象位于不同的JVM 上，那么就认为它是远程的。因此， 远程可能在同一计算机或通过网络连接的主机的不同JVM 上。这种情况如图3.22所示。</p>
-<p><img src="/posts/8ce3e425/image-20211114163017447.png" srcset="/img/loading.gif" lazyload alt="image-20211114163017447"></p>
+<p><img src="/8ce3e425image-20211114163017447.png" srcset="/img/loading.gif" lazyload alt="image-20211114163017447"></p>
 <h3 id="37-小结"><a class="markdownIt-Anchor" href="#37-小结"></a> 3.7 小结</h3>
 <p>进程是执行中的程序。随着进程的执行， 它改变状态。进程状态由进程当前活动所定义。每个进程可处于： <strong>新的、就绪、运行、等待或终止</strong>等状态。每个进程在操作系统内通过自己的**进程控制块（PCB）**来表示。</p>
 <p>当前不在执行的进程会放在某个等待队列中。操作系统有两种主要队列：<strong>I/O请求队列</strong>和<strong>就绪队列</strong>。就绪队列包括所有准备执行并等待CPU的进程。每个进程都有PCB , PCB链接起来就形成了就绪队列。长期（作业）调度通过选择进程来争用CPU。通常， <strong>长期调度</strong>会受资源分配考虑， 尤其是内存管理的影响。<strong>短期调度</strong>从就绪队列中选择进程。操作系统必须为父进程创建子进程提供一种机制。父进程在继续之前可以等待它的子进程终止， 也可以并发执行父进程和子进程。并发执行有许多优点， 例如信息共享、提高运算速度、模块化和便利性等。</p>
@@ -889,7 +889,7 @@ A，对称和非对称通信</p>
 <h2 id="第4章-线程"><a class="markdownIt-Anchor" href="#第4章-线程"></a> 第4章 线程</h2>
 <h3 id="41-概述"><a class="markdownIt-Anchor" href="#41-概述"></a> 4.1 概述</h3>
 <p>线程是CPU使用的基本单元， 它由线程由、程序计数器、寄存器集合和技组成。它与属于同一进程的其他线程共享代码段、数据段和其他操作系统资源，如打开文件和信号。一个传统重量级（ heavyweight ）的进程只有单个控制线程。如果进程有多个控制线程， 那么它能同时做多个任务。图4.1 说明了传统单线程进程和多线程进程的差别。</p>
-<p><img src="/posts/8ce3e425/image-20211114231912641.png" srcset="/img/loading.gif" lazyload alt="image-20211114231912641"></p>
+<p><img src="/8ce3e425image-20211114231912641.png" srcset="/img/loading.gif" lazyload alt="image-20211114231912641"></p>
 <h4 id="411-动机"><a class="markdownIt-Anchor" href="#411-动机"></a> 4.1.1 动机</h4>
 <h4 id="412-优点"><a class="markdownIt-Anchor" href="#412-优点"></a> 4.1.2 优点</h4>
 <p>多线程编程具有如下4个优点：</p>
@@ -915,7 +915,7 @@ A，对称和非对称通信</p>
 <p>而且， 因为任一时刻只有一个线程能访问内核， 多个线程不能并行运行在多处理器上。</p>
 </li>
 </ul>
-<p><img src="/posts/8ce3e425/image-20211114232532605.png" srcset="/img/loading.gif" lazyload alt="image-20211114232532605"></p>
+<p><img src="/8ce3e425image-20211114232532605.png" srcset="/img/loading.gif" lazyload alt="image-20211114232532605"></p>
 <h4 id="422-一对一模型"><a class="markdownIt-Anchor" href="#422-一对一模型"></a> 4.2.2 一对一模型</h4>
 <p>一对一模型（见图4.3） 将每个用户线程映射到一个内核线程。</p>
 <p><strong>优点</strong>：</p>
@@ -927,7 +927,7 @@ A，对称和非对称通信</p>
 <ul>
 <li>每创建一个用户线程就需要创建一个相应的内核线程。由于创建内核线程的开销会影响应用程序的性能， 所以这种模型的绝大多数实现限制了系统所支持的线程数</li>
 </ul>
-<p><img src="/posts/8ce3e425/image-20211114232838467.png" srcset="/img/loading.gif" lazyload alt="image-20211114232838467"></p>
+<p><img src="/8ce3e425image-20211114232838467.png" srcset="/img/loading.gif" lazyload alt="image-20211114232838467"></p>
 <h4 id="423-多对多模型"><a class="markdownIt-Anchor" href="#423-多对多模型"></a> 4.2.3 多对多模型</h4>
 <p>多对多模型（见图4.4） 多路复用了许多用户线程到同样数量或更小数量的内核线程上。内核线程的数量可能与特定应用程序或特定机器有关（位于多处理器上的应用程序可比单处理器上分配更多数量的内核线程）。</p>
 <p>虽然多对一模型允许开发人员创建任意多的用户线程， 但是因为内核只能一次调度一个线程， 所以并没有增加并发性。一对一模型提供了更大的并发性， 但是开发人员必须小心， 不要在应用程序内创建太多的线程（有时可能会限制创建线程的数量）。</p>
@@ -941,7 +941,7 @@ A，对称和非对称通信</p>
 </li>
 </ul>
 <p>一个流行的多对多模型的变种仍然多路复用了许多用户线程到同样数量或更小数量的内核线程上， 但也允许将一个用户线程绑定到某个内核线程上。这个变种有时被称为二级模型（见图4.5）</p>
-<p><img src="/posts/8ce3e425/image-20211114233616173.png" srcset="/img/loading.gif" lazyload alt="image-20211114233616173"></p>
+<p><img src="/8ce3e425image-20211114233616173.png" srcset="/img/loading.gif" lazyload alt="image-20211114233616173"></p>
 <h3 id="43-线程库"><a class="markdownIt-Anchor" href="#43-线程库"></a> 4.3 线程库</h3>
 <p>线程库（也read library）为程序员提供创建和管理线程的API。</p>
 <p>主要有两种方法来实现线程库。</p>
@@ -1020,27 +1020,27 @@ A，对称和非对称通信</p>
 <p><strong>first-come，first-served</strong></p>
 <p>先请求CPU 的进程先分配到CPU。</p>
 <p>FCFS是非抢占的</p>
-<p><img src="/posts/8ce3e425/image-20211103111439645.png" srcset="/img/loading.gif" lazyload alt="image-20211103111439645"></p>
+<p><img src="/8ce3e425image-20211103111439645.png" srcset="/img/loading.gif" lazyload alt="image-20211103111439645"></p>
 <h4 id="532-最短作业优先调度sjf"><a class="markdownIt-Anchor" href="#532-最短作业优先调度sjf"></a> 5.3.2 最短作业优先调度(SJF)</h4>
 <p><strong>shortest job-first (SJF) scheduling algorithm</strong></p>
 <p>这一算法将每个进程与其下一个CPU 区间段相关联。当CPU 为空闲时，它会赋给具有最短CPU 区间的进程。</p>
-<p><img src="/posts/8ce3e425/image-20211103112112804.png" srcset="/img/loading.gif" lazyload alt="image-20211103112112804"></p>
+<p><img src="/8ce3e425image-20211103112112804.png" srcset="/img/loading.gif" lazyload alt="image-20211103112112804"></p>
 <p>SJF 调度算法可证明为最佳的， 这是因为对于给定的一组进程， SJF 算法的平均等待时间最小。</p>
 <p>SJF调度经常用于长期调度。</p>
 <p>对于短期调度，一种方法是使用近似SJF调度，虽然不知道下一个CPU区间的长度，但是可以预测它。认为下一个CPU区间的长度与以前的相似。下一个CPU区间通常可预测为以前CPU区间的测量长度的指数平均。</p>
 <p>SJF 算法可能是抢占的或非抢占的。</p>
 <p>抢占SJF 调度有时称为<strong>最短剩余时间优先调度</strong>（shortest-remaining-time-first scheduling）。</p>
-<p><img src="/posts/8ce3e425/image-20211103113129077.png" srcset="/img/loading.gif" lazyload alt="image-20211103113129077"></p>
+<p><img src="/8ce3e425image-20211103113129077.png" srcset="/img/loading.gif" lazyload alt="image-20211103113129077"></p>
 <h4 id="533-优先级调度"><a class="markdownIt-Anchor" href="#533-优先级调度"></a> 5.3.3 优先级调度</h4>
 <p><strong>priority scheduling algorithm</strong></p>
 <p>每个进程都有一个优先级与其关联，具有最高优先级的进程会分配到CPU。具有相同优先级的进程按FCFS 顺序调度。SJF 算法属于简单优先级算法，其优先级（p） 为下一个（预测的） CPU 区间的倒数。</p>
-<p><img src="/posts/8ce3e425/image-20211103113523515.png" srcset="/img/loading.gif" lazyload alt="image-20211103113523515"></p>
+<p><img src="/8ce3e425image-20211103113523515.png" srcset="/img/loading.gif" lazyload alt="image-20211103113523515"></p>
 <p>优先调度可以是<strong>抢占的或者非抢占</strong>的。当一个进程到达就绪队列时， 其优先级与当前运行进程的优先级相比较。如果新到达进程的优先级高于当前运行进程的优先级，那么抢占优先级调度算法会抢占CPU。而非抢占优先级调度算法只是将新进程加到就绪队列的头部。</p>
 <p>优先级调度算法的一个主要问题是<strong>无穷阻塞</strong>（indefinite blocking）或饥饿（ starvation）。可以运行但缺乏CPU 的进程可认为是阻塞的，它在等待CPU。优先级调度算法会使某个低优先级进程无穷等待CPU。</p>
 <p>低优先级进程无穷等待问题的解决之一是<strong>老化</strong>（aging）。老化是一种技术，以逐渐增加在系统中等待很长时间的进程的优先级。</p>
 <h4 id="534-轮转法调度rr"><a class="markdownIt-Anchor" href="#534-轮转法调度rr"></a> 5.3.4 轮转法调度(RR)</h4>
 <p>轮转法（round-robin, RR） 调度算法是专门为分时系统设计的。它类似于FCFS 调度，但是增加了抢占以切换进程。定义一个较小时间单元称为时间片（ time quantun, or time slice)。时间片通常为10~100ms。将就绪队列作为循环队列。CPU调度程序循环就绪队列为每个进程分配不超过ー个时间片的CPU。</p>
-<p><img src="/posts/8ce3e425/image-20211103114645373.png" srcset="/img/loading.gif" lazyload alt="image-20211103114645373"></p>
+<p><img src="/8ce3e425image-20211103114645373.png" srcset="/img/loading.gif" lazyload alt="image-20211103114645373"></p>
 <p>RR算法的性能很大程度上依赖于时间片的大小。在极端情况下，如果时间片非常大，那么RR算法与FCFS算法一样，如果时间片很小(如1ms):那么R算法称为处理器共享。</p>
 <h4 id="535-多级队列调度"><a class="markdownIt-Anchor" href="#535-多级队列调度"></a> 5.3.5 多级队列调度</h4>
 <p><strong>多级队列调度算法</strong>（multilevel queue scheduling algori也m）将就绪队列分成多个独立队列（见图5.6〕。根据进程的属性， 如内存大小、进程优先级、进程类型， 一个进程被永久地分配到一个队列。每个队列有自己的调度算法。例如， 前台进程和后台进程可处于不同队列。前台队列可能采用RR 算法调度， 而后台队列可能采用FCFS 算法调度。</p>
@@ -1113,7 +1113,7 @@ c . 多级反馈队列和RR 调度算法相似一一它们不会先选择短任�
 <p>每个进程有一个代码段称为<strong>临界区</strong>（critical section）， 在该区中进程可能改变共同变量、更新一个表、写一个文件等。</p>
 <p>这种系统的<strong>重要特征</strong>是当一个进程进入临界区， 没有其他进程可被允许在临界区内执行， 即没有两个进程可同时在临界区内执行。</p>
 <p><strong>临界区问题</strong>(critical-section problem ） 是设计一个以便进程协作的协议。每个进程必须请求允许进入其<strong>临界区</strong>。实现这一请求的代码段称为<strong>进入区</strong>（entry section）， 临界区之后可有<strong>退出区</strong>（exit section）， 其他代码为剩余区（remainder section）。</p>
-<p><img src="/posts/8ce3e425/image-20211116161533895.png" srcset="/img/loading.gif" lazyload alt="image-20211116161533895"></p>
+<p><img src="/8ce3e425image-20211116161533895.png" srcset="/img/loading.gif" lazyload alt="image-20211116161533895"></p>
 <p>临界区问题的解答必须满足如下三项要求：</p>
 <ul>
 <li><strong>互斥</strong>（mutual exclusion）： 如果进程P； 在其临界区<br>
@@ -1123,20 +1123,20 @@ c . 多级反馈队列和RR 调度算法相似一一它们不会先选择短任�
 <li><strong>有限等待</strong>(bounded waiting）：从一个进程做出进入临界区的请求， 直到该请求允许为止， 其他进程允许进入其临界区的次数有上限。</li>
 </ul>
 <h3 id="63-peterson算法"><a class="markdownIt-Anchor" href="#63-peterson算法"></a> 6.3 Peterson算法</h3>
-<p><img src="/posts/8ce3e425/image-20211116161739706.png" srcset="/img/loading.gif" lazyload alt="image-20211116161739706"></p>
+<p><img src="/8ce3e425image-20211116161739706.png" srcset="/img/loading.gif" lazyload alt="image-20211116161739706"></p>
 <h3 id="630-面包师算法"><a class="markdownIt-Anchor" href="#630-面包师算法"></a> 6.3.0 面包师算法</h3>
-<p><img src="/posts/8ce3e425/image-20211116161850602.png" srcset="/img/loading.gif" lazyload alt="image-20211116161850602"></p>
-<p><img src="/posts/8ce3e425/image-20211116161908057.png" srcset="/img/loading.gif" lazyload alt="image-20211116161908057"></p>
+<p><img src="/8ce3e425image-20211116161850602.png" srcset="/img/loading.gif" lazyload alt="image-20211116161850602"></p>
+<p><img src="/8ce3e425image-20211116161908057.png" srcset="/img/loading.gif" lazyload alt="image-20211116161908057"></p>
 <h3 id="64-硬件同步"><a class="markdownIt-Anchor" href="#64-硬件同步"></a> 6.4 硬件同步</h3>
 <p>TestAndSet()</p>
-<img src="/posts/8ce3e425/image-20211116162032902.png" srcset="/img/loading.gif" lazyload alt="image-20211116162032902">
+<img src="/8ce3e425image-20211116162032902.png" srcset="/img/loading.gif" lazyload alt="image-20211116162032902">
 <p>Swap()</p>
-<p><img src="/posts/8ce3e425/image-20211116162152258.png" srcset="/img/loading.gif" lazyload alt="image-20211116162152258"></p>
+<p><img src="/8ce3e425image-20211116162152258.png" srcset="/img/loading.gif" lazyload alt="image-20211116162152258"></p>
 <p>上面两种算法未解决互斥</p>
 <p>boolean waiting[n];<br>
 boolean lock;</p>
 <p>这些数据结构均初始化false。</p>
-<p><img src="/posts/8ce3e425/image-20211116162305381.png" srcset="/img/loading.gif" lazyload alt="image-20211116162305381"></p>
+<p><img src="/8ce3e425image-20211116162305381.png" srcset="/img/loading.gif" lazyload alt="image-20211116162305381"></p>
 <ul>
 <li>
 <p>互斥</p>
@@ -1159,18 +1159,18 @@ boolean lock;</p>
 </ul>
 <h3 id="65-信号量"><a class="markdownIt-Anchor" href="#65-信号量"></a> 6.5 信号量</h3>
 <p>信号量S是个整数变量，除了初始化外，它只能通过两个标准原子操作：wait()和signal()来访问。</p>
-<p><img src="/posts/8ce3e425/image-20211116162927219.png" srcset="/img/loading.gif" lazyload alt="image-20211116162927219"></p>
+<p><img src="/8ce3e425image-20211116162927219.png" srcset="/img/loading.gif" lazyload alt="image-20211116162927219"></p>
 <h4 id="651-用法"><a class="markdownIt-Anchor" href="#651-用法"></a> 6.5.1 用法</h4>
-<p><img src="/posts/8ce3e425/image-20211116163758185.png" srcset="/img/loading.gif" lazyload alt="image-20211116163758185"></p>
+<p><img src="/8ce3e425image-20211116163758185.png" srcset="/img/loading.gif" lazyload alt="image-20211116163758185"></p>
 <h4 id="652-实现"><a class="markdownIt-Anchor" href="#652-实现"></a> 6.5.2 实现</h4>
 <p>信号量的主要缺点是都要求<strong>忙等待</strong>（busy waiting）。当一个进程位于其临界区内时， 任何其他试图进入其临界区的进程都必须在其进入代码中连续地循环。这种类型的信号量也称<br>
 为<strong>自旋锁</strong>（spinlock）</p>
 <p>为了克服忙等， 可以修改信号量操作wait()和signal()的定义。当一个进程执行wait()操作时， 发现信号量值不为正， 则它必须等待。然而， 该进程不是忙等而是阻塞自己。阻塞操作将一个进程放入到与信号量相关的等待队列中，井将该进程的状态切换成等待状态。接着， 控制转到CPU调度程序， 以选择另一个进程来执行。</p>
 <p>一个被阻塞在等待信号量S上的进程，可以在其他进程执行signal()操作之后被重新执行。该进程的重新执行是通过wakeup()操作来进行的， 该操作将进程从等待状态切换到就<br>
 绪状态。接着， 该进程被放入到就绪队列中（根据CPU调度算法的不同，CPU有可能会、也可能不会从正在运行的进程切换到刚刚就绪的进程）。</p>
-<p><img src="/posts/8ce3e425/image-20211116164332005.png" srcset="/img/loading.gif" lazyload alt="image-20211116164332005"></p>
-<p><img src="/posts/8ce3e425/image-20211116164343388.png" srcset="/img/loading.gif" lazyload alt="image-20211116164343388"></p>
-<p><img src="/posts/8ce3e425/image-20211116165105798.png" srcset="/img/loading.gif" lazyload alt="image-20211116165105798"></p>
+<p><img src="/8ce3e425image-20211116164332005.png" srcset="/img/loading.gif" lazyload alt="image-20211116164332005"></p>
+<p><img src="/8ce3e425image-20211116164343388.png" srcset="/img/loading.gif" lazyload alt="image-20211116164343388"></p>
+<p><img src="/8ce3e425image-20211116165105798.png" srcset="/img/loading.gif" lazyload alt="image-20211116165105798"></p>
 <h4 id="653-死锁与饥饿"><a class="markdownIt-Anchor" href="#653-死锁与饥饿"></a> 6.5.3 死锁与饥饿</h4>
 <p><strong>死锁</strong>：两个或多个进程无限地等待一个事件，而该事件只能由这些等待进程之一来产生。这里的事件是signal()操作的执行。当出现这样的状态时， 这些进程就称为死锁（deadlocked）。</p>
 <p><strong>无限期阻塞</strong>(indefinite blocking）或<strong>饥饿</strong>（starvation）：即进程在信号量内无限期等待。如果对与信号量相关的链表按LIFO顺序来增加和移动进程，<br>
@@ -1210,9 +1210,9 @@ boolean lock;</p>
 <li>利用PV操作写出同步关系。</li>
 </ol>
 <h4 id="661-有限缓冲问题"><a class="markdownIt-Anchor" href="#661-有限缓冲问题"></a> 6.6.1 有限缓冲问题</h4>
-<p><img src="/posts/8ce3e425/image-20211116164843159.png" srcset="/img/loading.gif" lazyload alt="image-20211116164843159"></p>
+<p><img src="/8ce3e425image-20211116164843159.png" srcset="/img/loading.gif" lazyload alt="image-20211116164843159"></p>
 <p>下图会发生死锁，生产者一直等待</p>
-<p><img src="/posts/8ce3e425/image-20211116165556108.png" srcset="/img/loading.gif" lazyload alt="image-20211116165556108"></p>
+<p><img src="/8ce3e425image-20211116165556108.png" srcset="/img/loading.gif" lazyload alt="image-20211116165556108"></p>
 <h4 id="662-读者写者问题"><a class="markdownIt-Anchor" href="#662-读者写者问题"></a> 6.6.2 读者写者问题</h4>
 <p><strong>制约条件分析：</strong></p>
 <p>1、允许多个进程同时读文件（读－读允许）；<br>
@@ -1221,7 +1221,7 @@ boolean lock;</p>
 <h5 id="读者优先"><a class="markdownIt-Anchor" href="#读者优先"></a> <strong>读者优先：</strong></h5>
 <p>只要不断的有读者来读，那么readcount就一直会大于0，那么永远不会触发signal(wrt)条件，从而导致写者饥饿。</p>
 <p>该问题被称为第一读者优先问题</p>
-<p><img src="/posts/8ce3e425/image-20211116170507558.png" srcset="/img/loading.gif" lazyload alt="image-20211116170507558"></p>
+<p><img src="/8ce3e425image-20211116170507558.png" srcset="/img/loading.gif" lazyload alt="image-20211116170507558"></p>
 <h5 id="写者优先"><a class="markdownIt-Anchor" href="#写者优先"></a> <strong>写者优先:</strong></h5>
 <p>1.写者线程的优先级高于读者线程。<br>
 2.当写者到来时，只有那些已经获得授权的读进程才被允许完成它们的操作，写者之后到来的读者将被推迟，直到写者完成。<br>
@@ -1231,7 +1231,7 @@ boolean lock;</p>
 2.设置信号量<code>fileSrc</code>实现读写者对临界资源的访问。<br>
 3.设置计数器<code>writeCount</code>来统计当前阻塞的写者进程的数目，设置信号量<code>writeCountSignal</code>完成对<code>writeCount</code>计数器资源的互斥访问。<br>
 4.设置计数器<code>readCount</code>来统计访问临界资源的读者数目，设置信号量<code>readCountSignal</code>完成对<code>readCount</code>计数器资源的互斥访问。</p>
-<p><img src="/posts/8ce3e425/image-20211116170755343.png" srcset="/img/loading.gif" lazyload alt="image-20211116170755343"></p>
+<p><img src="/8ce3e425image-20211116170755343.png" srcset="/img/loading.gif" lazyload alt="image-20211116170755343"></p>
 <h5 id="读者写者公平竞争"><a class="markdownIt-Anchor" href="#读者写者公平竞争"></a> 读者写者公平竞争：</h5>
 <ol>
 <li>优先级相同。</li>
@@ -1247,15 +1247,15 @@ boolean lock;</p>
 </ol>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">/* 读者队列初始值为0，其他资源初始值为1*/</span><br><span class="hljs-keyword">int</span> readCount = <span class="hljs-number">0</span>;<br>semaphore keySignal = <span class="hljs-number">1</span>;<br>semaphore fileSrc = <span class="hljs-number">1</span>;<br>semaphore readCountSignal = <span class="hljs-number">1</span>;<br><br><span class="hljs-built_in">reader</span>()<br>&#123;<br>    <span class="hljs-keyword">while</span>(<span class="hljs-literal">true</span>)<br>    &#123;<br>      <span class="hljs-built_in">wait</span>(keySignal);        <span class="hljs-comment">//申请令牌</span><br>      <span class="hljs-built_in">wait</span>(readCountSignal);  <span class="hljs-comment">//申请计数器资源</span><br>      <span class="hljs-keyword">if</span>(!readCount)          <span class="hljs-comment">//为零则申请文件资源</span><br>         <span class="hljs-built_in">wait</span>(fileSrc);<br>      readCount++;<br>      <span class="hljs-built_in">signal</span>(readCountSignal); <span class="hljs-comment">//释放计数器资源</span><br>      <span class="hljs-built_in">signal</span>(keySignal);      <span class="hljs-comment">//释放令牌</span><br> <br>      ...<br>      perform read operation  <span class="hljs-comment">//执行临界区代码</span><br>      ...<br>  <br>      <span class="hljs-built_in">wait</span>(readCountSignal);  <span class="hljs-comment">//申请计数器资源</span><br>      readCount--;<br>      <span class="hljs-keyword">if</span>(!readCount)                <span class="hljs-comment">//为零则释放文件资源</span><br>         <span class="hljs-built_in">signal</span>(fileSrc);<br>      <span class="hljs-built_in">signal</span>(readCountSignal); <span class="hljs-comment">//释放读者计数器资源</span><br>    &#125;<br>&#125;<br> <br><span class="hljs-built_in">writer</span>()<br>&#123;<br>     <span class="hljs-keyword">while</span>(<span class="hljs-literal">true</span>)<br>     &#123;<br>        <span class="hljs-built_in">wait</span>(keySignal);     <span class="hljs-comment">//申请令牌</span><br>        <span class="hljs-built_in">wait</span>(fileSrc);       <span class="hljs-comment">//申请文件资源</span><br> <br>        ...<br>        perform write operation <span class="hljs-comment">//执行临界区代码</span><br>        ...<br> <br>        <span class="hljs-built_in">signal</span>(fileSrc);   <span class="hljs-comment">//释放文件资源</span><br>        <span class="hljs-built_in">signal</span>(keysignal); <span class="hljs-comment">//释放令牌</span><br>     &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 <h4 id="663-哲学家进餐回题"><a class="markdownIt-Anchor" href="#663-哲学家进餐回题"></a> 6.6.3 哲学家进餐回题</h4>
-<p><img src="/posts/8ce3e425/image-20211116170946819.png" srcset="/img/loading.gif" lazyload alt="image-20211116170946819"></p>
+<p><img src="/8ce3e425image-20211116170946819.png" srcset="/img/loading.gif" lazyload alt="image-20211116170946819"></p>
 <p><strong>死锁解决方法：</strong></p>
 <ul>
 <li>至多只允许四位哲学家同时去拿左边的筷子；</li>
 <li>仅当哲学家左右两边的筷子均可用时才允许他拿起筷子；</li>
 <li>规定奇数号哲学家先拿起他左边的筷子，而偶数号哲学家先拿起他右边的筷子。</li>
 </ul>
-<p><img src="/posts/8ce3e425/image-20211116171117548.png" srcset="/img/loading.gif" lazyload alt="image-20211116171117548"></p>
-<p><img src="/posts/8ce3e425/image-20211116171127875.png" srcset="/img/loading.gif" lazyload alt="image-20211116171127875"></p>
+<p><img src="/8ce3e425image-20211116171117548.png" srcset="/img/loading.gif" lazyload alt="image-20211116171117548"></p>
+<p><img src="/8ce3e425image-20211116171127875.png" srcset="/img/loading.gif" lazyload alt="image-20211116171127875"></p>
 <h3 id="67-管程"><a class="markdownIt-Anchor" href="#67-管程"></a> 6.7 管程</h3>
 <h4 id="671-使用"><a class="markdownIt-Anchor" href="#671-使用"></a> 6.7.1 使用</h4>
 <h4 id="672-哲学家进餐问题的管程解决方案"><a class="markdownIt-Anchor" href="#672-哲学家进餐问题的管程解决方案"></a> 6.7.2 哲学家进餐问题的管程解决方案</h4>
