@@ -266,10 +266,10 @@
 </ul>
 <p>每一种技术都设计了有效的防御措施，试图阻止敌人绕过FUZZIFICATION。</p>
 <h3 id="应用流程"><a class="markdownIt-Anchor" href="#应用流程"></a> 应用流程</h3>
-<p><img src="/5dd98acd/image-20211202105624895.png" srcset="/img/loading.gif" lazyload alt="image-20211202105624895"></p>
+<p><img src="/posts/5dd98acd/image-20211202105624895.png" srcset="/img/loading.gif" lazyload alt="image-20211202105624895"></p>
 <p>开发人员使用FUZZIFICATION技术创建一个受保护的二进制文件并将其发布给公众。同时，它们将正常编译的二进制文件发送给受信任的一方。攻击者无法通过fuzzing从受保护的二进制文件中找到很多bug，而受信任的一方可以有效地发现更多的bug，从而使得开发人员可以及时修补它们。</p>
 <h2 id="三-设计概述"><a class="markdownIt-Anchor" href="#三-设计概述"></a> 三、设计概述</h2>
-<p><img src="/5dd98acd/image-20211202110549083.png" srcset="/img/loading.gif" lazyload alt="fuzzification工作流程的概述"></p>
+<p><img src="/posts/5dd98acd/image-20211202110549083.png" srcset="/img/loading.gif" lazyload alt="fuzzification工作流程的概述"></p>
 <ul>
 <li>
 <p>它将<strong>程序源代码</strong>、<strong>一组常用的测试用例</strong>和<strong>开销预算</strong>作为输入，并生成一个由fuzzification技术保护的二进制文件。</p>
@@ -323,7 +323,7 @@
 <p>由于攻击者可能使用程序分析来识别和删除简单的延迟原语(例如，sleep)，作者设计了包含算术操作并与原始代码库相联系的健壮原语。</p>
 <p>作者设计的原语是基于csmith的，<strong>它可以生成随机的、无bug的代码片段</strong>。例如，CSmith可以生成一个函数，该函数接受参数，执行算术操作，并返回特定类型的值。修改了csmith使其生成的代码具有对原始代码的数据依赖和代码依赖。具体来说，就是将原始代码中的一个变量作为参数传递给生成的代码，从生成的代码中引用原始代码，并使用返回值修改原始代码的一个全局变量。</p>
 <p>图5显示了延迟原语的一个示例。它声明了一个局部变量pass_var和并修改全局变量global_var1和global_var2。通过这种方式，作者引入了原始代码和注入代码(第6、9和12行)之间的数据流依赖关系，并在不影响原始程序的情况下更改程序状态。尽管代码是随机生成的，但它通过数据流和控制流依赖关系与原始代码紧密耦合。</p>
-<p><img src="/5dd98acd/image-20211202205833884.png" srcset="/img/loading.gif" lazyload alt="image-20211202205833884"></p>
+<p><img src="/posts/5dd98acd/image-20211202205833884.png" srcset="/img/loading.gif" lazyload alt="image-20211202205833884"></p>
 <h3 id="branchtrap"><a class="markdownIt-Anchor" href="#branchtrap"></a> BranchTrap</h3>
 <p><strong>功能：通过隐藏路径和污染覆盖图来干扰反馈逻辑</strong></p>
 <p>代码覆盖率信息被模糊器广泛用于寻找感兴趣的输入并对其进行排序。如果可以插入大量的条件分支，这些分支的条件对微小的输入变化很敏感，那么就可以让这些模糊器勤奋地工作。当模糊过程陷入这些分支陷阱时，基于覆盖率反馈的模糊器将浪费他们的资源去探索(大量)毫无价值的路径。因此，作者提出了一种通过误导或阻断覆盖率反馈来欺骗基于覆盖率反馈的fuzz工具的技术。</p>
@@ -359,7 +359,7 @@
 <li>Low overhead：轻量级的操作（XOR；解析跳转地址；跳转到gadget）为普通用户造成的开销低。</li>
 <li>Robust：基于ROP的设计大大增加了对手识别或修补二进制文件的复杂性。</li>
 </ul>
-<p><img src="/5dd98acd/image-20211202213546213.png" srcset="/img/loading.gif" lazyload alt="image-20211202213546213"></p>
+<p><img src="/posts/5dd98acd/image-20211202213546213.png" srcset="/img/loading.gif" lazyload alt="image-20211202213546213"></p>
 </li>
 </ul>
 <h4 id="饱和模糊状态"><a class="markdownIt-Anchor" href="#饱和模糊状态"></a> 饱和模糊状态</h4>
@@ -377,8 +377,8 @@
 <ul>
 <li>
 <p>符号执行的关键思想就是，使用符号值来代替具体变量，来模拟每个路径来产生每一个执行的可能性，将执行语句的结果整合成若干条数学表达式。对某结果的数学表达式进行求解，就能获得到达该结果的路径。</p>
-<p><img src="/5dd98acd/image-20211202214447655.png" srcset="/img/loading.gif" lazyload alt="image-20211202214447655"></p>
-<p><img src="/5dd98acd/image-20211202214454348.png" srcset="/img/loading.gif" lazyload alt="image-20211202214454348"></p>
+<p><img src="/posts/5dd98acd/image-20211202214447655.png" srcset="/img/loading.gif" lazyload alt="image-20211202214447655"></p>
+<p><img src="/posts/5dd98acd/image-20211202214454348.png" srcset="/img/loading.gif" lazyload alt="image-20211202214454348"></p>
 </li>
 </ul>
 </blockquote>
@@ -396,7 +396,7 @@
 <p>sanitizer即无害处理,代表通过数据加密或者移除危害操作等手段使数据传播不再对软件系统的信息安全产生危害.</p>
 </li>
 </ul>
-<p><img src="/5dd98acd/image-20211202214657941.png" srcset="/img/loading.gif" lazyload alt="image-20211202214657941"></p>
+<p><img src="/posts/5dd98acd/image-20211202214657941.png" srcset="/img/loading.gif" lazyload alt="image-20211202214657941"></p>
 <p>污点分析就是分析程序中由污点源引入的数据是否能够不经无害处理,而直接传播到污点汇聚点</p>
 </blockquote>
 <p>混合模糊测试方法利用符号执行或动态污点分析来提高模糊测试效率。然而，<strong>混合方法具有众所周知的弱点</strong>：</p>
@@ -407,7 +407,7 @@
 <li>
 <p>符号执行受到<strong>路径爆炸</strong>问题的限制。如果处理符号需要复杂的操作，则符号执行引擎必须详尽地探索和评估所有执行状态。而且大多数符号执行引擎都无法运行到执行路径的末尾。</p>
 <blockquote>
-<p><img src="/5dd98acd/image-20211202214851909.png" srcset="/img/loading.gif" lazyload alt="image-20211202214851909"></p>
+<p><img src="/posts/5dd98acd/image-20211202214851909.png" srcset="/img/loading.gif" lazyload alt="image-20211202214851909"></p>
 </blockquote>
 </li>
 <li>
@@ -418,11 +418,11 @@
 <p>作者将原始程序中的显式数据流<strong>转换为隐式数据流</strong>，以阻碍污染分析。</p>
 <p>fuzzification首先识别分支条件和有趣的信息sink(例如，strcmp)，然后根据变量类型注入数据流转换代码。</p>
 <p>下图显示了antihybrid的一个示例应用程序，其中<code>array input</code>用于确定分支条件，而strcmp是一个有趣的sink函数。因此，fuzzification使用隐式数据流复制数组(第6-15行)并将原始变量替换为新变量(第16行)。由于转换后的隐式数据流，DTA技术不能识别影响第16行分支条件的正确输入字节。</p>
-<p><img src="/5dd98acd/image-20211202215315995.png" srcset="/img/loading.gif" lazyload alt="image-20211202215315995"></p>
+<p><img src="/posts/5dd98acd/image-20211202215315995.png" srcset="/img/loading.gif" lazyload alt="image-20211202215315995"></p>
 <h4 id="爆炸路径约束"><a class="markdownIt-Anchor" href="#爆炸路径约束"></a> 爆炸路径约束</h4>
 <p>为了阻止使用符号执行的混合模糊器，fuzzification注入多个代码块来有意地触发路径爆炸。</p>
 <p>具体来说，通过比较原始操作数的<strong>哈希值</strong>来替换每个比较指令。采用哈希函数是因为符号执行<strong>无法轻松确定</strong>具有给定哈希值的<strong>原始操作数</strong>。由于哈希函数通常会在程序执行中引入不可忽略的开销，因此作者利用轻量级的循环冗余校验（CRC）循环迭代来转换分支条件以减少性能开销。</p>
-<p><img src="/5dd98acd/image-20211202215806017.png" srcset="/img/loading.gif" lazyload alt="image-20211202215806017"></p>
+<p><img src="/posts/5dd98acd/image-20211202215806017.png" srcset="/img/loading.gif" lazyload alt="image-20211202215806017"></p>
 
             </div>
             <hr>

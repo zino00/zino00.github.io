@@ -250,7 +250,7 @@
 <li>测试阶段的输出比相应的输入粒度更细(例如，更短或更小)。</li>
 </ul>
 <p>图1说明了这些基本思想，显示了在测试阶段，d’中间代码语句的输入会导致两个源代码语句的精炼输出，表明漏洞在哪里。</p>
-<p><img src="/33f70302/image-20211215140844637.png" srcset="/img/loading.gif" lazyload alt="image-20211215140844637"></p>
+<p><img src="/posts/33f70302/image-20211215140844637.png" srcset="/img/loading.gif" lazyload alt="image-20211215140844637"></p>
 <h1 id="二-概述"><a class="markdownIt-Anchor" href="#二-概述"></a> 二、概述</h1>
 <p>漏洞很直观地展示了一些语法特征，可以利用这些特征来识别一些代码片段(即程序切片)作为漏洞检测的初始候选项。</p>
 <h2 id="21-基础定义"><a class="markdownIt-Anchor" href="#21-基础定义"></a> 2.1 基础定义</h2>
@@ -266,7 +266,7 @@
 </li>
 </ul>
 <h2 id="22-vuldeelocator结构"><a class="markdownIt-Anchor" href="#22-vuldeelocator结构"></a> 2.2 VulDeeLocator结构</h2>
-<p><img src="/33f70302/image-20211215145019213.png" srcset="/img/loading.gif" lazyload alt="VulDeeLocator结构图"></p>
+<p><img src="/posts/33f70302/image-20211215145019213.png" srcset="/img/loading.gif" lazyload alt="VulDeeLocator结构图"></p>
 <p>上图显示了<strong>VulDeeLocator的结构</strong>，它可以用特定的中间代码表示和深度学习模型来完成实例化。</p>
 <p>VulDeeLocator的<strong>输入</strong>是用于学习神经网络的培训程序的源代码或用于漏洞检测的目标程序。</p>
 <ul>
@@ -363,7 +363,7 @@
 <p>图4©描绘了上述<code>sSyVC</code>“data”对应的LLVM  IR切片。每个局部变量用前缀%的数字值表示;对于LLVM IR片中的每个函数，第一个局部变量的数字值为1，然后对于后续的每个局部变量，值增加1。</p>
 <p>给定IR片，我们生成如下<code>iSeVCs</code>。对于函数fα调用的每个函数fγ，函数fγ的IR切片中的语句被附加到调用函数fγ的语句(在函数fα中)。这是为了保持可能属于<strong>不同函数但彼此相关</strong>(根据控件和/或数据依赖性)的语句的顺序。如果有一个循环序列的函数调用(例如,fγ调用fα然后fα调用fγ,然后fγ调用fα,fα调用fγ,等等),我们只考虑第一个循环(也就是说,γ调用fα然后α调用fγ但不是任何进一步的),以避免无限循环。</p>
 <p>为了避免在不同函数的IR片中将相同的数值赋给不同的局部变量，在附加语句中将局部变量的每个数值修改为一个未赋值的新数值。图4(d)说明了函数printLine的LLVM IR切片中的语句(用虚线框突出显示)被添加到调用函数main的语句“call void @printLine()”中。在printLine函数的LLVM IR切片中，局部变量“%1”被修改为“%20”，因为“19”是main函数中最后赋值的数值，如图4©所示。</p>
-<p><img src="/33f70302/image-20211215155227554.png" srcset="/img/loading.gif" lazyload alt="image-20211215155227554"></p>
+<p><img src="/posts/33f70302/image-20211215155227554.png" srcset="/img/loading.gif" lazyload alt="image-20211215155227554"></p>
 <h1 id="四-细粒度的漏洞检测"><a class="markdownIt-Anchor" href="#四-细粒度的漏洞检测"></a> 四、细粒度的漏洞检测</h1>
 <h2 id="41-细粒度漏洞检测器的需求"><a class="markdownIt-Anchor" href="#41-细粒度漏洞检测器的需求"></a> 4.1 细粒度漏洞检测器的需求</h2>
 <p>作者对神经网络模型提出以下三个要求，以检测和定位漏洞。</p>
@@ -396,7 +396,7 @@
 <li>(ii)表示每个向量中漏洞位置的漏洞位置矩阵。</li>
 </ul>
 <p>学习阶段输出带有微调参数的BRNN-vdl。</p>
-<p><img src="/33f70302/image-20211221103429273.png" srcset="/img/loading.gif" lazyload alt="image-20211221103429273"></p>
+<p><img src="/posts/33f70302/image-20211221103429273.png" srcset="/img/loading.gif" lazyload alt="image-20211221103429273"></p>
 <blockquote>
 <p>BRNN-vdl向BRNN扩展了三个额外的层(即， the multiply, κ-max pooling, and average pooling layers)，这些层形成了“vdl”部分，以实现三个期望的属性。</p>
 </blockquote>
@@ -449,7 +449,7 @@
 <p>图6突出显示了使用学习后的BRNN-vdl检测和定位目标程序中的漏洞。</p>
 <p>输入是表示从目标程序中提取的<code>iSeVC</code>的向量。我们首先得到<code>iSeVCs</code>中标记对应的激活层的输出，然后计算每一行标记的κ最大输出值的平均值。然后，我们提取输出大于阈值ϑ的代码行，从而导致容易受到攻击的<code>iSeVC</code>和代码行。最后，我们将易受攻击的<code>iSeVC</code>和其中易受攻击的代码行映射到源代码中，作为检测阶段的输出。</p>
 <p>以图4(d)中的<code>iSeVC</code>为例。<code>iSeVC</code>对应的向量是学习后的BRNNvdl神经网络的输入。计算每行标记的κ最大输出值的平均值后，<code>iSeVC</code>被确定为脆弱的，中间代码的脆弱行在图4(d)的19-21行。最后，将<code>iSeVC</code>中的脆弱行映射到源代码中的脆弱行(即图4(a)中的第25行)。</p>
-<p><img src="/33f70302/image-20211221102530200.png" srcset="/img/loading.gif" lazyload alt="image-20211221102530200"></p>
+<p><img src="/posts/33f70302/image-20211221102530200.png" srcset="/img/loading.gif" lazyload alt="image-20211221102530200"></p>
 
             </div>
             <hr>
