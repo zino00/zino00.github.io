@@ -1,0 +1,671 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.jpg">
+  <link rel="icon" href="/img/favicon.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="记录syzkaller的配置过程及遇到的一些问题">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+  <title>syzkaller配置小结 - Zino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"zino00.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"f45dcd001d67e8f9d84f91248ea31abf","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Zino's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/post.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="syzkaller配置小结">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-11-27 23:25" pubdate>
+        2021年11月27日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      18
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">syzkaller配置小结</h1>
+            
+            <div class="markdown-body">
+              <p>这部分配置基本参照<a target="_blank" rel="noopener" href="https://github.com/google/syzkaller/blob/master/docs/linux/setup_ubuntu-host_qemu-vm_x86-64-kernel.md">syzkaller官方文档</a></p>
+<h3 id="安装前准备"><a class="markdownIt-Anchor" href="#安装前准备"></a> 安装前准备</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs terminal">sudo apt update<br>sudo apt install make gcc flex bison libncurses-dev libelf-dev libssl-dev<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>安装libncurses-dev等时遇到如下问题:</strong></p>
+<p>libncurses5-dev : 依赖: libtinfo5 (= 5.9+20140118-1ubuntu1) 但是 6.1-1ubuntu…</p>
+<p>解决：</p>
+<p>逐个安装相应版本的依赖，缺什么装什么</p>
+<p><img src="/60fc7e01/image-20211125211645437.png" srcset="/img/loading.gif" lazyload alt="image-20211125211645437"></p>
+<p><img src="/60fc7e01/image-20211125211316133.png" srcset="/img/loading.gif" lazyload alt="image-20211125211316133"></p>
+</blockquote>
+<p>最后成功全部装完</p>
+<h3 id="下载内核"><a class="markdownIt-Anchor" href="#下载内核"></a> 下载内核</h3>
+<ul>
+<li>
+<p>clone内核源码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">git clone --branch v5<span class="hljs-number">.14</span> git:<span class="hljs-comment">//git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git $KERNEL</span><br></code></pre></td></tr></table></figure>
+<p>但是因为这样太慢了，所以我最后采取了在网站上直接下载linux内核5.14版本的压缩包，然后解压至目标路径</p>
+<p><a target="_blank" rel="noopener" href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/linux-5.14.tar.gz">v5.14压缩包</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs terminal">tar -zxvf linux-5.14.tar.gz -C ~/syz <br></code></pre></td></tr></table></figure>
+</li>
+<li>
+<p>生成默认配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs terminal">cd $KERNEL<br>make defconfig<br>make kvm_guest.config<br></code></pre></td></tr></table></figure>
+</li>
+<li>
+<p>启动所需的配置选项</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs terminal">sudo vim .config<br></code></pre></td></tr></table></figure>
+<p>手动编辑.config文件，加入下面的变量</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># Coverage collection.</span><br><span class="hljs-attr">CONFIG_KCOV</span>=y<br><br><span class="hljs-comment"># Debug info for symbolization.</span><br><span class="hljs-attr">CONFIG_DEBUG_INFO</span>=y<br><br><span class="hljs-comment"># Memory bug detector</span><br><span class="hljs-attr">CONFIG_KASAN</span>=y<br><span class="hljs-attr">CONFIG_KASAN_INLINE</span>=y<br><br><span class="hljs-comment"># Required for Debian Stretch</span><br><span class="hljs-attr">CONFIG_CONFIGFS_FS</span>=y<br><span class="hljs-attr">CONFIG_SECURITYFS</span>=y<br></code></pre></td></tr></table></figure>
+<p>重新生成配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs terminal">make olddefconfig<br></code></pre></td></tr></table></figure>
+</li>
+<li>
+<p>构建内核</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs terminal">make -j`nproc`<br></code></pre></td></tr></table></figure>
+<p>之后我们可以内核文件夹下看到vmlinux(内核二进制文件)和bzImage(内核镜像)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs terminal">ls $KERNEL/vmlinux<br># sample output - $KERNEL/vmlinux<br>ls $KERNEL/arch/x86/boot/bzImage<br># sample output - $KERNEL/arch/x86/boot/bzImage<br></code></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="构建image"><a class="markdownIt-Anchor" href="#构建image"></a> 构建image</h3>
+<ul>
+<li>
+<p>安装debotstrap</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs terminal">sudo apt install debootstrap<br></code></pre></td></tr></table></figure>
+</li>
+<li>
+<p>生成Debian Stretch Linux镜像</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs terminal">mkdir $IMAGE<br>cd $IMAGE/<br>wget https://raw.githubusercontent.com/google/syzkaller/master/tools/create-image.sh -O create-image.sh<br>chmod +x create-image.sh<br>./create-image.sh<br></code></pre></td></tr></table></figure>
+</li>
+<li>
+<p>安装镜像的额外工具</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs terminal">./create-image.sh --feature full<br></code></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="构建qemu"><a class="markdownIt-Anchor" href="#构建qemu"></a> 构建qemu</h3>
+<ul>
+<li>
+<p>首先安装qemu</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs terminal">sudo apt install qemu-system-x86<br></code></pre></td></tr></table></figure>
+</li>
+<li>
+<p>启动qemu虚拟机</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs terminal">qemu-system-x86_64 \                            <br>        -m 2G \<br>        -smp 2 \<br>        -kernel /home/zino/syz/linux-5.14/arch/x86/boot/bzImage \<br>        -append &quot;console=ttyS0 root=/dev/sda earlyprintk=serial net.ifnames=0&quot; \ <br>        -drive file=/home/zino/syz/image/stretch.img,format=raw \<br>        -net user,host=10.0.2.10,hostfwd=tcp:127.0.0.1:10021-:22 \<br>        -net nic,model=e1000 \<br>        -enable-kvm \<br>        -nographic \<br>        -pidfile vm.pid \<br>        2&gt;&amp;1 | tee vm.log<br><br></code></pre></td></tr></table></figure>
+<p>输入root后成功进入</p>
+<p><img src="/60fc7e01/image-20211127143311829.png" srcset="/img/loading.gif" lazyload alt="image-20211127143311829"></p>
+</li>
+<li>
+<p>测试ssh</p>
+<p>因为后面syzkaller会用到ssh连接，所以需要测试一下</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs terminal">ssh -i /home/zino/syz/image/stretch.id_rsa -p 10021 -o &quot;StrictHostKeyChecking no&quot; root@localhost<br></code></pre></td></tr></table></figure>
+<p>成功在另一个终端创建连接</p>
+<p><img src="/60fc7e01/image-20211127143344050.png" srcset="/img/loading.gif" lazyload alt="image-20211127143344050"></p>
+<p>之后用poweroff关闭虚拟机</p>
+<p>开始安装syzkaller</p>
+<h3 id="安装syzkaller"><a class="markdownIt-Anchor" href="#安装syzkaller"></a> 安装syzkaller</h3>
+<ul>
+<li>
+<p>go环境配置</p>
+<p><code>syzkaller</code>是用go语言写的，所以需要首先配置go环境，安装go的安装包来配置</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs terminal">wget https://dl.google.com/go/go1.14.2.linux-amd64.tar.gz<br>tar -xf go1.14.2.linux-amd64.tar.gz<br>mv go goroot<br>mkdir gopath<br>export GOPATH=`pwd`/gopath<br>export GOROOT=`pwd`/goroot<br>export PATH=$GOPATH/bin:$PATH<br>export PATH=$GOROOT/bin:$PATH<br></code></pre></td></tr></table></figure>
+</li>
+<li>
+<p>下载<code>syzkaller</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs terminal">go get -u -d github.com/google/syzkaller/prog #有点慢，直接git clone<br>#下面的路径可以自己建立，也可以不建，这样就自己指定路径，记得后面用这个路径就行<br>git clone https://github.com/google/syzkaller.git<br>cd gopath/src/github.com/google/syzkaller/<br>make<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>make后出现错误</strong></p>
+<p><img src="/60fc7e01/QQ%E5%9B%BE%E7%89%8720211127225142.jpg" srcset="/img/loading.gif" lazyload alt="make错误"></p>
+<p>搜索了之后发现这是由于make是内存不够导致的，所以学习了一下如何创建交换分区来缓解内存压力</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs terminal">&gt;#创建用于交换分区的文件<br>&gt;dd if=/dev/zero of=/swapfile bs=1M count=2048<br>&gt;#设置交换分区文件<br>&gt;mkswap /swapfile<br>&gt;#立即启用交换分区文件<br>&gt;swapon /swapfile<br>&gt;#打开/etc/fstab<br>&gt;sudo vim /etc/fstab<br>&gt;#在下面添加下面一行，使其永久有效<br>&gt;/swapfile swap swap defaults 0 0<br></code></pre></td></tr></table></figure>
+<p>之后再次make就成功了</p>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/zhangxiaoyang0/article/details/82501209">Linux上创建SWAP文件/分区</a></p>
+</blockquote>
+<p>可以看到/syzkaller/bin下出现下列文件</p>
+<p><img src="/60fc7e01/image-20211127230030934.png" srcset="/img/loading.gif" lazyload alt="image-20211127230030934"></p>
+</li>
+<li>
+<p>运行syzkaller manager</p>
+<p>首先需要自己建立一个配置文件my.cfg，作为syzkaller的配置文件</p>
+<p>我的配置路径如下：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs json">&#123;<br>	<span class="hljs-attr">&quot;target&quot;</span>: <span class="hljs-string">&quot;linux/amd64&quot;</span>,<br>	<span class="hljs-attr">&quot;http&quot;</span>: <span class="hljs-string">&quot;127.0.0.1:56741&quot;</span>,<br>	<span class="hljs-attr">&quot;workdir&quot;</span>: <span class="hljs-string">&quot;/home/zino/syz/gopath/src/github.com/google/syzkaller/workdir&quot;</span>,<br>	<span class="hljs-attr">&quot;kernel_obj&quot;</span>: <span class="hljs-string">&quot;/home/zino/syz/linux-5.14&quot;</span>,<br>	<span class="hljs-attr">&quot;image&quot;</span>: <span class="hljs-string">&quot;/home/zino/syz/image/stretch.img&quot;</span>,<br>	<span class="hljs-attr">&quot;sshkey&quot;</span>: <span class="hljs-string">&quot;/home/zino/syz/image/stretch.id_rsa&quot;</span>,<br>	<span class="hljs-attr">&quot;syzkaller&quot;</span>: <span class="hljs-string">&quot;/home/zino/syz/gopath/src/github.com/google/syzkaller&quot;</span>,<br>	<span class="hljs-attr">&quot;procs&quot;</span>: <span class="hljs-number">8</span>,<br>	<span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;qemu&quot;</span>,<br>	<span class="hljs-attr">&quot;vm&quot;</span>: &#123;<br>		<span class="hljs-attr">&quot;count&quot;</span>: <span class="hljs-number">4</span>,<br>		<span class="hljs-attr">&quot;kernel&quot;</span>: <span class="hljs-string">&quot;/home/zino/syz/linux-5.14/arch/x86/boot/bzImage&quot;</span>,<br>		<span class="hljs-attr">&quot;cpu&quot;</span>: <span class="hljs-number">2</span>,<br>		<span class="hljs-attr">&quot;mem&quot;</span>: <span class="hljs-number">2048</span>,<br>		#<span class="hljs-attr">&quot;qemu_args&quot;</span>: <span class="hljs-string">&quot;-enable-kvm&quot;</span><br>	&#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+<p>然后还需要创建一个syzkaller的工作区，用来存放crash信息等</p>
+<p>然后就可以直接开始运行syzkaller了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs terminal">mkdir workdir<br>./bin/syz-manager -config=my.cfg<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>but果然最后一步还是没有那么顺利</p>
+<p>报错如下</p>
+<p><img src="/60fc7e01/QQ%E5%9B%BE%E7%89%8720211127230728.jpg" srcset="/img/loading.gif" lazyload alt="QQ图片20211127230728"></p>
+<p>努力了很久，找到了一个解决方法（原因有待思考）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs terminal">sudo vim /etc/default/grub<br>#将最后一行修改成<br>GRUB_CMDLINE_LINUX=&quot;console=ttyS0 console=ttyS0,115200n81 no_timer_check  crashkernel=auto rhgb quiet kvm.ignore_msrs=1&quot;<br>#更新配置<br>grub-mkconfig -o &quot;$(readlink -e /etc/grub2.conf)&quot;<br>#使配置生效<br>echo 1 | sudo tee /sys/module/kvm/parameters/ignore_msrs<br></code></pre></td></tr></table></figure>
+<p>这时候再去执行<code>./bin/syz-manager -config=my.cfg</code>就可以成功了</p>
+<p>博客上说是重启生效，但是不重启有效，重启后就又不行了，所以感觉还是有点问题</p>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://cloudnull.io/2020/07/fixing-msrs-errors-in-nested-virt/">Fixing MSR 0xe1 to 0x0</a></p>
+<p>后来在官方的troubleshooting里找到了解决方法</p>
+<p><img src="/60fc7e01/QQ%E5%9B%BE%E7%89%8720211127214133-16380205507012.png" srcset="/img/loading.gif" lazyload alt="问题解决方法"></p>
+<p>在官方给的配置文件的最后一行加上</p>
+<p><code>&quot;qemu_args&quot;: &quot;-enable-kvm&quot;</code></p>
+<p>即把上方的配置文件的最后一行注释取消</p>
+</blockquote>
+</li>
+</ul>
+<p>再次执行<code>./bin/syz-manager -config=my.cfg</code></p>
+<p>成功！</p>
+<p><img src="/60fc7e01/image-20211127185108620.png" srcset="/img/loading.gif" lazyload alt="image-20211127185108620"></p>
+<p>web端也成功显示</p>
+<p><img src="/60fc7e01/image-20211127185004493.png" srcset="/img/loading.gif" lazyload alt="image-20211127185004493"></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/fuzz/">fuzz</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Fuzz/">Fuzz</a>
+                    
+                      <a class="hover-with-bg" href="/tags/syzkaller/">syzkaller</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，著作权归作者所有，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/3994810f/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">操作系统实验六-生产者消费者问题</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/1326caf9/">
+                        <span class="hidden-mobile">虚拟机网络托管消失的问题</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://zino00.github.io/60fc7e01/';
+          this.page.identifier = '/60fc7e01/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a  rel="nofollow noopener"><span>Copyrights © 2021</span></a> <i class="iconfont icon-love"></i> <a  target="_blank" rel="nofollow noopener"><span>Zino</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d1745c2e21adaa6ae90b93f4f4d22da9";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.10/dist/katex.min.css" />
+  
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?f45dcd001d67e8f9d84f91248ea31abf";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

