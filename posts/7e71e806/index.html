@@ -14,7 +14,7 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="安装使用hexo-abbrlink及解决与hexo-asset-image不适配的问题">
+  <meta name="description" content="安装使用hexo-abbrlink来生成惟一的不带中文的博客链接及解决与hexo-asset-image不适配的问题">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      265 字
+      315 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      3
+      4
        分钟
     </span>
   
@@ -236,12 +236,17 @@
             <h1 style="display: none">使用hexo-abbrlink及解决与hexo-asset-image不适配的问题</h1>
             
             <div class="markdown-body">
-              <p>安装</p>
+              <p>插件功能：</p>
+<p>全自动生成惟一的不带中文的博客链接</p>
+<p>原理：</p>
+<p>对<code>标题</code>+<code>时间</code>进行<code>md5</code>而后再转<code>base64</code>，保存在<code>front-matter</code>中。</p>
+<p>安装：</p>
 <figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ada">npm install hexo-abbrlink <span class="hljs-comment">--save</span><br></code></pre></td></tr></table></figure>
-<p>配置博客站点配置文件_config.yml</p>
+<p>配置博客站点配置文件_config.yml：</p>
 <figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs dts"><span class="hljs-symbol">permalink:</span> posts/:abbrlink/<br><span class="hljs-meta"># abbrlink config</span><br><span class="hljs-symbol">abbrlink:</span><br><span class="hljs-symbol">  alg:</span> crc32  <span class="hljs-meta">#support crc16(default) and crc32</span><br><span class="hljs-symbol">  rep:</span> hex    <span class="hljs-meta">#support dec(default) and hex</span><br></code></pre></td></tr></table></figure>
-<p>测试</p>
+<p>测试：</p>
 <figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">hexo clean</span><br><span class="hljs-attribute">hexo g</span><br><span class="hljs-attribute">hexo s</span><br></code></pre></td></tr></table></figure>
+<p>问题：</p>
 <p>链接是修改了，但是图片不能成功显示</p>
 <p>后来发现是与hexo-asset-image不能适配的问题，hexo-abbrlink使用后导致图片路径变化，所以不能成功识别图片，所以需要修改下面的文件</p>
 <p>\node_modules\hexo-asset-image\index.js<br>
@@ -254,6 +259,7 @@
 _posts文件夹下的文章，按照自己喜欢的方式整理，生成的链接是正常的，在typora中可以正常显示。</p>
 <p>参考链接：</p>
 <p><a target="_blank" rel="noopener" href="https://github.com/rozbo/hexo-abbrlink/issues/19">https://github.com/rozbo/hexo-abbrlink/issues/19</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.shangmayuan.com/a/8863defeb3264ffd84335151.html">https://www.shangmayuan.com/a/8863defeb3264ffd84335151.html</a></p>
 
             </div>
             <hr>
