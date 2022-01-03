@@ -14,11 +14,11 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="介绍linux下的./configure、make、make install三个命令">
+  <meta name="description" content="学习AFL源码的一些记录">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-  <title>linux命令详解 ./configure、make、make install 命令 - Zino&#39;s Blog</title>
+  <title>AFL源码注释（待完成） - Zino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
@@ -163,7 +163,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="linux命令详解 ./configure、make、make install 命令">
+            <span class="h2" id="subtitle" title="AFL源码注释（待完成）">
               
             </span>
 
@@ -173,8 +173,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-12-01 19:35" pubdate>
-        2021年12月1日 晚上
+      <time datetime="2021-12-21 10:43" pubdate>
+        2021年12月21日 上午
       </time>
     </span>
   
@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.2k 字
+      1.3k 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      13
+      16
        分钟
     </span>
   
@@ -233,52 +233,96 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">linux命令详解 ./configure、make、make install 命令</h1>
+            <h1 style="display: none">AFL源码注释（待完成）</h1>
             
             <div class="markdown-body">
-              <p>这些都是典型的使用GNU的AUTOCONF和AUTOMAKE产生的程序的安装步骤</p>
-<h2 id="一-基本信息"><a class="markdownIt-Anchor" href="#一-基本信息"></a> 一、基本信息</h2>
-<p>1、./configure 是用来检测你的安装平台的目标特征的。比如它会检测你是不是有CC或GCC，并不是需要CC或GCC，它是个shell脚本。</p>
-<p>2、make 是用来编译的，它从Makefile中读取指令，然后编译。</p>
-<p>3、make install是用来安装的，它也从Makefile中读取指令，安装到指定的位置。</p>
-<p>注意：AUTOMAKE和AUTOCONF是非常有用的用来发布C程序的东西。</p>
-<h2 id="二-详细解释"><a class="markdownIt-Anchor" href="#二-详细解释"></a> 二、详细解释</h2>
-<h3 id="1-configure命令"><a class="markdownIt-Anchor" href="#1-configure命令"></a> 1、configure命令</h3>
-<p>这一步一般用来生成 Makefile，为下一步的编译做准备，你可以通过在 configure 后加上参数来对安装进行控制，比如代码:./configure –prefix=/usr 意思是将该软件安装在 /usr 下面，执行文件就会安装在 /usr/bin （而不是默认的 /usr/local/bin),资源文件就会安装在 /usr/share（而不是默认的/usr/local/share）。同时一些软件的配置文件你可以通过指定 –sys-config= 参数进行设定。有一些软件还可以加上 –with、–enable、–without、–disable 等等参数对编译加以控制，你可以通过允许 ./configure –help 察看详细的说明帮助。</p>
-<p><img src="/40823701/image-20211201145802464.png" srcset="/img/loading.gif" lazyload alt="image-20211201145802464"></p>
-<h3 id="2-make"><a class="markdownIt-Anchor" href="#2-make"></a> 2、make</h3>
-<p>这一步就是编译，大多数的源代码包都经过这一步进行编译（当然有些perl或python编写的软件需要调用perl或python来进行编译）。如果 在 make 过程中出现 error ，你就要记下错误代码（注意不仅仅是最后一行），然后你可以向开发者提交 bugreport（一般在 INSTALL 里有提交地址），或者你的系统少了一些依赖库等，这些需要自己仔细研究错误代码。</p>
-<p>可能遇到的错误：make *** 没有指明目标并且找不到 makefile。 停止。问题很明了，没有Makefile，怎么办，原来是要先./configure 一下，再make。</p>
-<h3 id="3-make-insatll"><a class="markdownIt-Anchor" href="#3-make-insatll"></a> 3、make insatll</h3>
-<p>这条命令来进行安装（当然有些软件需要先运行 make check 或 make test 来进行一些测试），这一步一般需要你有 root 权限（因为要向系统写入文件）。</p>
-<h2 id="三-扩展说明"><a class="markdownIt-Anchor" href="#三-扩展说明"></a> 三、扩展说明</h2>
-<p>Linux的用户可能知道，在Linux下安装一个应用程序时，一般先运行脚本configure，然后用make来编译源程序，在运行make install，最后运行make clean删除一些临时文件。使用上述三个自动工具，就可以生成configure脚本。运行configure脚本，就可以生成Makefile文件，然后就可以运行make、make install和make clean。</p>
-<p>configure是一个shell脚本，它可以自动设定源程序以符合各种不同平台上Unix系统的特性，并且根据系统叁数及环境产生合适的Makefile文件或是C的头文件(header file)，让源程序可以很方便地在这些不同的平台上被编译连接。</p>
-<p>这时，就可运行configure脚本了，运行configure脚本，就可产生出符合GNU规范的Makefile文件了： $ ./configure</p>
-<p>到此时，就可以运行make进行编译，在运行make install进行安装了，最后运行make clean删除临时文件。</p>
-<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs elixir"><span class="hljs-variable">$ </span>make<br><span class="hljs-variable">$ </span>make install           (注：运行这个要有足够的权限)<br><span class="hljs-variable">$ </span>make clean<br></code></pre></td></tr></table></figure>
-<p>利用configure所产生的Makefile文件有几个预设的目标可供使用，其中几个重要的简述如下：</p>
+              <h1 id="1-afl-gcc"><a class="markdownIt-Anchor" href="#1-afl-gcc"></a> 1. afl-gcc</h1>
 <ul>
 <li>
-<p>make all：产生我们设定的目标，即此范例中的可执行文件。只打make也可以，此时会开始编译原始码，然后连结，并且产生可执行文件。</p>
+<p>简单函数解释</p>
+<blockquote>
+<ul>
+<li>
+<p><strong>strrchr()</strong></p>
+<p>char *strrchr(const char *str, int c)</p>
+<p>在参数 <strong>str</strong> 所指向的字符串中搜索最后一次出现字符 <strong>c</strong>（一个无符号字符）的位置。</p>
 </li>
 <li>
-<p>make clean：清除编译产生的可执行文件及目标文件(object file，*.o)。</p>
-</li>
-<li>
-<p>make distclean：除了清除可执行文件和目标文件外，把configure所产生的Makefile也清除掉。</p>
-</li>
-<li>
-<p>make install：将程序安装至系统中。如果原始码编译无误，且执行结果正确，便可以把程序安装至系统预设的可执行文件存放路径。如果用bin_PROGRAMS宏的话，程序会被安装至/usr/local/bin这个目录。</p>
-</li>
-<li>
-<p>make dist：将程序和相关的档案包装成一个压缩文件以供发布。执行完在目录下会产生一个以PACKAGE-VERSION.tar.gz为名称的文件。 PACKAGE和VERSION这两个变数是根据configure.in文件中AM_INIT_AUTOMAKE(PACKAGE，VERSION)的定义。在此范例中会产生test-1.0.tar.gz的档案。</p>
-</li>
-<li>
-<p>make distcheck：和make dist类似，但是加入检查包装后的压缩文件是否正常。这个目标除了把程序和相关文件包装成tar.gz文件外，还会自动把这个压缩文件解开，执行 configure，并且进行make all 的动作，确认编译无误后，会显示这个tar.gz文件可供发布了。这个检查非常有用，检查过关的包，基本上可以给任何一个具备GNU开发环境-的人去重新编译。</p>
+<p><strong>access()</strong></p>
+<p>int access(const char* pathname, int mode);</p>
+<p>pathname 是文件的路径名+文件名</p>
+<p>mode：指定access的作用，取值如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs undefined">F_OK 值为0，判断文件是否存在<br>X_OK 值为1，判断对文件是可执行权限<br>W_OK 值为2，判断对文件是否有写权限<br>R_OK 值为4，判断对文件是否有读权限<br></code></pre></td></tr></table></figure>
+<p>返回值：成功0，失败-1</p>
 </li>
 </ul>
-<p>参考链接：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/tinywan/p/7230039.html">Linux 命令详解（三）./configure、make、make install 命令</a></p>
+</blockquote>
+</li>
+</ul>
+<h2 id="find_as"><a class="markdownIt-Anchor" href="#find_as"></a> find_as</h2>
+<p>这个函数用来寻找<code>afl-as</code>的位置。</p>
+<ul>
+<li>它首先检查是否存在AFL_PATH这个环境变量，如果存在就赋值给afl_path，然后检查<code>afl_path/as</code>这个文件是否可以执行，如果可以执行，就将afl_path设置为as_path。</li>
+<li>如果不存在AFL_PATH这个环境变量，则检查argv0，例如（”~/AFL/afl-gcc”）中是否存在’/‘，如果有就找到最后一个’/‘所在的位置，并取其前面的字符串作为dir，然后检查<code>dir/afl-as</code>这个文件是否可以执行，如果可以访问，就将dir设置为as_path</li>
+<li>如果上述两种方式都失败，则抛出异常。</li>
+</ul>
+<h2 id="edit_params"><a class="markdownIt-Anchor" href="#edit_params"></a> edit_params</h2>
+<p>这个函数主要是将argv拷贝到<code>u8 **cc_params</code>中，并做必要的编辑。</p>
+<ul>
+<li>它首先通过ck_alloc来为cc_params分配内存，分配的长度为<code>(argc+128)*8</code>，相当大的内存了。</li>
+<li>然后检查argv[0]里有没有’/‘，如果没有就赋值’argv[0]’到name，如果有就找到最后一个’/‘所在的位置，然后跳过这个’/‘，使name指向’/'后面的值。</li>
+<li>将name和afl-clang比较，如果相同，
+<ul>
+<li>则设置clang_mode为1，然后设置环境变量CLANG_ENV_VAR为1。</li>
+<li>然后将name和afl-clang++比较
+<ul>
+<li>如果相同，则获取环境变量<code>AFL_CXX</code>的值，如果该值存在，则将cc_params[0]设置为该值，如果不存在，就设置为clang++</li>
+<li>如果不相同，则获取环境变量<code>AFL_CC</code>的值，如果该值存在，则将cc_params[0]设置为该值，如果不存在，就设置为clang</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>如果不相同，则将name和afl-g++比较
+<ul>
+<li>如果相同，则获取环境变量<code>AFL_CXX</code>的值，如果该值存在，则将cc_params[0]设置为该值，如果不存在，就设置为g++</li>
+<li>还比了下gcj，一般用不到</li>
+<li>如果不相同，则获取环境变量<code>AFL_CC</code>的值，如果该值存在，则将cc_params[0]设置为该值，如果不存在，就设置为gcc</li>
+</ul>
+</li>
+<li>然后遍历从argv[1]开始的argv参数
+<ul>
+<li>跳过<code>-B/integrated-as/-pipe</code></li>
+<li>如果存在<code>-fsanitize=address</code>或者<code>-fsanitize=memory</code>，就设置asan_set为1;</li>
+<li>如果存在<code>FORTIFY_SOURCE</code>，则设置fortify_set为1</li>
+<li><code>cc_params[cc_par_cnt++] = cur</code>;</li>
+</ul>
+</li>
+<li>然后开始设置其他的cc_params参数
+<ul>
+<li>取之前计算出来的<code>as_path</code>，然后设置<code>-B as_path</code></li>
+<li>如果是clang_mode,则设置<code>-no-integrated-as</code></li>
+<li>如果存在AFL_HARDEN环境变量，则设置<code>-fstack-protector-all</code></li>
+<li>sanitizer
+<ul>
+<li>if如果asan_set在上面被设置为1，则使<code>AFL_USE_ASAN</code>环境变量为1</li>
+<li>elseif存在AFL_USE_ASAN环境变量，则设置<code>-fsanitize=address</code></li>
+<li>elseif如果存在AFL_USE_MSAN环境变量，则设置<code>-fsanitize=memory</code>，但不能同时还指定<code>AFL_HARDEN</code>或者<code>AFL_USE_ASAN</code>，因为这样运行时速度过慢。</li>
+</ul>
+</li>
+<li>如果不存在AFL_DONT_OPTIMIZE环境变量，则设置<code>-g -O3 -funroll-loops -D__AFL_COMPILER=1 -DFUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION=1</code></li>
+<li>如果存在AFL_NO_BUILTIN环境变量，则设置<code>-fno-builtin-strcmp</code>等</li>
+</ul>
+</li>
+<li>最后<code>cc_params[cc_par_cnt] = NULL;</code>终止对cc_params的编辑</li>
+</ul>
+<h2 id="main函数"><a class="markdownIt-Anchor" href="#main函数"></a> main函数</h2>
+<p>看到这里，我们就知道afl-gcc就是找到as所在的位置，将其加入搜索路径，然后设置必要的gcc参数和一些宏，然后调用gcc进行实际的编译，仅仅只是一层wrapper</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/* Main entry point */</span><br><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">int</span> argc, <span class="hljs-keyword">char</span> **argv)</span> </span>&#123;<br><br>    <span class="hljs-keyword">if</span> (isatty(<span class="hljs-number">2</span>) &amp;&amp; !getenv(<span class="hljs-string">&quot;AFL_QUIET&quot;</span>)) &#123;<br><br>        SAYF(cCYA <span class="hljs-string">&quot;afl-cc &quot;</span> cBRI VERSION cRST <span class="hljs-string">&quot; by &lt;lcamtuf@google.com&gt;\n&quot;</span>);<br><br>    &#125; <span class="hljs-keyword">else</span> be_quiet = <span class="hljs-number">1</span>;<br><br>    <span class="hljs-keyword">if</span> (argc &lt; <span class="hljs-number">2</span>) &#123;<br>        ...<br>        <span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>    &#125;<br>    <span class="hljs-comment">//查找fake GNU assembler</span><br>    find_as(argv[<span class="hljs-number">0</span>]);<br>    <span class="hljs-comment">// 设置CC的参数</span><br>    edit_params(argc, argv);<br>    <span class="hljs-comment">// 调用execvp来执行CC</span><br>    <br>    <span class="hljs-comment">// 这里我们在CC之前打印一下参数看看。</span><br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-keyword">sizeof</span>(cc_params); i++) &#123;<br>      <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\targ%d: %s &quot;</span>,i,cc_params[i]);<br>    &#125;<br><br>    execvp(cc_params[<span class="hljs-number">0</span>], (<span class="hljs-keyword">char</span> **) cc_params);<br><br>    FATAL(<span class="hljs-string">&quot;Oops, failed to execute &#x27;%s&#x27; - check your PATH&quot;</span>, cc_params[<span class="hljs-number">0</span>]);<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>通过在执行execvp之前打印命令行参数得到</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">gcc</span> /tmp/hello.c -B /root/src/afl-<span class="hljs-number">2</span>.<span class="hljs-number">52</span>b -g -O<span class="hljs-number">3</span> -funroll-loops -D__AFL_COMPILER=<span class="hljs-number">1</span> -DFUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION=<span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+<p>可以看到，<code>afl-gcc</code>最终调用<code>gcc</code>，并定义了一些宏，设置了一些参数。其中最关键的就是<code>-B /root/src/afl-2.52b</code>这条。根据<code>gcc --help</code>可知，<code>-B</code>选项用于设置编译器的搜索路径，这里便是设置成<code>/root/src/afl-2.52b</code>(是我设置的环境变量<code>AFL_PATH</code>的值，即AFL目录，因为我没有make install)。</p>
+<p>如果了解编译过程，那么就知道把源代码编译成二进制，主要是经过”源代码”-&gt;”汇编代码”-&gt;”二进制”这样的过程。而将汇编代码编译成为二进制的工具，即为汇编器assembler。Linux系统下的常用汇编器是<code>as</code>。不过，编译完成AFL后，在其目录下也会存在一个<code>as</code>文件，并作为符号链接指向<code>afl-as</code>。所以，如果通过<code>-B</code>选项为gcc设置了搜索路径，那么<code>afl-as</code>便会作为汇编器，执行实际的汇编操作。</p>
+<p>所以，AFL的代码插桩，就是在将源文件编译为汇编代码后，通过<code>afl-as</code>完成。</p>
 
             </div>
             <hr>
@@ -288,7 +332,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/linux%E5%9F%BA%E7%A1%80/">linux基础</a>
+                      <a class="hover-with-bg" href="/categories/fuzz/">fuzz</a>
                     
                   </div>
                 
@@ -296,7 +340,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/linux/">linux</a>
+                      <a class="hover-with-bg" href="/tags/fuzz/">fuzz</a>
                     
                   </div>
                 
@@ -313,9 +357,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/5dd98acd/">
+                      <a href="/6c024da0.html">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">论文笔记：《FUZZIFICATION:Anti-Fuzzing Techniques》</span>
+                        <span class="hidden-mobile">操作系统实验七-内存页面置换算法的设计和主存储器空间的分配和回收</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -323,8 +367,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/eda6b4df/">
-                        <span class="hidden-mobile">pwndbg的安装和gdb使用</span>
+                      <a href="/33f70302.html">
+                        <span class="hidden-mobile">论文笔记:《VulDeeLocator:A Deep Learning-based Fine-grained Vulnerability Detector》</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -346,8 +390,8 @@
     
       <script type="text/javascript">
         var disqus_config = function() {
-          this.page.url = 'https://zino00.github.io/40823701/';
-          this.page.identifier = '/40823701/';
+          this.page.url = 'https://zino00.github.io/7e08c437.html';
+          this.page.identifier = '/7e08c437.html';
         };
         Fluid.utils.loadComments('#disqus_thread', function() {
           var d = document, s = d.createElement('script');

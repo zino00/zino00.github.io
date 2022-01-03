@@ -14,11 +14,11 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="记录linux的基本命令的使用以及gdb插件pwndbg的简单安装">
+  <meta name="description" content="逆向分析了一个简单的恶意样本">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-  <title>pwndbg的安装和gdb使用 - Zino&#39;s Blog</title>
+  <title>恶意样本分析初探 - Zino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
@@ -163,7 +163,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="pwndbg的安装和gdb使用">
+            <span class="h2" id="subtitle" title="恶意样本分析初探">
               
             </span>
 
@@ -173,8 +173,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-12-01 19:35" pubdate>
-        2021年12月1日 晚上
+      <time datetime="2021-12-27 23:03" pubdate>
+        2021年12月27日 晚上
       </time>
     </span>
   
@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.9k 字
+      1.7k 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      22
+      18
        分钟
     </span>
   
@@ -233,228 +233,136 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">pwndbg的安装和gdb使用</h1>
+            <h1 style="display: none">恶意样本分析初探</h1>
             
             <div class="markdown-body">
-              <h2 id="一-pwndbg安装"><a class="markdownIt-Anchor" href="#一-pwndbg安装"></a> 一、pwndbg安装</h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs terminal">git clone https://github.com/pwndbg/pwndbg<br>cd pwndbg<br>./setup.sh<br></code></pre></td></tr></table></figure>
-<p>然后我们可以查看.gdbinit中的内容</p>
-<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli">cat <span class="hljs-string">.gdbinit</span><br></code></pre></td></tr></table></figure>
-<p><img src="/eda6b4df/image-20211201173406772.png" srcset="/img/loading.gif" lazyload alt="image-20211201173406772"></p>
-<p>如何之前没有安装过别的插件，则只会显示有最后一行，如果安装过，则将前面的注释掉即可</p>
-<p>插件功能都差不多，选择一个即可，倒也不必每个都装。最后选了pwndbg单纯觉得好看。</p>
-<p>pwndbg基本界面如图：</p>
-<p><img src="/eda6b4df/image-20211201173706711.png" srcset="/img/loading.gif" lazyload alt="image-20211201173706711"></p>
-<h2 id="二-gdb的使用"><a class="markdownIt-Anchor" href="#二-gdb的使用"></a> 二、gdb的使用</h2>
-<h3 id="基本指令"><a class="markdownIt-Anchor" href="#基本指令"></a> 基本指令</h3>
+              <h1 id="样本信息"><a class="markdownIt-Anchor" href="#样本信息"></a> 样本信息</h1>
+<p>文件名称：VirusShare_0ba82bfa31bbc0d46cc1f0d2395d1d7f</p>
+<p>文件MD5：0ba82bfa31bbc0d46cc1f0d2395d1d7f</p>
+<p>文件类型：linux  elf32</p>
+<p><img src="/image-20211225200333850.png" srcset="/img/loading.gif" lazyload alt="image-20211225200333850"></p>
+<h1 id="样本行为分析"><a class="markdownIt-Anchor" href="#样本行为分析"></a> 样本行为分析</h1>
+<h3 id="动态分析"><a class="markdownIt-Anchor" href="#动态分析"></a> 动态分析</h3>
+<p>在linux虚拟机上执行这个文件后，可以发现其创建了两个空文件，里面并没有内容</p>
+<p><img src="/image-20211226124104417.png" srcset="/img/loading.gif" lazyload alt="image-20211226124104417"></p>
+<p>终端信息：</p>
+<p><img src="/image-20211226124157481.png" srcset="/img/loading.gif" lazyload alt="image-20211226124157481"></p>
+<p>其执行了chsh，应该是希望改变用户的登陆shell,但因为没有密码，并没有执行成功，同时可以从上面的提示信息看出，文件应该也执行了一个sendfile()操作，但似乎因为无效参数并没有执行成功。</p>
+<h3 id="静态分析"><a class="markdownIt-Anchor" href="#静态分析"></a> 静态分析</h3>
+<p>在ida里打开，F5后看到其main函数如图</p>
+<p><img src="/image-20211226132223007.png" srcset="/img/loading.gif" lazyload alt="image-20211226132223007"></p>
+<p>dolisten函数内容</p>
+<p><img src="/image-20211226132833929.png" srcset="/img/loading.gif" lazyload alt="image-20211226132833929"></p>
+<h3 id="样本基本行为"><a class="markdownIt-Anchor" href="#样本基本行为"></a> 样本基本行为</h3>
+<ol>
+<li>样本首先创建一个文件sendfile1,往其中写入大量字符A，之后进程创建一个子进程1，绑定本机ip,开始监听，等待父进程发送信息。</li>
+<li>之后父进程在再创建一个子进程2，父进程通过sendfile()将sendfile1()的内容发送给子进程，子进程收到后将内容写入kmem中。</li>
+<li>子进程2清空sendfile1文件的内容，并且执行十次chsh的操作，意图将当前登录shell改为/bin/sh</li>
+</ol>
+<h3 id="gdb"><a class="markdownIt-Anchor" href="#gdb"></a> gdb</h3>
+<p>因为无法通过执行看到文件中间内容，虽然根据静态分析是将sendfile1的内容写入kmem，但似乎发送并没有成功，gdb调试一下看看，在dolisten出下断点，然后s步入，执行到写入kmem时将文件内容打印出来，可以看到其通信就是基于本机端口，但具体内容并没有办法成功显示。怀疑是sendfile()函数本身并没有执行成功。</p>
+<p><img src="/image-20211226110537703.png" srcset="/img/loading.gif" lazyload alt="image-20211226110537703"></p>
+<p>而通过gdb打印sendfile1的内容则和预期一样全是A。</p>
+<h1 id="问题"><a class="markdownIt-Anchor" href="#问题"></a> 问题</h1>
+<p>该样本在执行sendfile()函数时，sendfile函数的参数给定似乎有一定问题。</p>
+<p>这个函数原型为ssize_t sendfile(int out_fd , int in_fd , off_t * offset , size_t count );</p>
+<p>其中in_fd应该是为读取而打开的文件描述符，out_fd应该是一个为写入而打开的描述符。</p>
+<p>在程序中，fd是socket的文件描述符，out_fd是文件sendfile1，按照程序中的参数给定，其意图是将socket的内容写入sendfile1中，但根据程序设计按理应该是将sendfile1发送到socket，让子进程接收。</p>
+<p>这个参数的位置的颠倒也和前面动态分析中直接执行程序显示sendfile()的参数无效相对应，而这也可能是gdb调试中无法正确打印出kmem的原因。</p>
+<p><img src="/image-20211226135708611.png" srcset="/img/loading.gif" lazyload alt="image-20211226135708611"></p>
+<p><img src="/image-20211226134405112.png" srcset="/img/loading.gif" lazyload alt="image-20211226134405112"></p>
+<h1 id="可疑行为总结"><a class="markdownIt-Anchor" href="#可疑行为总结"></a> 可疑行为总结</h1>
+<p>该样本的行为较为简单，其本身似乎没有实现恶意行为，总体来说</p>
 <ul>
-<li><code>help</code> //帮助</li>
-<li><code>i</code> //info，查看一些信息，只输入info可以看可以接什么参数，下面几个比较常用
-<ul>
-<li><code>i b</code> //<strong>常用</strong>，info break 查看所有断点信息（编号、断点位置）</li>
-<li><code>i r</code> //<strong>常用</strong>，info registers 查看各个寄存器当前的值</li>
-<li><code>i f</code> //info function 查看所有函数名，需保留符号</li>
+<li>只是进行了一个父子进程间的通信和文本内容传输，并且最后用户并不能看到文本传输的内容。</li>
+<li>最后尝试切换登陆shell</li>
 </ul>
-</li>
-<li><code>show</code> //和info类似，但是查看调试器的基本信息，如：
-<ul>
-<li>show args //查看参数</li>
-</ul>
-</li>
-<li><code>rdi</code> //<strong>常用</strong>，+寄存器名代表一个寄存器内的值，用在地址上直接相当与一个十六进制变量</li>
-<li><code>backtrace</code> //查看调用栈</li>
-<li><code>q</code> //quit 退出，常用</li>
-</ul>
-<h3 id="执行指令"><a class="markdownIt-Anchor" href="#执行指令"></a> 执行指令</h3>
-<ul>
-<li><code>s</code> //s<strong>单步步入</strong>，遇到调用跟进函数中，相当于step into，源码层面的一步</li>
-<li><code>si</code> //<strong>常用</strong>，同s，汇编层面的一步</li>
-<li><code>n</code> //next,<strong>单步补过</strong>，遇到调用不跟进，相当于step over，源码层面的一步</li>
-<li><code>ni</code> //nexti,<strong>常用</strong>，同n，汇编层面的一步</li>
-<li><code>c</code> //continue，常用，继续执行到断点，没断点就一直执行下去</li>
-<li><code>r</code> //run，常用，重新开始执行</li>
-</ul>
-<h3 id="断点指令"><a class="markdownIt-Anchor" href="#断点指令"></a> 断点指令</h3>
-<h4 id="下普通断点指令bbreak"><a class="markdownIt-Anchor" href="#下普通断点指令bbreak"></a> <strong>下普通断点指令b(break)：</strong></h4>
-<ul>
-<li><code>b *(0x123456)</code> //<strong>常用</strong>，给0x123456地址处的指令下断点
-<ul>
-<li>b *$ rebase(0x123456) //$rebase 在调试开PIE的程序的时候可以直接加上程序的随机地址</li>
-</ul>
-</li>
-<li><code>b function_name</code> //<strong>常用</strong>，给函数fun_name下断点，目标文件要保留符号才行</li>
-<li><code>b file_name:fun_name</code></li>
-<li><code>b file_name:15</code> //给file_name的15行下断点，要有源码才行
-<ul>
-<li><code>b 15</code>//单个文件的第15行</li>
-</ul>
-</li>
-<li><code>b +0x10</code> //在程序当前停住的位置下0x10的位置下断点，同样可以-0x10，就是前0x10</li>
-<li><code>break fun if \$rdi==5</code> //条件断点，rdi值为5的时候才断</li>
-</ul>
-<h4 id="删除-禁用断点"><a class="markdownIt-Anchor" href="#删除-禁用断点"></a> <strong>删除、禁用断点：</strong></h4>
-<p>使用info break(简写: i b)来查看断点编号</p>
-<ul>
-<li><code>delete 5</code> //<strong>常用</strong>，删除5号断点，直接delete不接数字删除所有</li>
-<li><code>disable 5</code> //<strong>常用</strong>，禁用5号断点</li>
-<li><code>enable 5</code> //启用5号断点</li>
-<li><code>clear</code> //不加参数默认清除当前函数所在行的所有断点
-<ul>
-<li><code>clear function</code>//删除该函数内的所有断点</li>
-<li><code>clear line</code>//删除该行的所有断点</li>
-</ul>
-</li>
-</ul>
-<h4 id="内存断点指令watch"><a class="markdownIt-Anchor" href="#内存断点指令watch"></a> <strong>内存断点指令watch：</strong></h4>
-<ul>
-<li><code>watch 0x123456</code> //0x123456地址的数据改变的时候会断</li>
-<li><code>watch a</code> //变量a改变的时候会断</li>
-<li><code>info watchpoints</code> //查看watch断点信息</li>
-</ul>
-<h4 id="捕获断点catch"><a class="markdownIt-Anchor" href="#捕获断点catch"></a> <strong>捕获断点catch：</strong></h4>
-<ul>
-<li><code>catch syscall</code> //syscall系统调用的时候断住</li>
-<li><code>tcatch syscall</code> //syscall系统调用的时候断住，只断一次</li>
-<li><code>info break</code> //catch的断点可以通过i b查看</li>
-</ul>
+<p>但是该样本可以作为一个大的恶意文件的一部分组成，结合别的函数来实现更确切的恶意行为，例如文本的隐蔽通信传输。结合窃取到密码来成功切换shell。</p>
+<h1 id="附录-部分调用函数功能说明"><a class="markdownIt-Anchor" href="#附录-部分调用函数功能说明"></a> 附录-部分调用函数功能说明</h1>
 <blockquote>
-<p>除syscall外还可以使用的有：</p>
-<p>1）throw: 抛出异常</p>
-<p>2）catch: 捕获异常</p>
-<p>3）exec: exec被调用</p>
-<p>4）fork: fork被调用</p>
-<p>5）vfork: vfork被调用</p>
-<p>6）load: 加载动态库</p>
-<p>7）load libname: 加载名为libname的动态库</p>
-<p>8）unload: 卸载动态库</p>
-<p>9）unload libname: 卸载名为libname的动态库</p>
-<p>10）syscall [args]: 调用系统调用，args可以指定系统调用号，或者系统名称</p>
+<h2 id="fwrite"><a class="markdownIt-Anchor" href="#fwrite"></a> fwrite()</h2>
+<h4 id="声明"><a class="markdownIt-Anchor" href="#声明"></a> 声明</h4>
+<p>下面是 fwrite() 函数的声明。</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-function"><span class="hljs-keyword">size_t</span> <span class="hljs-title">fwrite</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">void</span> *ptr, <span class="hljs-keyword">size_t</span> size, <span class="hljs-keyword">size_t</span> nmemb, FILE *stream)</span></span><br></code></pre></td></tr></table></figure>
+<h4 id="参数"><a class="markdownIt-Anchor" href="#参数"></a> 参数</h4>
+<ul>
+<li><strong>ptr</strong> – 这是指向要被写入的元素数组的指针。</li>
+<li><strong>size</strong> – 这是要被写入的每个元素的大小，以字节为单位。</li>
+<li><strong>nmemb</strong> – 这是元素的个数，每个元素的大小为 size 字节。</li>
+<li><strong>stream</strong> – 这是指向 FILE 对象的指针，该 FILE 对象指定了一个输出流。</li>
+</ul>
+<h4 id="返回值"><a class="markdownIt-Anchor" href="#返回值"></a> 返回值</h4>
+<p>如果成功，该函数返回一个 size_t 对象，表示元素的总数，该对象是一个整型数据类型。如果该数字与 nmemb 参数不同，则会显示一个错误。</p>
+<h2 id="fopen"><a class="markdownIt-Anchor" href="#fopen"></a> fopen()</h2>
+<h4 id="声明-2"><a class="markdownIt-Anchor" href="#声明-2"></a> 声明</h4>
+<p>下面是 fopen() 函数的声明。</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stata"><span class="hljs-keyword">FILE</span> *fopen(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *filename, <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *mode)<br></code></pre></td></tr></table></figure>
+<h4 id="参数-2"><a class="markdownIt-Anchor" href="#参数-2"></a> 参数</h4>
+<ul>
+<li><strong>filename</strong> – 这是 C 字符串，包含了要打开的文件名称。</li>
+<li><strong>mode</strong> – 这是 C 字符串，包含了文件访问模式，模式如下：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">模式</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">“r”</td>
+<td style="text-align:left">打开一个用于读取的文件。该文件必须存在。</td>
+</tr>
+<tr>
+<td style="text-align:left">“w”</td>
+<td style="text-align:left">创建一个用于写入的空文件。如果文件名称与已存在的文件相同，则会删除已有文件的内容，文件被视为一个新的空文件。</td>
+</tr>
+<tr>
+<td style="text-align:left">“a”</td>
+<td style="text-align:left">追加到一个文件。写操作向文件末尾追加数据。如果文件不存在，则创建文件。</td>
+</tr>
+<tr>
+<td style="text-align:left">“r+”</td>
+<td style="text-align:left">打开一个用于更新的文件，可读取也可写入。该文件必须存在。</td>
+</tr>
+<tr>
+<td style="text-align:left">“w+”</td>
+<td style="text-align:left">创建一个用于读写的空文件。</td>
+</tr>
+<tr>
+<td style="text-align:left">“a+”</td>
+<td style="text-align:left">打开一个用于读取和追加的文件。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="fsfat"><a class="markdownIt-Anchor" href="#fsfat"></a> fsfat</h2>
+<h5 id="定义函数"><a class="markdownIt-Anchor" href="#定义函数"></a> 定义函数</h5>
+<p>int fstat(int fildes, struct stat *buf);</p>
+<h4 id="函数说明"><a class="markdownIt-Anchor" href="#函数说明"></a> 函数说明：</h4>
+<p>fstat()用来将参数fildes 所指的文件状态, 复制到参数buf 所指的结构中(struct stat). Fstat()与stat()作用完全相同, 不同处在于传入的参数为已打开的文件描述词. 详细内容请参考stat().</p>
+<h4 id="返回值-2"><a class="markdownIt-Anchor" href="#返回值-2"></a> 返回值：</h4>
+<p>执行成功则返回0, 失败返回-1, 错误代码存于errno.</p>
+<h2 id="socket"><a class="markdownIt-Anchor" href="#socket"></a> socket()</h2>
+<h4 id="原型"><a class="markdownIt-Anchor" href="#原型"></a> 原型</h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">socket</span><span class="hljs-params">(<span class="hljs-keyword">int</span> domain, <span class="hljs-keyword">int</span> type, <span class="hljs-keyword">int</span> protocol)</span></span>;<br></code></pre></td></tr></table></figure>
+<p>这个函数建立一个协议族为domain、协议类型为type、协议编号为protocol的套接字文件描述符。如果函数调用成功，会返回一个标识这个套接字的文件描述符，失败的时候返回-1。</p>
+<p>domain:AF_INET=2,IPv4 Internet协议</p>
+<p>type:SOCK_STREAM=1,Tcp连接，提供序列化的、可靠的、双向连接的字节流。支持带外数据传输</p>
+<p>protocol:ipv4只有一个协议则为0</p>
+<h2 id="sendfile"><a class="markdownIt-Anchor" href="#sendfile"></a> sendfile()</h2>
+<h4 id="声明-3"><a class="markdownIt-Anchor" href="#声明-3"></a> 声明</h4>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">ssize_t</span> <span class="hljs-title">sendfile</span><span class="hljs-params">(<span class="hljs-keyword">int</span> out_fd , <span class="hljs-keyword">int</span> in_fd , <span class="hljs-keyword">off_t</span> * offset , <span class="hljs-keyword">size_t</span> count )</span></span>;<br></code></pre></td></tr></table></figure>
+<h4 id="描述"><a class="markdownIt-Anchor" href="#描述"></a> 描述</h4>
+<p>sendfile () 在一个文件描述符和另一个文件描述符之间复制数据。</p>
+<p>因为这个复制是在内核内部完成的，所以sendfile () 是比read(2)和write(2)的组合更有效，<br>
+这不需要将数据传入和传出用户空间。</p>
+<p>in_fd应该是为读取而打开的文件描述符，out_fd应该是一个为写入而打开的描述符。</p>
+<p>如果offset不为 NULL，则它指向一个变量sendfile () 将从in_fd开始读取数据的文件偏移量。当sendfile ()返回时，这个变量会被设置为读取的最后一个字节之后的字节的偏移量。如果<br>
+offset不为NULL，则sendfile ()不修改文件in_fd 的偏移量；否则调整文件偏移以反映从in_fd读取的字节数。</p>
+<p>如果offset为 NULL，则将从in_fd开始读取数据文件偏移量，文件偏移量将被调用更新。</p>
+<p>count是要在文件之间复制的字节数描述符</p>
 </blockquote>
-<h3 id="打印指令"><a class="markdownIt-Anchor" href="#打印指令"></a> 打印指令</h3>
-<h4 id="查看内存指令x"><a class="markdownIt-Anchor" href="#查看内存指令x"></a> <strong>查看内存指令x：</strong></h4>
-<ul>
-<li>
-<p><code>x /nuf 0x123456</code> //<strong>常用</strong>，x指令的格式是：x空格/nfu，nfu代表三个参数</p>
-<ul>
-<li>n代表显示几个单元（而不是显示几个字节，后面的u表示一个单元多少个字节），放在’/'后面</li>
-<li>u代表一个单元几个字节，b(一个字节)，h(二个字节)，w(四字节)，g(八字节)</li>
-<li>f代表显示数据的格式，f和u的顺序可以互换，也可以只有一个或者不带n，用的时候很灵活
-<ul>
-<li>x 按十六进制格式显示变量。<br>
-d 按十进制格式显示变量。<br>
-u 按十六进制格式显示无符号整型。<br>
-o 按八进制格式显示变量。<br>
-t 按二进制格式显示变量。<br>
-a 按十六进制格式显示变量。<br>
-c 按字符格式显示变量。<br>
-f 按浮点数格式显示变量。<br>
-s 按字符串显示。<br>
-b 按字符显示。<br>
-i 显示汇编指令。</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<p><code>x /10gx 0x123456</code> //<strong>常用</strong>，从0x123456开始每个单元八个字节，十六进制显示是个单元的数据</p>
-</li>
-<li>
-<p><code>x /10xd \$rdi</code> //从rdi指向的地址向后打印10个单元，每个单元4字节的十进制数</p>
-</li>
-<li>
-<p><code>x /10i 0x123456</code> //<strong>常用</strong>，从0x123456处向后显示十条汇编指令</p>
-</li>
-</ul>
-<h4 id="打印指令pprint"><a class="markdownIt-Anchor" href="#打印指令pprint"></a> <strong>打印指令p(print)：</strong></h4>
-<ul>
-<li><code>p fun_name</code> //打印fun_name的地址，需要保留符号</li>
-<li><code>p 0x10-0x08</code> //计算0x10-0x08的结果</li>
-<li><code>p &amp;a</code> //查看变量a的地址</li>
-<li><code>p *(0x123456)</code> //查看0x123456地址的值，注意和x指令的区别，x指令查看地址的值不用星号</li>
-<li><code>p \$rdi</code> //显示rdi寄存器的值，注意和x的区别，这只是显示rdi的值，而不是rdi指向的值</li>
-<li><code>p *($rdi)</code> //显示rdi指向的值</li>
-</ul>
-<h4 id="打印汇编指令disass"><a class="markdownIt-Anchor" href="#打印汇编指令disass"></a> <strong>打印汇编指令disass</strong>：</h4>
-<p><strong>disassemble</strong>的缩写</p>
-<ul>
-<li><code>disass 0x123456</code> //显示0x123456前后的汇编指令</li>
-<li><code>x /10i</code> //我一般喜欢用x显示指令</li>
-</ul>
-<h4 id="打印源代码指令list"><a class="markdownIt-Anchor" href="#打印源代码指令list"></a> <strong>打印源代码指令list：</strong></h4>
-<ul>
-<li><code>list</code> //查看当前附近10行代码，要有源码，list指令pwn题中几乎不用，但为了完整性还是简单举几个例子</li>
-<li><code>list 38</code> //查看38行附近10行代码</li>
-<li><code>list 1,10</code> //查看1-10行</li>
-<li><code>list main</code> //查看main函数开始10行</li>
-</ul>
-<h3 id="修改和查找指令"><a class="markdownIt-Anchor" href="#修改和查找指令"></a> <strong>修改和查找指令</strong></h3>
-<h4 id="修改数据指令set"><a class="markdownIt-Anchor" href="#修改数据指令set"></a> <strong>修改数据指令set：</strong></h4>
-<ul>
-<li><code>set $​rdi=0x10</code> //把rdi寄存器的值变为0x10</li>
-<li><code>set *(0x123456)=0x10</code> //0x123456地址的值变为0x10，注意带星号</li>
-<li><code>set args “abc” “def” “gh“</code>//给参数123赋值</li>
-<li><code>set args “python -c ‘print</code> “1234\x7f\xde”’” //使用python给参数赋值不可见字符</li>
-</ul>
-<h4 id="查找数据"><a class="markdownIt-Anchor" href="#查找数据"></a> <strong>查找数据：</strong></h4>
-<ul>
-<li><code>search rdi</code> //从当前位置向后查包含rdi的指令，返回若干</li>
-<li><code>search -h</code> //查看search帮助，我也不太长用这个指令</li>
-<li><code>find “hello”</code> //查找hello字符串，pwndbg独有</li>
-<li><code>ropgadget</code> //查找ropgadget，pwndbg独有，没啥用，可以用其他工具</li>
-</ul>
-<h3 id="堆操作指令"><a class="markdownIt-Anchor" href="#堆操作指令"></a> 堆操作指令</h3>
-<p>pwndbg插件独有</p>
-<ul>
-<li><code>arena</code> //显示arena的详细信息</li>
-<li><code>arenas</code> //显示所有arena的基本信息</li>
-<li><code>arenainfo</code> //好看的显示所有arena的信息</li>
-<li><code>bins</code> //常用，查看所有种类的堆块的链表情况</li>
-<li><code>fastbins</code> //单独查看fastbins的链表情况</li>
-<li><code>largebins</code> //同上，单独查看largebins的链表情况</li>
-<li><code>smallbins</code> //同上，单独查看smallbins的链表情况</li>
-<li><code>unsortedbin</code> //同上，单独查看unsortedbin链表情况</li>
-<li><code>tcachebins</code> //同上，单独查看tcachebins的链表情况</li>
-<li><code>tcache</code> //查看tcache详细信息</li>
-<li><code>heap</code> //数据结构的形式显示所有堆块，会显示一大堆</li>
-<li><code>heapbase</code> //查看堆起始地址</li>
-<li><code>heapinfo、heapinfoall</code> //显示堆得信息，和bins的挺像的，没bins好用</li>
-<li><code>parseheap</code> //显示堆结构，很好用</li>
-<li><code>tracemalloc</code> //好用，会跟提示所有操作堆的地方</li>
-</ul>
-<h3 id="其他pwndbg插件独有指令"><a class="markdownIt-Anchor" href="#其他pwndbg插件独有指令"></a> <strong>其他pwndbg插件独有指令</strong></h3>
-<ul>
-<li>
-<p><code>cyclc 50</code> //生成50个用来溢出的字符，如：aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaakaaalaaama</p>
-</li>
-<li>
-<p><code>$reabse</code> //开启PIE的情况的地址偏移</p>
-</li>
-<li>
-<p><code>b *$reabse(0x123456)</code> //断住PIE状态下的二进制文件中0x123456的地方</p>
-</li>
-<li>
-<p><code>codebase</code> //打印PIE偏移，与rebase不同，这是打印，rebase是使用</p>
-</li>
-<li>
-<p><code>stack</code> //查看栈</p>
-</li>
-<li>
-<p><code>retaddr</code> //打印包含返回地址的栈地址</p>
-</li>
-<li>
-<p><code>canary</code> //直接看canary的值</p>
-</li>
-<li>
-<p><code>plt</code> //查看plt表</p>
-</li>
-<li>
-<p><code>got</code> //查看got表</p>
-</li>
-<li>
-<p><code>hexdump</code> //想IDA那样显示数据，带字符串</p>
-</li>
-</ul>
-<p>参考链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/Breeze_CAT/article/details/103789233">gdb+pwndbg食用指南</a></p>
 
             </div>
             <hr>
@@ -464,7 +372,7 @@ i 显示汇编指令。</li>
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/linux%E5%9F%BA%E7%A1%80/">linux基础</a>
+                      <a class="hover-with-bg" href="/categories/%E6%81%B6%E6%84%8F%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">恶意样本分析</a>
                     
                   </div>
                 
@@ -472,9 +380,9 @@ i 显示汇编指令。</li>
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/gdb/">gdb</a>
+                      <a class="hover-with-bg" href="/tags/IDA/">IDA</a>
                     
-                      <a class="hover-with-bg" href="/tags/linux/">linux</a>
+                      <a class="hover-with-bg" href="/tags/%E9%80%86%E5%90%91/">逆向</a>
                     
                   </div>
                 
@@ -491,9 +399,9 @@ i 显示汇编指令。</li>
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/40823701/">
+                      <a href="/c365298.html">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">linux命令详解 ./configure、make、make install 命令</span>
+                        <span class="hidden-mobile">IDA常用快捷键</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -501,8 +409,8 @@ i 显示汇编指令。</li>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/ab6ecd69/">
-                        <span class="hidden-mobile">操作系统实验五-操作系统第五次实验银行家算法</span>
+                      <a href="/6255939a.html">
+                        <span class="hidden-mobile">操作系统实验八-文件结构</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -524,8 +432,8 @@ i 显示汇编指令。</li>
     
       <script type="text/javascript">
         var disqus_config = function() {
-          this.page.url = 'https://zino00.github.io/eda6b4df/';
-          this.page.identifier = '/eda6b4df/';
+          this.page.url = 'https://zino00.github.io/68bccacd.html';
+          this.page.identifier = '/68bccacd.html';
         };
         Fluid.utils.loadComments('#disqus_thread', function() {
           var d = document, s = d.createElement('script');

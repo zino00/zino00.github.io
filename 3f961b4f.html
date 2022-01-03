@@ -258,7 +258,7 @@
 <li>将用户作业和就绪进程按提交顺序或变为就绪状态的先后排成队列，并按照先来先服务的方式进行调度处理，是一种最普遍和最简单的方法。它优先考虑在系统中等待时间最长的作业，而不管要求运行时间的长短。</li>
 <li>按照就绪进程进入就绪队列的先后次序进行调度，简单易实现，利于长进程，CPU繁忙型作业，不利于短进程，排队时间相对过长</li>
 </ul>
-<p><img src="/3f961b4f/image-20211112131036353.png" srcset="/img/loading.gif" lazyload alt="image-20211112131036353"></p>
+<p><img src="/image-20211112131036353.png" srcset="/img/loading.gif" lazyload alt="image-20211112131036353"></p>
 <ol start="2">
 <li>时间片轮转调度算法RR</li>
 </ol>
@@ -273,7 +273,7 @@
 4 因等待某事件而阻塞的进程送到阻塞队列。<br>
 5 系统把被唤醒的进程送到就绪队列的队尾</li>
 </ul>
-<p><img src="/3f961b4f/image-20211112130639647.png" srcset="/img/loading.gif" lazyload alt="image-20211112130639647"></p>
+<p><img src="/image-20211112130639647.png" srcset="/img/loading.gif" lazyload alt="image-20211112130639647"></p>
 <h2 id="四-实验设计和过程"><a class="markdownIt-Anchor" href="#四-实验设计和过程"></a> 四、实验设计和过程</h2>
 <h3 id="fcfs调度算法"><a class="markdownIt-Anchor" href="#fcfs调度算法"></a> FCFS调度算法</h3>
 <h4 id="数据结构"><a class="markdownIt-Anchor" href="#数据结构"></a> 数据结构</h4>
@@ -328,12 +328,12 @@
 <p>初值：</p>
 <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">3</span><br><span class="hljs-attribute">ghh</span> <span class="hljs-number">3</span> <span class="hljs-number">6</span><br><span class="hljs-attribute">ga</span> <span class="hljs-number">4</span> <span class="hljs-number">8</span><br><span class="hljs-attribute">hr</span> <span class="hljs-number">8</span> <span class="hljs-number">4</span><br></code></pre></td></tr></table></figure>
 <p>运行结果</p>
-<p><img src="/3f961b4f/image-20211112212432678.png" srcset="/img/loading.gif" lazyload alt="image-20211112212432678"></p>
+<p><img src="/image-20211112212432678.png" srcset="/img/loading.gif" lazyload alt="image-20211112212432678"></p>
 <p><strong>考虑阻塞：</strong></p>
 <p>初值：</p>
 <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">3</span><br><span class="hljs-attribute">ghh</span> <span class="hljs-number">3</span> <span class="hljs-number">6</span><br><span class="hljs-attribute">ga</span> <span class="hljs-number">4</span> <span class="hljs-number">8</span><br><span class="hljs-attribute">hr</span> <span class="hljs-number">8</span> <span class="hljs-number">4</span><br></code></pre></td></tr></table></figure>
 <p>运行结果：</p>
-<p><img src="/3f961b4f/image-20211112212806073.png" srcset="/img/loading.gif" lazyload alt="image-20211112212806073"></p>
+<p><img src="/image-20211112212806073.png" srcset="/img/loading.gif" lazyload alt="image-20211112212806073"></p>
 <h3 id="rr调度算法"><a class="markdownIt-Anchor" href="#rr调度算法"></a> RR调度算法</h3>
 <h4 id="数据结构-2"><a class="markdownIt-Anchor" href="#数据结构-2"></a> 数据结构</h4>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Process</span> //进程结构体，表示进程信息</span><br><span class="hljs-class">&#123;</span><br>    string name;         <span class="hljs-comment">//进程名字</span><br>    <span class="hljs-keyword">int</span> arrive_time;     <span class="hljs-comment">//到达时间</span><br>    <span class="hljs-keyword">int</span> service_time;    <span class="hljs-comment">//进程运行时间</span><br>    <span class="hljs-keyword">int</span> wait_time;       <span class="hljs-comment">//进程等待时间</span><br>    <span class="hljs-keyword">int</span> remain_time;     <span class="hljs-comment">//进程剩余运行时间</span><br>    <span class="hljs-keyword">int</span> turnaround_time; <span class="hljs-comment">//周转时间</span><br>    <span class="hljs-keyword">int</span> start_time;      <span class="hljs-comment">//进程开始运行时间</span><br>    <span class="hljs-keyword">int</span> end_time;        <span class="hljs-comment">//进程结束时间</span><br>    <span class="hljs-keyword">int</span> time_slice;      <span class="hljs-comment">//进程时间片</span><br>&#125; run_process, p[MAXname];<br>queue&lt;Process&gt; ready_queue, block_queue, run_queue;<br></code></pre></td></tr></table></figure>
@@ -363,17 +363,17 @@
 <p>初值（小时间片）：</p>
 <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">3</span><br><span class="hljs-attribute">2</span><br><span class="hljs-attribute">ghh</span> <span class="hljs-number">3</span> <span class="hljs-number">6</span><br><span class="hljs-attribute">ga</span> <span class="hljs-number">4</span> <span class="hljs-number">8</span><br><span class="hljs-attribute">hr</span> <span class="hljs-number">8</span> <span class="hljs-number">4</span><br></code></pre></td></tr></table></figure>
 <p>运行结果：</p>
-<p><img src="/3f961b4f/image-20211112213852527.png" srcset="/img/loading.gif" lazyload alt="image-20211112213852527"></p>
+<p><img src="/image-20211112213852527.png" srcset="/img/loading.gif" lazyload alt="image-20211112213852527"></p>
 <p><strong>考虑阻塞：</strong></p>
 <p>初值（小时间片）：</p>
 <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">3</span><br><span class="hljs-attribute">2</span><br><span class="hljs-attribute">ghh</span> <span class="hljs-number">3</span> <span class="hljs-number">6</span><br><span class="hljs-attribute">ga</span> <span class="hljs-number">4</span> <span class="hljs-number">8</span><br><span class="hljs-attribute">hr</span> <span class="hljs-number">8</span> <span class="hljs-number">4</span><br></code></pre></td></tr></table></figure>
 <p>运行结果：</p>
-<p><img src="/3f961b4f/image-20211112213737120.png" srcset="/img/loading.gif" lazyload alt="image-20211112213737120"></p>
+<p><img src="/image-20211112213737120.png" srcset="/img/loading.gif" lazyload alt="image-20211112213737120"></p>
 <p><strong>时间片很大（等同于FCFS）</strong></p>
 <p>初值：</p>
 <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">3</span><br><span class="hljs-attribute">60</span><br><span class="hljs-attribute">ghh</span> <span class="hljs-number">3</span> <span class="hljs-number">6</span><br><span class="hljs-attribute">ga</span> <span class="hljs-number">4</span> <span class="hljs-number">8</span><br><span class="hljs-attribute">hr</span> <span class="hljs-number">8</span> <span class="hljs-number">4</span><br></code></pre></td></tr></table></figure>
 <p>运行结果：</p>
-<p><img src="/3f961b4f/image-20211112213941550.png" srcset="/img/loading.gif" lazyload alt="image-20211112213941550"></p>
+<p><img src="/image-20211112213941550.png" srcset="/img/loading.gif" lazyload alt="image-20211112213941550"></p>
 <h3 id="思考题"><a class="markdownIt-Anchor" href="#思考题"></a> 思考题</h3>
 <blockquote>
 <p>根据上面的观察结果，比较这两种算法各自的优缺点，根据结果再和其他的算法比较。</p>
@@ -423,7 +423,7 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/8ce3e425/">
+                      <a href="/8ce3e425.html">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile">操作系统笔记</span>
                         <span class="visible-mobile">上一篇</span>
@@ -433,7 +433,7 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/8a95bb2a/">
+                      <a href="/8a95bb2a.html">
                         <span class="hidden-mobile">操作系统实验三-中断处理</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
@@ -456,8 +456,8 @@
     
       <script type="text/javascript">
         var disqus_config = function() {
-          this.page.url = 'https://zino00.github.io/3f961b4f/';
-          this.page.identifier = '/3f961b4f/';
+          this.page.url = 'https://zino00.github.io/3f961b4f.html';
+          this.page.identifier = '/3f961b4f.html';
         };
         Fluid.utils.loadComments('#disqus_thread', function() {
           var d = document, s = d.createElement('script');

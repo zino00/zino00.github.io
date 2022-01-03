@@ -241,7 +241,7 @@
 <ul>
 <li><strong>汇编代码：</strong></li>
 </ul>
-<p><img src="/2ee63cf/image-20210316165036780.png" srcset="/img/loading.gif" lazyload alt="image-20210316165036780"></p>
+<p><img src="/image-20210316165036780.png" srcset="/img/loading.gif" lazyload alt="image-20210316165036780"></p>
 <ul>
 <li>
 <p><strong>指令思路:</strong></p>
@@ -258,8 +258,8 @@
 </li>
 </ul>
 <p>可得密码为：Border relations with Canada have never been better.</p>
-<p><img src="/2ee63cf/image-20210315211917616.png" srcset="/img/loading.gif" lazyload alt="image-20210315211917616"></p>
-<p><img src="/2ee63cf/image-20210316171734306.png" srcset="/img/loading.gif" lazyload alt="image-20210316171734306"></p>
+<p><img src="/image-20210315211917616.png" srcset="/img/loading.gif" lazyload alt="image-20210315211917616"></p>
+<p><img src="/image-20210316171734306.png" srcset="/img/loading.gif" lazyload alt="image-20210316171734306"></p>
 <h2 id="2-phase_2"><a class="markdownIt-Anchor" href="#2-phase_2"></a> 2. phase_2</h2>
 <ul>
 <li>
@@ -270,7 +270,7 @@
 <p><strong>解决方法</strong></p>
 <p>由上述指令思路可知，第一个数为1，且之后每个数都会是前一个的两倍，否则就会爆炸。</p>
 <p>所以密码为：1 2 4 8 16 32</p>
-<p><img src="/2ee63cf/image-20210316171653420.png" srcset="/img/loading.gif" lazyload alt="image-20210316171653420"></p>
+<p><img src="/image-20210316171653420.png" srcset="/img/loading.gif" lazyload alt="image-20210316171653420"></p>
 </li>
 </ul>
 <h2 id="3-phase_3"><a class="markdownIt-Anchor" href="#3-phase_3"></a> 3. phase_3</h2>
@@ -288,13 +288,13 @@
 <p>在判断输入的第一个数字是否小于7，小于继续，否则爆炸。</p>
 <p><img src="https://gitee.com/zino00/img_bed/raw/master/img/image-20210316175205802.png" srcset="/img/loading.gif" lazyload alt="image-20210316175205802"></p>
 <p>这部分代码会跳转至M[0x402470+%rax*8]所在地址,</p>
-<p>用gdb指令查看0x402470 处的值<img src="/2ee63cf/image-20210316175832024.png" srcset="/img/loading.gif" lazyload alt="image-20210316175832024"></p>
+<p>用gdb指令查看0x402470 处的值<img src="/image-20210316175832024.png" srcset="/img/loading.gif" lazyload alt="image-20210316175832024"></p>
 <p>通过观察可以发现，jump之后的指令都是功能类似的重复指令，因此我们只需选择一组跳转即可</p>
 <p>因为0x402470 处的值即为jmpq后第一个mov指令所在地址，该操作会将0xcf(207)赋值给%eax。因此我们可以取第一个数为0，第二个数为207。因为之后的cmp会比较%eax的值和我们输入的第二个数，不相同会爆炸</p>
 <p><img src="https://gitee.com/zino00/img_bed/raw/master/img/image-20210316180239126.png" srcset="/img/loading.gif" lazyload alt="image-20210316180239126"></p>
 <p>故密码可为：0 207或2 707等等，答案不唯一</p>
-<p><img src="/2ee63cf/image-20210316181230534.png" srcset="/img/loading.gif" lazyload alt="image-20210316181230534"></p>
-<p><img src="/2ee63cf/image-20210316181134846.png" srcset="/img/loading.gif" lazyload alt="image-20210316181134846"></p>
+<p><img src="/image-20210316181230534.png" srcset="/img/loading.gif" lazyload alt="image-20210316181230534"></p>
+<p><img src="/image-20210316181134846.png" srcset="/img/loading.gif" lazyload alt="image-20210316181134846"></p>
 </li>
 </ul>
 <h2 id="4-phase_4"><a class="markdownIt-Anchor" href="#4-phase_4"></a> 4. phase_4</h2>
@@ -316,7 +316,7 @@
 <p>回到phase_4，可知要使func4返回值为0，否则就会爆炸，所以当x1为7时恰好可以使返回值为0，符合；</p>
 <p>之后很容易得到必须要使得第二个数为0，否则就会爆炸；</p>
 <p>故密码为：7 0</p>
-<p><img src="/2ee63cf/image-20210316212318867.png" srcset="/img/loading.gif" lazyload alt="image-20210316212318867"></p>
+<p><img src="/image-20210316212318867.png" srcset="/img/loading.gif" lazyload alt="image-20210316212318867"></p>
 </li>
 </ul>
 <h2 id="5-phase_5"><a class="markdownIt-Anchor" href="#5-phase_5"></a> 5. phase_5</h2>
@@ -329,14 +329,14 @@
 <p><strong>解决方法：</strong></p>
 <p>上述指令简而言之就是我们输入6个字符，然后取这6个字符的后4位作为地址索引，取内存中的M[0x4024b0+%rdx]的值，存到另一个寄存器中，然后将这个值与M[0x40245e]中的值比较，相等则结束，否则爆炸；</p>
 <p>所以我们先查看内存0x4024b0为起始的地址中存放的元素：</p>
-<p><img src="/2ee63cf/image-20210317085034624.png" srcset="/img/loading.gif" lazyload alt="image-20210317085034624"></p>
+<p><img src="/image-20210317085034624.png" srcset="/img/loading.gif" lazyload alt="image-20210317085034624"></p>
 <p>然后查看0x40245e中的值：</p>
-<p><img src="/2ee63cf/image-20210317085132914.png" srcset="/img/loading.gif" lazyload alt="image-20210317085132914"></p>
+<p><img src="/image-20210317085132914.png" srcset="/img/loading.gif" lazyload alt="image-20210317085132914"></p>
 <p>然后在上一个字符串中查看后一个字符串对应的下标，很容易得到下标分别为：9  15  14  5  6  7</p>
 <p>这六个数低四位的16进制为：0x9  0xf  0xe 0x5 0x6  0x7</p>
 <p>查看ASSCI表可知9?n567或  9?&gt;567都可以。</p>
 <p>所以密码可以为9?n567或  9?&gt;567等等，答案不唯一</p>
-<p><img src="/2ee63cf/image-20210317090128611.png" srcset="/img/loading.gif" lazyload alt="image-20210317090128611"></p>
+<p><img src="/image-20210317090128611.png" srcset="/img/loading.gif" lazyload alt="image-20210317090128611"></p>
 </li>
 </ul>
 <h2 id="6-phase_6"><a class="markdownIt-Anchor" href="#6-phase_6"></a> 6. phase_6</h2>
@@ -349,11 +349,11 @@
 <p><strong>解决思路：</strong></p>
 <p>上述代码思路概括就是将链表结点数值按照降序排序，其对应的数值即为顺序，最后a[i]=7-a[i]，即为我们要输入的值。</p>
 <p>首先我们用gdb指令查看链表的数据：</p>
-<p><img src="/2ee63cf/image-20210317104905959.png" srcset="/img/loading.gif" lazyload alt="image-20210317104905959"></p>
+<p><img src="/image-20210317104905959.png" srcset="/img/loading.gif" lazyload alt="image-20210317104905959"></p>
 <p>这六个数字按照降序排列对应的编码顺序为：3  4  5  6  1  2</p>
 <p>运算后即为：4 3 2 1 6 5</p>
 <p>故密码为：4 3 2 1 6 5</p>
-<p><img src="/2ee63cf/image-20210317105113068.png" srcset="/img/loading.gif" lazyload alt="image-20210317105113068"></p>
+<p><img src="/image-20210317105113068.png" srcset="/img/loading.gif" lazyload alt="image-20210317105113068"></p>
 </li>
 </ul>
 
@@ -390,7 +390,7 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/9b9a13df/">
+                      <a href="/9b9a13df.html">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile">lab4_attack lab</span>
                         <span class="visible-mobile">上一篇</span>
@@ -400,7 +400,7 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/330a79db/">
+                      <a href="/330a79db.html">
                         <span class="hidden-mobile">lab2_datalab</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
@@ -423,8 +423,8 @@
     
       <script type="text/javascript">
         var disqus_config = function() {
-          this.page.url = 'https://zino00.github.io/2ee63cf/';
-          this.page.identifier = '/2ee63cf/';
+          this.page.url = 'https://zino00.github.io/2ee63cf.html';
+          this.page.identifier = '/2ee63cf.html';
         };
         Fluid.utils.loadComments('#disqus_thread', function() {
           var d = document, s = d.createElement('script');
