@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://zino00.github.io/posts/7e71e806/</loc>
+    
+    <lastmod>2022-01-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://zino00.github.io/posts/e11b459a/</loc>
     
     <lastmod>2022-01-03</lastmod>
@@ -245,15 +254,6 @@
   </url>
   
   <url>
-    <loc>https://zino00.github.io/posts/22ae87fa/</loc>
-    
-    <lastmod>2022-01-03</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://zino00.github.io/about/index.html</loc>
     
     <lastmod>2021-07-04</lastmod>
@@ -369,6 +369,13 @@
     <priority>0.2</priority>
   </url>
   
+  <url>
+    <loc>https://zino00.github.io/tags/hexo/</loc>
+    <lastmod>2022-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
 
   
   <url>
@@ -422,6 +429,13 @@
   
   <url>
     <loc>https://zino00.github.io/categories/bug/</loc>
+    <lastmod>2022-01-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://zino00.github.io/categories/hexo/</loc>
     <lastmod>2022-01-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
