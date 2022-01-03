@@ -173,8 +173,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2022-01-03 15:43" pubdate>
-        2022年1月3日 下午
+      <time datetime="2021-12-03 21:16" pubdate>
+        2021年12月3日 晚上
       </time>
     </span>
   
@@ -243,7 +243,7 @@
 <p>③将队列中的文件按一定的策略进行“突变”；</p>
 <p>④如果经过变异文件更新了覆盖范围，则将其保留添加到队列中;</p>
 <p>⑤上述过程会一直循环进行，期间触发了crash的文件会被记录下来。</p>
-<p><img src="/22ae87fa/image-20211201143448119.png" srcset="/img/loading.gif" lazyload alt="image-20211201143448119"></p>
+<p><img src="/post/image-20211201143448119.png" srcset="/img/loading.gif" lazyload alt="image-20211201143448119"></p>
 <h1 id="二-afl简单测试"><a class="markdownIt-Anchor" href="#二-afl简单测试"></a> 二、AFL简单测试</h1>
 <p>这部分采用<a target="_blank" rel="noopener" href="https://github.com/antonio-morales/Fuzzing101/tree/main/Exercise%201">fuzzing101</a>提供的练习进行快速熟悉AFL的基本操作</p>
 <h2 id="获取fuzz目标"><a class="markdownIt-Anchor" href="#获取fuzz目标"></a> 获取fuzz目标</h2>
@@ -277,7 +277,7 @@ libdpkg-perl libstdc++6-4.6-dev libtimedate-perl</p>
 <p>通过输入下面的命令可以查看afl-fuzz的具体命令参数</p>
 <figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">afl-fuzz</span><br></code></pre></td></tr></table></figure>
 <p>可以看到</p>
-<p><img src="/22ae87fa/image-20211201204851442.png" srcset="/img/loading.gif" lazyload alt="image-20211201204851442"></p>
+<p><img src="/post/image-20211201204851442.png" srcset="/img/loading.gif" lazyload alt="image-20211201204851442"></p>
 <h3 id="afl-fuzz命令格式"><a class="markdownIt-Anchor" href="#afl-fuzz命令格式"></a> <strong>afl-fuzz命令格式</strong></h3>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">afl-fuzz -i testcase_dir -o findings_dir -- <span class="hljs-regexp">/path/</span>to<span class="hljs-regexp">/tested/</span>program [...program<span class="hljs-string">&#x27;s cmdline...]</span><br></code></pre></td></tr></table></figure>
 <p>用@@会自动替换为输入文件名</p>
@@ -325,15 +325,15 @@ libdpkg-perl libstdc++6-4.6-dev libtimedate-perl</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs awk">sudo su<br>echo core &gt;<span class="hljs-regexp">/proc/</span>sys<span class="hljs-regexp">/kernel/</span>core_pattern<br><span class="hljs-keyword">exit</span><br></code></pre></td></tr></table></figure>
 </blockquote>
 <p>成功开始fuzzing后我们可以看到下面的界面</p>
-<p><img src="/22ae87fa/image-20211201154932423.png" srcset="/img/loading.gif" lazyload alt="image-20211201154932423"></p>
+<p><img src="/post/image-20211201154932423.png" srcset="/img/loading.gif" lazyload alt="image-20211201154932423"></p>
 <p>等待……三个多小时后终于出现了一个crash</p>
-<p><img src="/22ae87fa/image-20211201201505518.png" srcset="/img/loading.gif" lazyload alt="image-20211201201505518"></p>
+<p><img src="/post/image-20211201201505518.png" srcset="/img/loading.gif" lazyload alt="image-20211201201505518"></p>
 <h2 id="crash复现"><a class="markdownIt-Anchor" href="#crash复现"></a> crash复现</h2>
 <p>在$HOME/fuzzing_xpdf/out/文件夹下我们可以我们的crash</p>
-<p><img src="/22ae87fa/image-20211201201841167.png" srcset="/img/loading.gif" lazyload alt="image-20211201201841167"></p>
+<p><img src="/post/image-20211201201841167.png" srcset="/img/loading.gif" lazyload alt="image-20211201201841167"></p>
 <p>用这个crash作为input来进行复现</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs terminal">/home/zino/fuzzing_xpdf/install/bin/pdftotext &#x27;/home/zino/fuzzing_xpdf/out/default/crashes/id:000000,sig:11,src:001820,time:12475087,op:havoc,rep:8&#x27; /home/zino/fuzzing_xpdf/output<br></code></pre></td></tr></table></figure>
-<p><img src="/22ae87fa/image-20211201202149422.png" srcset="/img/loading.gif" lazyload alt="image-20211201202149422"></p>
+<p><img src="/post/image-20211201202149422.png" srcset="/img/loading.gif" lazyload alt="image-20211201202149422"></p>
 <p>可以看到，这个crash会导致段错误并导致程序崩溃。</p>
 <p>我们用gdb来调试一下，看一下原因</p>
 <p>首先需要清除原先的二进制文件，重新构建xpdf以加入调试信息</p>
@@ -344,7 +344,7 @@ libdpkg-perl libstdc++6-4.6-dev libtimedate-perl</p>
 <p>然后卡住后我们用bt(backtrace)回溯</p>
 <p>可以看到getObj函数被反复递归调用，这个漏洞被记录为<a target="_blank" rel="noopener" href="https://www.cvedetails.com/cve/CVE-2019-13288/">CVE-2019-13288</a></p>
 <p>原因是在 Xpdf 4.01.01 中，<a target="_blank" rel="noopener" href="http://Parser.cc">Parser.cc</a> 中的 Parser::getObj() 函数可能会通过精心制作的文件导致无限递归。远程攻击者可以利用它进行 DoS 攻击。</p>
-<p><img src="/22ae87fa/image-20211201203904689.png" srcset="/img/loading.gif" lazyload alt="image-20211201203904689"></p>
+<p><img src="/post/image-20211201203904689.png" srcset="/img/loading.gif" lazyload alt="image-20211201203904689"></p>
 <p>参考链接：</p>
 <p><a target="_blank" rel="noopener" href="https://paper.seebug.org/841/#1-afl-gcc">AFL 漏洞挖掘技术漫谈（一）：用 AFL 开始你的第一次 Fuzzing</a></p>
 <p><a target="_blank" rel="noopener" href="https://github.com/antonio-morales/Fuzzing101/tree/main/Exercise%201">fuzzing101-exercise1</a></p>
@@ -382,12 +382,18 @@ libdpkg-perl libstdc++6-4.6-dev libtimedate-perl</p>
                   <article class="post-prev col-6">
                     
                     
+                      <a href="/post/33f70302.html">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">论文笔记:《VulDeeLocator:A Deep Learning-based Fine-grained Vulnerability Detector》</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/undefined/">
-                        <span class="hidden-mobile">利用OpenSSL进行SSL通信的python实现</span>
+                      <a href="/post/5dd98acd.html">
+                        <span class="hidden-mobile">论文笔记：《FUZZIFICATION:Anti-Fuzzing Techniques》</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -409,8 +415,8 @@ libdpkg-perl libstdc++6-4.6-dev libtimedate-perl</p>
     
       <script type="text/javascript">
         var disqus_config = function() {
-          this.page.url = 'https://zino00.github.io/22ae87fa/';
-          this.page.identifier = '/22ae87fa/';
+          this.page.url = 'https://zino00.github.io/post/22ae87fa.html';
+          this.page.identifier = '/post/22ae87fa.html';
         };
         Fluid.utils.loadComments('#disqus_thread', function() {
           var d = document, s = d.createElement('script');

@@ -1,0 +1,748 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.jpg">
+  <link rel="icon" href="/img/favicon.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="论文《VulDeeLocator:A Deep Learning-based Fine-grained Vulnerability Detector》的阅读笔记">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+  <title>论文笔记:《VulDeeLocator:A Deep Learning-based Fine-grained Vulnerability Detector》 - Zino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"zino00.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"f45dcd001d67e8f9d84f91248ea31abf","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Zino's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/post.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="论文笔记:《VulDeeLocator:A Deep Learning-based Fine-grained Vulnerability Detector》">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-12-21 10:37" pubdate>
+        2021年12月21日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4.4k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      49
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">论文笔记:《VulDeeLocator:A Deep Learning-based Fine-grained Vulnerability Detector》</h1>
+            
+            <div class="markdown-body">
+              <h1 id="一-vuldeellocator基本思想"><a class="markdownIt-Anchor" href="#一-vuldeellocator基本思想"></a> 一、VulDeelLocator基本思想</h1>
+<p>VulDeeLocator的<strong>基本思想</strong>是充分利用<strong>程序分析</strong>和<strong>深度学习</strong>技术:</p>
+<ul>
+<li>通过利用程序分析技术生成漏洞候选，</li>
+<li>并使用深度学习技术“消除”程序分析技术产生的误报。</li>
+</ul>
+<p>具体来说，</p>
+<ul>
+<li>VulDeeLocator根据一组给定的漏洞语法特征，从程序源代码中提取一些标记(例如，标识符、操作符、常量和关键字)，</li>
+<li>然后利用同一程序的中间代码来容纳中间代码中在语义上与这些标记相关的语句。</li>
+<li>这些语句被编码成向量(然后用于训练神经网络)，或者作为训练后的神经网络的输入，用于漏洞检测。</li>
+<li>测试阶段的输出比相应的输入粒度更细(例如，更短或更小)。</li>
+</ul>
+<p>图1说明了这些基本思想，显示了在测试阶段，d’中间代码语句的输入会导致两个源代码语句的精炼输出，表明漏洞在哪里。</p>
+<p><img src="/post/image-20211215140844637.png" srcset="/img/loading.gif" lazyload alt="image-20211215140844637"></p>
+<h1 id="二-概述"><a class="markdownIt-Anchor" href="#二-概述"></a> 二、概述</h1>
+<p>漏洞很直观地展示了一些语法特征，可以利用这些特征来识别一些代码片段(即程序切片)作为漏洞检测的初始候选项。</p>
+<h2 id="21-基础定义"><a class="markdownIt-Anchor" href="#21-基础定义"></a> 2.1 基础定义</h2>
+<ul>
+<li>
+<p><strong>定义一：</strong><code>sSyVC</code>(source code- and Syntax-based Vulnerability Candidate)：<strong>基于源代码和语法的漏洞候选</strong></p>
+<p>给定一个源程序P和一组漏洞语法特征H= {h1，…， hη}，一个<code>sSyVC</code> y<sub>i</sub>是P中的一个或多个连续符号(例如，标识符、操作符、常量和关键字)，它们匹配某些漏洞语法特征hq(1≤ q≤η).</p>
+</li>
+<li>
+<p><strong>定义二：</strong><code>iSeVC</code> (intermediate code- and Semantics-based Vulnerability Candidate)：<strong>基于中间代码和语义的漏洞候选</strong></p>
+<p>给定一个源程序P，它的中间代码是P’，和P的一个<code>sSyVC</code>  y<sub>i</sub>，用y<sub>i</sub>’表示<code>sSyVC</code> y<sub>i</sub>的中间代码。与sSyVC  yi对应的iSeVC，用ei表示，是中间代码P‘中的语句序列;这些语句是依赖于y<sub>i</sub>’的数据或控制。</p>
+<p>即<code>sSyVC</code>  yi对应的<code>iSeVC</code>是程序P中间代码中的y<sub>i</sub>‘的程序切片。</p>
+</li>
+</ul>
+<h2 id="22-vuldeelocator结构"><a class="markdownIt-Anchor" href="#22-vuldeelocator结构"></a> 2.2 VulDeeLocator结构</h2>
+<p><img src="/post/image-20211215145019213.png" srcset="/img/loading.gif" lazyload alt="VulDeeLocator结构图"></p>
+<p>上图显示了<strong>VulDeeLocator的结构</strong>，它可以用特定的中间代码表示和深度学习模型来完成实例化。</p>
+<p>VulDeeLocator的<strong>输入</strong>是用于学习神经网络的培训程序的源代码或用于漏洞检测的目标程序。</p>
+<ul>
+<li>
+<p>更具体地说，学习阶段的输入包括C程序的源代码，这些源代码可能有漏洞，也可能没有。</p>
+</li>
+<li>
+<p>C程序的源代码应满足以下条件:</p>
+<ul>
+<li>
+<p>(i)它们可以编译成(平台无关的)中间代码，如LLVM中间代码;</p>
+</li>
+<li>
+<p>(ii)漏洞程序具有对其漏洞位置的描述，这些描述将被用来定位目标程序中的漏洞。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>VulDeeLocator有<strong>两个组件</strong>。</p>
+<ul>
+<li>第一个组件(<strong>基于中间代码的漏洞候选表示</strong>)利用训练程序和目标程序的中间代码表示，如下所示:
+<ul>
+<li><strong>步骤I:</strong> 从源代码中提取<code>sSyVCs</code>，即带有一些漏洞语法特征的代码片段。</li>
+<li><strong>步骤II:</strong> 根据<code>sSyVCs</code>从中间代码生成<code>iSeVCs</code>。</li>
+</ul>
+</li>
+<li>第二个组件(<strong>细粒度的漏洞检测</strong>)使用中间代码表示来检测和定位漏洞， 如下所示:
+<ul>
+<li><strong>步骤III:</strong> 标记从训练项目中提取的<code>iSeVCs</code>是否存在漏洞和存在漏洞的位置。</li>
+<li>**步骤IV: **从<code>iSeVCs</code>及其标签的向量表示训练一个神经网络模型。</li>
+<li><strong>步骤V:</strong> 使用经过训练的神经网络模型检测和定位目标程序中的漏洞。</li>
+</ul>
+</li>
+</ul>
+<p>学习阶段对应步骤I-IV，测试(即检测)阶段对应步骤I、II和V</p>
+<h1 id="三-基于中间代码的漏洞候选表示"><a class="markdownIt-Anchor" href="#三-基于中间代码的漏洞候选表示"></a> 三、基于中间代码的漏洞候选表示</h1>
+<h2 id="31-漏洞候选表示的指导原则"><a class="markdownIt-Anchor" href="#31-漏洞候选表示的指导原则"></a> 3.1 漏洞候选表示的指导原则</h2>
+<ul>
+<li>
+<p><strong>原则1:</strong></p>
+<p>适应<strong>跨文件</strong>的语义相关的程序语句。有些文件可能依赖于其他文件，例如，在一个文件中使用或引用的变量可能在另一个文件中定义。有效的漏洞候选表示应该适应这种定义-使用关系。</p>
+</li>
+<li>
+<p><strong>原则2:</strong></p>
+<p>适应<strong>跨函数</strong>的语义相关的程序语句。语义相关的语句可能会超出函数的边界，这意味着有效的漏洞候选表示应该适应并进一步保持那些语义相关语句的顺序，即使它们属于不同的函数。</p>
+</li>
+</ul>
+<h2 id="32-提取ssyvcs"><a class="markdownIt-Anchor" href="#32-提取ssyvcs"></a> 3.2 提取sSyVCs</h2>
+<p>如上所述，<code>sSyVC</code>是根据某些漏洞语法特征从程序中提取的一段代码。</p>
+<p>获取漏洞语法特征用于漏洞检测的方法可能有很多。作为一个具体的例子，作者利用已知漏洞的语法特征，并通过程序源代码的抽象语法树(AST树)表示这些特征(更准确地说，是AST上节点的属性)。这将简化根据漏洞语法特征提取<code>sSyVCs</code>的过程。</p>
+<p>作者定义了以下四种<strong>漏洞语法特征</strong>。</p>
+<ul>
+<li>库/API函数调用(Library/API Function Call,FC):这个漏洞语法特征是AST上的节点类型是函数调用，函数名匹配库/API函数名，函数调用至少有一个参数是变量。</li>
+<li>数组定义(Array Definition,AD):该漏洞语法特征是AST上的节点类型是变量声明，节点对应的代码包含字符’[‘和’]’。</li>
+<li>指针定义(Array Definition,PD):该漏洞语法特征是AST上的节点类型是变量声明，且该节点对应的代码包含字符“∗”。</li>
+<li>算术表达式(Arithmetic Expression,AE):这个漏洞语法特征是AST上的节点类型是赋值表达式，该节点在赋值表达式的右边至少有一个变量。</li>
+</ul>
+<p>给定一个程序的源代码，可以生成它的AST，通过识别其类型和代码匹配某些漏洞语法特征的节点，可以从中提取sSyVCs。当然这些语法特征本身在检测漏洞方面远远不够，因为它们不能容纳与漏洞相关的适当语义信息。</p>
+<h2 id="33-生成isevcs"><a class="markdownIt-Anchor" href="#33-生成isevcs"></a> 3.3 生成iSeVCs</h2>
+<p>与上述原则相对应的是，生成<code>iSeVCs</code>有三个组件:</p>
+<ul>
+<li>
+<p>生成链接的IR文件(Intermediate Representation);</p>
+</li>
+<li>
+<p>生成<code>sSyVCs</code>对应的IR切片;</p>
+</li>
+<li>
+<p>并生成<code>iSeVCs</code>。</p>
+</li>
+</ul>
+<p>附录中的算法1提供了生成<code>iSeVC</code>的详细信息。</p>
+<h3 id="生成链接的ir文件原则1"><a class="markdownIt-Anchor" href="#生成链接的ir文件原则1"></a> 生成链接的IR文件—(原则1)。</h3>
+<p>该组件从源程序生成一个或多个链接的IR文件，如下所示:</p>
+<ul>
+<li>
+<p>(i) 使用编译器(如Clang)为每个源文件生成一个IR文件;</p>
+</li>
+<li>
+<p>(ii) 根据IR文件的依赖关系链接它们，导致一个或多个IR文件链接。</p>
+</li>
+</ul>
+<p>图4(b)说明了使用示例<code>sSyVC</code> “data”的LLVM中间代码的想法，该示例属于图4(a)中描述的源程序的第2行。作者使用LLVM IR。具体来说，作者使用Clang编译器生成LLVM位码文件，然后根据它们的依赖关系将它们链接起来。</p>
+<h3 id="生成对应于ssyvc的ir切片并生成isevcs原则2"><a class="markdownIt-Anchor" href="#生成对应于ssyvc的ir切片并生成isevcs原则2"></a> 生成对应于sSyVC的IR切片并生成iSeVCs—(原则2)。</h3>
+<p>给定一个<code>sSyVC</code>，我们可以生成相应的IR切片如下:</p>
+<ul>
+<li>
+<p>(i) 通过从链接的IR文件中提取控制和数据依赖来生成一个依赖图;</p>
+</li>
+<li>
+<p>(ii) 根据每个<code>sSyVC</code>对依赖图进行切片，这可以通过dg等工具来完成。</p>
+</li>
+</ul>
+<p>图4©描绘了上述<code>sSyVC</code>“data”对应的LLVM  IR切片。每个局部变量用前缀%的数字值表示;对于LLVM IR片中的每个函数，第一个局部变量的数字值为1，然后对于后续的每个局部变量，值增加1。</p>
+<p>给定IR片，我们生成如下<code>iSeVCs</code>。对于函数fα调用的每个函数fγ，函数fγ的IR切片中的语句被附加到调用函数fγ的语句(在函数fα中)。这是为了保持可能属于<strong>不同函数但彼此相关</strong>(根据控件和/或数据依赖性)的语句的顺序。如果有一个循环序列的函数调用(例如,fγ调用fα然后fα调用fγ,然后fγ调用fα,fα调用fγ,等等),我们只考虑第一个循环(也就是说,γ调用fα然后α调用fγ但不是任何进一步的),以避免无限循环。</p>
+<p>为了避免在不同函数的IR片中将相同的数值赋给不同的局部变量，在附加语句中将局部变量的每个数值修改为一个未赋值的新数值。图4(d)说明了函数printLine的LLVM IR切片中的语句(用虚线框突出显示)被添加到调用函数main的语句“call void @printLine()”中。在printLine函数的LLVM IR切片中，局部变量“%1”被修改为“%20”，因为“19”是main函数中最后赋值的数值，如图4©所示。</p>
+<p><img src="/post/image-20211215155227554.png" srcset="/img/loading.gif" lazyload alt="image-20211215155227554"></p>
+<h1 id="四-细粒度的漏洞检测"><a class="markdownIt-Anchor" href="#四-细粒度的漏洞检测"></a> 四、细粒度的漏洞检测</h1>
+<h2 id="41-细粒度漏洞检测器的需求"><a class="markdownIt-Anchor" href="#41-细粒度漏洞检测器的需求"></a> 4.1 细粒度漏洞检测器的需求</h2>
+<p>作者对神经网络模型提出以下三个要求，以检测和定位漏洞。</p>
+<ul>
+<li>
+<p><strong>需求1:细化粒度。</strong></p>
+<p>代码的粒度决定了用于分析的源代码的单位，其范围可以从组件的最粗粒度、到文件、到功能、到代码片段、到语句，以及到令牌的最细粒度。细化粒度对于确定漏洞或精确地识别易受攻击的代码行至关重要，这些代码行对应于语句中的粒度。这是因为漏洞检测器的输入是<code>iSeVC</code>，它对应于代码片段中的粗粒度，这意味着漏洞检测器输出的粒度要比输入的粒度细。</p>
+</li>
+<li>
+<p><strong>需求2:易于映射。</strong></p>
+<p>应该很容易将神经网络的输出(以精确的粒度)映射回<code>iSeVC</code>，以查明漏洞。输出应该是一个标记序列，其中一个或多个连续的标记对应中间代码中的同一行代码。这些中间代码行可以很容易地映射回<code>iSeVC</code>，因此也可以映射回源程序中易受攻击的代码行。</p>
+</li>
+<li>
+<p><strong>需求3:注意力。</strong></p>
+<p>注意力的概念借用自深度学习，对应于学习者应该关注的输入的重要部分;从技术上讲，注意力是通过在神经网络中适当地分配权重来实现的(即，更多的注意力意味着更高的权重)。对于一个脆弱的<code>iSeVC</code>，很可能只有一个或几个语句是脆弱的，而其他的则不是，这意味着脆弱的语句比非脆弱的语句更“重要”，因此应该被给予更高的权重。</p>
+</li>
+</ul>
+<h2 id="42-标记isevcs"><a class="markdownIt-Anchor" href="#42-标记isevcs"></a> 4.2 标记iSeVCs</h2>
+<p>对训练项目中的<code>iSeVC</code>进行如下标记:如果<code>iSeVC</code>包含一个已知的漏洞，<code>iSeVC</code>将被标记为<code>iSeVC</code>中漏洞的行号(即漏洞的位置)，用x<sub>1</sub>，…，  x<sub>ζ</sub>表示xi(1 ≤ i ≤ ζ)为漏洞对应的行号;否则，<code>iSeVC</code>被标记为“0”(即不包含漏洞)。</p>
+<h2 id="43-训练神经网络模型"><a class="markdownIt-Anchor" href="#43-训练神经网络模型"></a> 4.3 训练神经网络模型</h2>
+<p>每个iSeVC需要被编码成一个向量，用作神经网络的输入。</p>
+<p>由于得到的向量的长度可能不同，而神经网络以固定长度的θ为输入向量，这些向量可能需要进行如下调整:如果向量短于θ，则在向量的末端填充零;如果一个向量比θ长，则该向量被截断为长度θ，使sSyVC出现在结果向量[17]的中间。</p>
+<h3 id="421-brnns双向循环神经网络实现简单的映射"><a class="markdownIt-Anchor" href="#421-brnns双向循环神经网络实现简单的映射"></a> 4.2.1 BRNNs(双向循环神经网络)实现简单的映射</h3>
+<p>BLSTM (Bidirectional LSTM)、BGRU (Bidirectional GRU)等BRNNs确实能够实现简单的映射，同时又能包容前后语句。</p>
+<p>BRNNs不能实现另外两个需求，因为它们的输出粒度与输入粒度相同(而不是细化输入粒度)，它们平等地对待输入的每个部分。但是对于漏洞检测，iSeVC的某些部分(即脆弱的代码行)可能比iSeVC的其他部分更重要，应该由神经网络予以更多的关注。</p>
+<h3 id="422-brnn-vdl-brnn的一种新变体进一步实现了注意力获取和粒度细化"><a class="markdownIt-Anchor" href="#422-brnn-vdl-brnn的一种新变体进一步实现了注意力获取和粒度细化"></a> 4.2.2 BRNN-vdl: BRNN的一种新变体，进一步实现了注意力获取和粒度细化</h3>
+<p>图5突出了BRNN-vdl的结构，该结构扩展了标准BRNN，增加了三层，制定了“vdl”部分，以实现粒度细化和注意力获取。BRNN-vdl的输入包括</p>
+<ul>
+<li>(i)表示iSeVCs的向量，以及</li>
+<li>(ii)表示每个向量中漏洞位置的漏洞位置矩阵。</li>
+</ul>
+<p>学习阶段输出带有微调参数的BRNN-vdl。</p>
+<p><img src="/post/image-20211221103429273.png" srcset="/img/loading.gif" lazyload alt="image-20211221103429273"></p>
+<blockquote>
+<p>BRNN-vdl向BRNN扩展了三个额外的层(即， the multiply, κ-max pooling, and average pooling layers)，这些层形成了“vdl”部分，以实现三个期望的属性。</p>
+</blockquote>
+<p>接下来，我们简要回顾一下BRNN，然后描述我们介绍的BRNN-vdl中的三个额外层。</p>
+<h4 id="brnn-vdl中brnn组件的概述"><a class="markdownIt-Anchor" href="#brnn-vdl中brnn组件的概述"></a> BRNN-vdl中BRNN组件的概述</h4>
+<p>如图5所示,标准BRNN具有</p>
+<ul>
+<li>
+<p>(i)<strong>大量的BRNN层</strong>,用来在前后两个方向连接RNN(循环神经网络)细胞(例如,LSTM和GNU)</p>
+</li>
+<li>
+<p>(ii)<strong>致密层</strong>(dense layer),减少从BRNN层接收到的向量的维数</p>
+</li>
+<li>
+<p>(3)<strong>激活层</strong>(activa-tion layer),它使用激活函数在一个时间步中生成输出。</p>
+<p>在本文的背景下，输入是代表带标签的<code>iSeVC</code>的向量。每个时间步骤对应于<code>iSeVC</code>中的一个令牌。在时间步长τ时，其中1≤τ≤λ， λ为每个<code>iSeVC</code>中的标记数，则<code>iSeVC</code> e<sub>i</sub>的BRNN层输出被表示为g<sub>τ</sub>  (e<sub>i</sub>)</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>g</mi><mi>τ</mi></msub><mo stretchy="false">(</mo><msub><mi>e</mi><mi>i</mi></msub><mo stretchy="false">)</mo><mo>=</mo><mi>φ</mi><mo stretchy="false">(</mo><msub><mi>g</mi><mi>τ</mi></msub><mi mathvariant="normal">−</mi><mn>1</mn><mo stretchy="false">(</mo><msub><mi>e</mi><mi>i</mi></msub><mo stretchy="false">)</mo><mo separator="true">,</mo><msub><mi>g</mi><mi>τ</mi></msub><mo>+</mo><mn>1</mn><mo stretchy="false">(</mo><msub><mi>e</mi><mi>i</mi></msub><mo stretchy="false">)</mo><mo separator="true">,</mo><msub><mi>e</mi><mi>i</mi></msub><mo separator="true">,</mo><mi>ω</mi><mo separator="true">,</mo><mi>β</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">g_τ (e_i) =φ(g_τ−1(e_i), g_τ+1(e_i), e_i,ω,β)
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.1132em;">τ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault">e</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">φ</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.1132em;">τ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">−</span><span class="mord">1</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault">e</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.1132em;">τ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault">e</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">e</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">ω</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.05278em;">β</span><span class="mclose">)</span></span></span></span></span></p>
+<p>其中ω为权重向量，β为偏差向量，g<sub>τ−1</sub>(ei)和g<sub>τ+1</sub>(ei)分别为BRNN层在时间阶长τ−1和τ+1时的输出，函数φ表示BRNN层的输出由其参数g<sub>τ−1</sub>(e<sub>i</sub>)、g<sub>τ+1</sub>(e<sub>i</sub>)、e<sub>i</sub>、ω和β表示。这些参数如何相互作用取决于RNN细胞，如LSTM和GRU。对于iSeVC  ei，标准BRNN Ai的输出向量(即激活层的输出向量)表示为</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>A</mi><mi>i</mi></msub><mo>=</mo><mo stretchy="false">(</mo><msub><mi>g</mi><mn>1</mn></msub><mo stretchy="false">(</mo><msub><mi>e</mi><mi>i</mi></msub><mo stretchy="false">)</mo><mo separator="true">,</mo><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mo separator="true">,</mo><msub><mi>g</mi><mi>λ</mi></msub><mo stretchy="false">(</mo><msub><mi>e</mi><mi>i</mi></msub><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">A_i = (g_1(e_i), . . . , g_λ(e_i))
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault">e</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">.</span><span class="mord">.</span><span class="mord">.</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">λ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault">e</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mclose">)</span></span></span></span></span></p>
+</li>
+</ul>
+<h4 id="乘法层multiply-layer实现注意力获取"><a class="markdownIt-Anchor" href="#乘法层multiply-layer实现注意力获取"></a> 乘法层(multiply layer)实现注意力获取</h4>
+<p>为了使神经网络能够预测漏洞位置,乘法层需要根据漏洞代码行对应的令牌位置对不同的<code>iSeVCs</code>进行不同的处理。</p>
+<ul>
+<li>(i)对于易受攻击的<code>iSeVCs</code>，乘法层意味着选择与易受攻击的代码行对应的令牌的输出。这些被选中的输出将在后续的层和BRNN-vdl的反向传播过程中使用，因为它们将有助于以更高的精度定位漏洞(相对于不使用这个乘法层来说)。</li>
+<li>(ii)对于不脆弱的<code>iSeVCs</code>，乘法层是指选择token的所有输出，并在后续的层和BRNN-vdl的反向传播过程中使用它们，因为这些token在学习阶段同样重要。</li>
+</ul>
+<p>形式上，对于<code>iSeVC</code> e<sub>i</sub>，乘层将激活层A<sub>i</sub>的输出向量与漏洞位置矩阵L<sub>i</sub>相乘。</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>M</mi><mi>i</mi></msub><mo>=</mo><msub><mi>A</mi><mi>i</mi></msub><msub><mi>L</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">M_i = A_iL_i
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathdefault">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span></p>
+<p>其中，L<sub>i</sub>是一个对角矩阵，L<sub>i</sub>= diag(α<sub>1</sub>，  α<sub>2</sub>，…,α<sub>λ</sub>)。对于脆弱的<code>iSeVC</code>，我们用<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msubsup><mi>x</mi><mi>ϵ</mi><mo mathvariant="normal">′</mo></msubsup></mrow><annotation encoding="application/x-tex">x_\epsilon&#x27;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.998892em;vertical-align:-0.247em;"></span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-2.4530000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">ϵ</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span></span></span></span>表示脆弱行<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>x</mi><mi>ϵ</mi></msub></mrow><annotation encoding="application/x-tex">x_\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">ϵ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>中第一个令牌的位置(1≤<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">ϵ</span></span></span></span>≤ζ)，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>w</mi><mi>ϵ</mi></msub></mrow><annotation encoding="application/x-tex">w_\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.02691em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">ϵ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>表示<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>x</mi><mi>ϵ</mi></msub></mrow><annotation encoding="application/x-tex">x_\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">ϵ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>中令牌的数量。</p>
+<p>其中，α<sub>φ</sub>(1≤φ≤λ)取值如下:  对于易受攻击的<code>iSeVC</code>,如果φ∈{<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msubsup><mi>x</mi><mi>ϵ</mi><mo mathvariant="normal">′</mo></msubsup></mrow><annotation encoding="application/x-tex">x_\epsilon&#x27;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.998892em;vertical-align:-0.247em;"></span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-2.4530000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">ϵ</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span></span></span></span>……, <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msubsup><mi>x</mi><mi>ϵ</mi><mo mathvariant="normal">′</mo></msubsup></mrow><annotation encoding="application/x-tex">x_\epsilon&#x27;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.998892em;vertical-align:-0.247em;"></span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-2.4530000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">ϵ</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span></span></span></span>+ <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>w</mi><mi>ϵ</mi></msub><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">w_\epsilon-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.73333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.02691em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">ϵ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span>}，然后我们设置α<sub>φ</sub> = 1;否则，我们设置α φ = 0。对于不脆弱的<code>iSeVC</code>，我们设置α<sub>φ</sub> = 1(1≤φ≤λ)。</p>
+<h4 id="κ-max汇聚层和平均汇聚层共同实现粒度细化"><a class="markdownIt-Anchor" href="#κ-max汇聚层和平均汇聚层共同实现粒度细化"></a> κ-max汇聚层和平均汇聚层共同实现粒度细化。</h4>
+<blockquote>
+<p>κ-max pooling, and average pooling layers</p>
+</blockquote>
+<p>为了使用反向传播训练神经网络，需要κ-max pooling层和average  pooling层对multiply层的输出进行选择和处理。κ-max pooling层选取Mi层输出向量中各元素的κ最大值。平均pooling层计算κ-max  pooling层输出的平均值。直观地说，这两层一起实现了粒度细化，</p>
+<p>有两个原因：</p>
+<ul>
+<li>(i)它们进一步选择multiply层的输出，以获得对应于每个<code>iSeVC</code>的输出，用于反向传播，</li>
+<li>(ii)它们同时考虑了最大值和平均值。</li>
+</ul>
+<p>在形式上，对于<code>iSeVC</code> ei，average  pooling层o<sub>i</sub>的输出定义为</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>o</mi><mi>i</mi></msub><mo>=</mo><mi>a</mi><mi>v</mi><mi>e</mi><mo stretchy="false">(</mo><mi>m</mi><mi>a</mi><msub><mi>x</mi><mi>κ</mi></msub><mo stretchy="false">(</mo><msub><mi>M</mi><mi>i</mi></msub><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">o_i =  ave(max_κ(M_i))
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">o</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.03588em;">v</span><span class="mord mathdefault">e</span><span class="mopen">(</span><span class="mord mathdefault">m</span><span class="mord mathdefault">a</span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">κ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mclose">)</span></span></span></span></span></p>
+<p>其中函数max<sub>κ</sub>返回向量中k最大的元素，函数ave返回k最大元素的平均值。训练过程经过反复的向前和向后传播，收敛为一个参数经过微调的BRNN-vdl，对训练数据中的漏洞模式进行编码。</p>
+<h2 id="44-检测和定位漏洞"><a class="markdownIt-Anchor" href="#44-检测和定位漏洞"></a> 4.4 检测和定位漏洞</h2>
+<p>图6突出显示了使用学习后的BRNN-vdl检测和定位目标程序中的漏洞。</p>
+<p>输入是表示从目标程序中提取的<code>iSeVC</code>的向量。我们首先得到<code>iSeVCs</code>中标记对应的激活层的输出，然后计算每一行标记的κ最大输出值的平均值。然后，我们提取输出大于阈值ϑ的代码行，从而导致容易受到攻击的<code>iSeVC</code>和代码行。最后，我们将易受攻击的<code>iSeVC</code>和其中易受攻击的代码行映射到源代码中，作为检测阶段的输出。</p>
+<p>以图4(d)中的<code>iSeVC</code>为例。<code>iSeVC</code>对应的向量是学习后的BRNNvdl神经网络的输入。计算每行标记的κ最大输出值的平均值后，<code>iSeVC</code>被确定为脆弱的，中间代码的脆弱行在图4(d)的19-21行。最后，将<code>iSeVC</code>中的脆弱行映射到源代码中的脆弱行(即图4(a)中的第25行)。</p>
+<p><img src="/post/image-20211221102530200.png" srcset="/img/loading.gif" lazyload alt="image-20211221102530200"></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%BC%8F%E6%B4%9E%E6%A3%80%E6%B5%8B/">漏洞检测</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，著作权归作者所有，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/post/7e08c437.html">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">AFL源码注释（待完成）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/post/22ae87fa.html">
+                        <span class="hidden-mobile">AFL学习小记</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://zino00.github.io/post/33f70302.html';
+          this.page.identifier = '/post/33f70302.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a  rel="nofollow noopener"><span>Copyrights © 2021</span></a> <i class="iconfont icon-love"></i> <a  target="_blank" rel="nofollow noopener"><span>Zino</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d1745c2e21adaa6ae90b93f4f4d22da9";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.10/dist/katex.min.css" />
+  
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?f45dcd001d67e8f9d84f91248ea31abf";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

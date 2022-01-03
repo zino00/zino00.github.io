@@ -1,0 +1,628 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.jpg">
+  <link rel="icon" href="/img/favicon.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="学习AFL源码的一些记录">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+  <title>AFL源码注释（待完成） - Zino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"zino00.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"f45dcd001d67e8f9d84f91248ea31abf","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Zino's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/post.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="AFL源码注释（待完成）">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-12-21 10:43" pubdate>
+        2021年12月21日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      16
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">AFL源码注释（待完成）</h1>
+            
+            <div class="markdown-body">
+              <h1 id="1-afl-gcc"><a class="markdownIt-Anchor" href="#1-afl-gcc"></a> 1. afl-gcc</h1>
+<ul>
+<li>
+<p>简单函数解释</p>
+<blockquote>
+<ul>
+<li>
+<p><strong>strrchr()</strong></p>
+<p>char *strrchr(const char *str, int c)</p>
+<p>在参数 <strong>str</strong> 所指向的字符串中搜索最后一次出现字符 <strong>c</strong>（一个无符号字符）的位置。</p>
+</li>
+<li>
+<p><strong>access()</strong></p>
+<p>int access(const char* pathname, int mode);</p>
+<p>pathname 是文件的路径名+文件名</p>
+<p>mode：指定access的作用，取值如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs undefined">F_OK 值为0，判断文件是否存在<br>X_OK 值为1，判断对文件是可执行权限<br>W_OK 值为2，判断对文件是否有写权限<br>R_OK 值为4，判断对文件是否有读权限<br></code></pre></td></tr></table></figure>
+<p>返回值：成功0，失败-1</p>
+</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h2 id="find_as"><a class="markdownIt-Anchor" href="#find_as"></a> find_as</h2>
+<p>这个函数用来寻找<code>afl-as</code>的位置。</p>
+<ul>
+<li>它首先检查是否存在AFL_PATH这个环境变量，如果存在就赋值给afl_path，然后检查<code>afl_path/as</code>这个文件是否可以执行，如果可以执行，就将afl_path设置为as_path。</li>
+<li>如果不存在AFL_PATH这个环境变量，则检查argv0，例如（”~/AFL/afl-gcc”）中是否存在’/‘，如果有就找到最后一个’/‘所在的位置，并取其前面的字符串作为dir，然后检查<code>dir/afl-as</code>这个文件是否可以执行，如果可以访问，就将dir设置为as_path</li>
+<li>如果上述两种方式都失败，则抛出异常。</li>
+</ul>
+<h2 id="edit_params"><a class="markdownIt-Anchor" href="#edit_params"></a> edit_params</h2>
+<p>这个函数主要是将argv拷贝到<code>u8 **cc_params</code>中，并做必要的编辑。</p>
+<ul>
+<li>它首先通过ck_alloc来为cc_params分配内存，分配的长度为<code>(argc+128)*8</code>，相当大的内存了。</li>
+<li>然后检查argv[0]里有没有’/‘，如果没有就赋值’argv[0]’到name，如果有就找到最后一个’/‘所在的位置，然后跳过这个’/‘，使name指向’/'后面的值。</li>
+<li>将name和afl-clang比较，如果相同，
+<ul>
+<li>则设置clang_mode为1，然后设置环境变量CLANG_ENV_VAR为1。</li>
+<li>然后将name和afl-clang++比较
+<ul>
+<li>如果相同，则获取环境变量<code>AFL_CXX</code>的值，如果该值存在，则将cc_params[0]设置为该值，如果不存在，就设置为clang++</li>
+<li>如果不相同，则获取环境变量<code>AFL_CC</code>的值，如果该值存在，则将cc_params[0]设置为该值，如果不存在，就设置为clang</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>如果不相同，则将name和afl-g++比较
+<ul>
+<li>如果相同，则获取环境变量<code>AFL_CXX</code>的值，如果该值存在，则将cc_params[0]设置为该值，如果不存在，就设置为g++</li>
+<li>还比了下gcj，一般用不到</li>
+<li>如果不相同，则获取环境变量<code>AFL_CC</code>的值，如果该值存在，则将cc_params[0]设置为该值，如果不存在，就设置为gcc</li>
+</ul>
+</li>
+<li>然后遍历从argv[1]开始的argv参数
+<ul>
+<li>跳过<code>-B/integrated-as/-pipe</code></li>
+<li>如果存在<code>-fsanitize=address</code>或者<code>-fsanitize=memory</code>，就设置asan_set为1;</li>
+<li>如果存在<code>FORTIFY_SOURCE</code>，则设置fortify_set为1</li>
+<li><code>cc_params[cc_par_cnt++] = cur</code>;</li>
+</ul>
+</li>
+<li>然后开始设置其他的cc_params参数
+<ul>
+<li>取之前计算出来的<code>as_path</code>，然后设置<code>-B as_path</code></li>
+<li>如果是clang_mode,则设置<code>-no-integrated-as</code></li>
+<li>如果存在AFL_HARDEN环境变量，则设置<code>-fstack-protector-all</code></li>
+<li>sanitizer
+<ul>
+<li>if如果asan_set在上面被设置为1，则使<code>AFL_USE_ASAN</code>环境变量为1</li>
+<li>elseif存在AFL_USE_ASAN环境变量，则设置<code>-fsanitize=address</code></li>
+<li>elseif如果存在AFL_USE_MSAN环境变量，则设置<code>-fsanitize=memory</code>，但不能同时还指定<code>AFL_HARDEN</code>或者<code>AFL_USE_ASAN</code>，因为这样运行时速度过慢。</li>
+</ul>
+</li>
+<li>如果不存在AFL_DONT_OPTIMIZE环境变量，则设置<code>-g -O3 -funroll-loops -D__AFL_COMPILER=1 -DFUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION=1</code></li>
+<li>如果存在AFL_NO_BUILTIN环境变量，则设置<code>-fno-builtin-strcmp</code>等</li>
+</ul>
+</li>
+<li>最后<code>cc_params[cc_par_cnt] = NULL;</code>终止对cc_params的编辑</li>
+</ul>
+<h2 id="main函数"><a class="markdownIt-Anchor" href="#main函数"></a> main函数</h2>
+<p>看到这里，我们就知道afl-gcc就是找到as所在的位置，将其加入搜索路径，然后设置必要的gcc参数和一些宏，然后调用gcc进行实际的编译，仅仅只是一层wrapper</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/* Main entry point */</span><br><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">int</span> argc, <span class="hljs-keyword">char</span> **argv)</span> </span>&#123;<br><br>    <span class="hljs-keyword">if</span> (isatty(<span class="hljs-number">2</span>) &amp;&amp; !getenv(<span class="hljs-string">&quot;AFL_QUIET&quot;</span>)) &#123;<br><br>        SAYF(cCYA <span class="hljs-string">&quot;afl-cc &quot;</span> cBRI VERSION cRST <span class="hljs-string">&quot; by &lt;lcamtuf@google.com&gt;\n&quot;</span>);<br><br>    &#125; <span class="hljs-keyword">else</span> be_quiet = <span class="hljs-number">1</span>;<br><br>    <span class="hljs-keyword">if</span> (argc &lt; <span class="hljs-number">2</span>) &#123;<br>        ...<br>        <span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>    &#125;<br>    <span class="hljs-comment">//查找fake GNU assembler</span><br>    find_as(argv[<span class="hljs-number">0</span>]);<br>    <span class="hljs-comment">// 设置CC的参数</span><br>    edit_params(argc, argv);<br>    <span class="hljs-comment">// 调用execvp来执行CC</span><br>    <br>    <span class="hljs-comment">// 这里我们在CC之前打印一下参数看看。</span><br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-keyword">sizeof</span>(cc_params); i++) &#123;<br>      <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\targ%d: %s &quot;</span>,i,cc_params[i]);<br>    &#125;<br><br>    execvp(cc_params[<span class="hljs-number">0</span>], (<span class="hljs-keyword">char</span> **) cc_params);<br><br>    FATAL(<span class="hljs-string">&quot;Oops, failed to execute &#x27;%s&#x27; - check your PATH&quot;</span>, cc_params[<span class="hljs-number">0</span>]);<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>通过在执行execvp之前打印命令行参数得到</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">gcc</span> /tmp/hello.c -B /root/src/afl-<span class="hljs-number">2</span>.<span class="hljs-number">52</span>b -g -O<span class="hljs-number">3</span> -funroll-loops -D__AFL_COMPILER=<span class="hljs-number">1</span> -DFUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION=<span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+<p>可以看到，<code>afl-gcc</code>最终调用<code>gcc</code>，并定义了一些宏，设置了一些参数。其中最关键的就是<code>-B /root/src/afl-2.52b</code>这条。根据<code>gcc --help</code>可知，<code>-B</code>选项用于设置编译器的搜索路径，这里便是设置成<code>/root/src/afl-2.52b</code>(是我设置的环境变量<code>AFL_PATH</code>的值，即AFL目录，因为我没有make install)。</p>
+<p>如果了解编译过程，那么就知道把源代码编译成二进制，主要是经过”源代码”-&gt;”汇编代码”-&gt;”二进制”这样的过程。而将汇编代码编译成为二进制的工具，即为汇编器assembler。Linux系统下的常用汇编器是<code>as</code>。不过，编译完成AFL后，在其目录下也会存在一个<code>as</code>文件，并作为符号链接指向<code>afl-as</code>。所以，如果通过<code>-B</code>选项为gcc设置了搜索路径，那么<code>afl-as</code>便会作为汇编器，执行实际的汇编操作。</p>
+<p>所以，AFL的代码插桩，就是在将源文件编译为汇编代码后，通过<code>afl-as</code>完成。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/fuzz/">fuzz</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/fuzz/">fuzz</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，著作权归作者所有，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/post/6c024da0.html">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">操作系统实验七-内存页面置换算法的设计和主存储器空间的分配和回收</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/post/33f70302.html">
+                        <span class="hidden-mobile">论文笔记:《VulDeeLocator:A Deep Learning-based Fine-grained Vulnerability Detector》</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://zino00.github.io/post/7e08c437.html';
+          this.page.identifier = '/post/7e08c437.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a  rel="nofollow noopener"><span>Copyrights © 2021</span></a> <i class="iconfont icon-love"></i> <a  target="_blank" rel="nofollow noopener"><span>Zino</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d1745c2e21adaa6ae90b93f4f4d22da9";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.10/dist/katex.min.css" />
+  
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?f45dcd001d67e8f9d84f91248ea31abf";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

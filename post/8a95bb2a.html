@@ -1,0 +1,653 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.jpg">
+  <link rel="icon" href="/img/favicon.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="运用某种高级语言（如C或C++）模拟时钟中断的产生及设计一个对时钟中断事件进行处理的模拟程序。">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+  <title>操作系统实验三-中断处理 - Zino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"zino00.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"f45dcd001d67e8f9d84f91248ea31abf","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Zino's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/post.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="操作系统实验三-中断处理">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-11-13 07:00" pubdate>
+        2021年11月13日 早上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.5k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      44
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">操作系统实验三-中断处理</h1>
+            
+            <div class="markdown-body">
+              <h1 id="操作系统第三次实验中断处理"><a class="markdownIt-Anchor" href="#操作系统第三次实验中断处理"></a> 操作系统第三次实验中断处理</h1>
+<h1 id="中断处理"><a class="markdownIt-Anchor" href="#中断处理"></a> 中断处理</h1>
+<h2 id="一-实验内容"><a class="markdownIt-Anchor" href="#一-实验内容"></a> 一、实验内容</h2>
+<ul>
+<li>运用某种高级语言（如C或C++）模拟时钟中断的产生及设计一个对时钟中断事件进行处理的模拟程序。</li>
+</ul>
+<h2 id="二-实验目的"><a class="markdownIt-Anchor" href="#二-实验目的"></a> 二、实验目的</h2>
+<ul>
+<li>现代计算机系统的硬件部分都设有中断机构，中断机构能发现中断事件，且当发现中断事件后迫使正在处理器上执行的进程暂时停止执行，而让操作系统的中断处理程序占有处理器去处理出现的中断事件。</li>
+<li>本实验模拟“时钟中断事件”的处理，对其它中断事件的模拟处理，可根据各中断事件的性质确定处理原则，制定算法，自行设计。</li>
+<li>通过本实验了解中断及中断处理程序的作用。</li>
+</ul>
+<h2 id="三-实验题目"><a class="markdownIt-Anchor" href="#三-实验题目"></a> 三、实验题目</h2>
+<ol>
+<li>计算机系统工作过程中，若出现中断事件，硬件就把它记录在中断寄存器中。中断寄存器的每一位可与一个中断事件对应，当出现某中断事件后，对应的中断寄存器的某一位就被置成“1”。</li>
+</ol>
+<ul>
+<li>处理器每执行一条指令后，必须查中断寄存器，当中断寄存器内容不为“0”时，说明有中断事件发生。硬件把中断寄存器内容以及现行程序的断点存在主存的固定单元。操作系统分析保存在主存固定单元中的中断寄存器内容就可知道出现的中断事件的性质，从而作出相应的处理。</li>
+<li>本实验中，用从键盘读入信息来模拟中断寄存器的作用，用计数器加1来模拟处理器执行了一条指令。每模拟一条指令执行后，从键盘读入信息且分析，当读入信息=0时，表示无中断事件发生，继续执行指令；当读入信息=1时，表示发生了时钟中断事件，转时钟中断处理程序。</li>
+</ul>
+<ol start="2">
+<li>假定计算机系统有一时钟，它按电源频率（50Hz）产生中断请求信号，即每隔20毫秒产生一次中断请求信号，称时钟中断信号，时钟中断的间隔时间（20毫秒）称时钟单位。</li>
+</ol>
+<ul>
+<li>按自己确定的频率在键盘上键入“0”或“1”来模拟按电源频率产生的时钟中断信号。</li>
+</ul>
+<ol start="3">
+<li>中断处理程序应首先保护被中断的现行进程的现场（通用寄存器内容、断点等），现场信息可保存在进程控制块中；然后处理出现的中断事件，根据处理结果修改被中断进程的状态；最后转向处理器调度，由处理器调度选择可运行的进程，恢复现场使其运行。</li>
+</ol>
+<ul>
+<li>本实验主要模拟中断事件的处理，为简单起见可省去保护现场和处理器调度的工作。</li>
+</ul>
+<ol start="4">
+<li>为模拟时钟中断的处理，先分析一下时钟中断的作用。利用时钟中断可计算日历时钟，也可作定时闹钟等。</li>
+</ol>
+<ul>
+<li>计算日历时钟——把开机时的时间存放在指定的称为“日历时钟”的工作单元中，用一计时器累计时钟中断次数。根据时钟中断的次数和时钟单位（20毫秒）以及开机时的日历时钟可计算出当前的精确的日历时钟。</li>
+<li>定时闹钟——对需要定时的场合，可把轮到运行的进程的时间片值送到称为“定时闹钟”的工作单元中，每产生一次时钟中断就把定时闹钟值减1，当该值为“0”时，表示确定的时间已到，起到定时的作用。</li>
+</ul>
+<ol start="5">
+<li>
+<p>本实验的模拟程序可由两部分组成，一部分是模拟硬件产生时钟中断，另一部分模拟操作系统的时钟中断处理程序。模拟程序的算法如图1-1。其中，保护现场和处理器调度的工作在编程序时可省去。约定处理器调度总是选择<br>
+被中断进程继续执行。</p>
+</li>
+<li>
+<p>按模拟算法设计程序，要求显示或打印开机时间、定时闹钟初值、定时闹钟为“0”时的日历时钟。确定三个不同的定时闹钟初值，运行设计的程序，观察得到的结果。</p>
+</li>
+</ol>
+<p><img src="/post/image-20211112104249163.png" srcset="/img/loading.gif" lazyload alt="image-20211112104249163"></p>
+<p><strong>思考题</strong></p>
+<p>将进程调度策略结合到本实验中，可选用时间片轮转的调度策略。给每个进程分配一个相同的时间片，每产生一次时钟中断经处理后，被中断进程时间片减1，时间片值¹0时，该进程优先运行，若时间片值=0且该进程尚未运行结束，则将它排入队尾，再给它分配一个时间片，直到所有的进程运行结束。应怎样设计进程控制块？各进程的状态怎样变化？在本实验的程序中加入处理器调度程序</p>
+<h2 id="四-实验设计与过程"><a class="markdownIt-Anchor" href="#四-实验设计与过程"></a> 四、实验设计与过程</h2>
+<h3 id="1-时钟中断事件模拟程序"><a class="markdownIt-Anchor" href="#1-时钟中断事件模拟程序"></a> 1. 时钟中断事件模拟程序</h3>
+<h4 id="数据结构和符号说明"><a class="markdownIt-Anchor" href="#数据结构和符号说明"></a> <strong>数据结构</strong>和符号说明</h4>
+<p>因为该实验中断结束后继续调用上一个进程，直到进程结束，所以未设计进程结构体；</p>
+<p>符号说明：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">time_t</span> t;<span class="hljs-comment">//存储日历时间类型</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">tm</span> *<span class="hljs-title">cc</span>;</span><span class="hljs-comment">//用来保存时间和日期的结构</span><br><br><span class="hljs-keyword">int</span> timer = <span class="hljs-number">0</span>;	 <span class="hljs-comment">//计时器</span><br><span class="hljs-keyword">int</span> counter = <span class="hljs-number">0</span>; <span class="hljs-comment">//计数器</span><br><span class="hljs-keyword">int</span> clock_alarm; <span class="hljs-comment">//定时时钟</span><br><span class="hljs-keyword">int</span> ir = <span class="hljs-number">0</span>;		 <span class="hljs-comment">//中断寄存器</span><br></code></pre></td></tr></table></figure>
+<h4 id="源代码"><a class="markdownIt-Anchor" href="#源代码"></a> 源代码</h4>
+<blockquote>
+<p>该程序思路很清晰，设置一个定时时钟，然后进行中断判断，当输入为1时，中断进程，定时闹钟减一，输入为0时，继续执行进程。</p>
+</blockquote>
+<blockquote>
+<p>当时钟为0时，程序结束，计算时间后输出当前时间。</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;bits/stdc++.h&gt;</span></span><br><span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> std;<br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-keyword">time_t</span> t;<span class="hljs-comment">//存储日历时间类型</span><br>	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">tm</span> *<span class="hljs-title">cc</span>;</span><span class="hljs-comment">//用来保存时间和日期的结构</span><br>	<br>	<span class="hljs-keyword">int</span> timer = <span class="hljs-number">0</span>;	 <span class="hljs-comment">//计时器</span><br>	<span class="hljs-keyword">int</span> counter = <span class="hljs-number">0</span>; <span class="hljs-comment">//计数器</span><br>	<span class="hljs-keyword">int</span> clock_alarm; <span class="hljs-comment">//定时时钟</span><br>	<span class="hljs-keyword">int</span> ir = <span class="hljs-number">0</span>;		 <span class="hljs-comment">//中断寄存器</span><br><br>	<span class="hljs-built_in">time</span>(&amp;t); <span class="hljs-comment">//获取系统时间</span><br>	cc = <span class="hljs-built_in">localtime</span>(&amp;t);<span class="hljs-comment">//将time值分解为tm结构</span><br><br>	cout &lt;&lt; <span class="hljs-string">&quot;开机时间：&quot;</span> &lt;&lt; <span class="hljs-built_in">asctime</span>(cc);<span class="hljs-comment">//以字符串形式输出时间</span><br>	cout &lt;&lt; <span class="hljs-string">&quot;定时闹钟的设定值为：&quot;</span>;<br>	cin &gt;&gt; clock_alarm;<br>	cout &lt;&lt; endl;<br><br>	<span class="hljs-keyword">while</span> (clock_alarm != <span class="hljs-number">0</span>) <span class="hljs-comment">//当未到定时时钟设定值时</span><br>	&#123;<br>		<span class="hljs-keyword">if</span> (ir != <span class="hljs-number">0</span>)<br>			cout &lt;&lt; <span class="hljs-string">&quot;正在进行处理器调度···&quot;</span> &lt;&lt; endl;<br>		cout &lt;&lt; <span class="hljs-string">&quot;一条指令正在执行&quot;</span> &lt;&lt; endl;<br>		counter++;<br>		cout &lt;&lt; <span class="hljs-string">&quot;是否有中断产生，1是，0否：&quot;</span>; <span class="hljs-comment">//每输入一次频率设置为1s</span><br>		cin &gt;&gt; ir;<br>		<span class="hljs-keyword">if</span> (ir == <span class="hljs-number">0</span>)<br>		&#123;<br>			cout &lt;&lt; <span class="hljs-string">&quot;无中断，指令继续执行&quot;</span> &lt;&lt; endl;<br>		&#125;<br>		<span class="hljs-keyword">else</span><br>		&#123;<br>			cout &lt;&lt; <span class="hljs-string">&quot;正在保护现场···&quot;</span> &lt;&lt; endl <span class="hljs-comment">//保护现场具体过程省略</span><br>				 &lt;&lt; <span class="hljs-string">&quot;现场保护完成&quot;</span> &lt;&lt; endl;<br>			cout &lt;&lt; <span class="hljs-string">&quot;---------------------------------------&quot;</span> &lt;&lt; endl;<br>			timer++;	   <span class="hljs-comment">//计时器加1</span><br>			clock_alarm--; <span class="hljs-comment">//定时闹钟减1</span><br>		&#125;<br>	&#125;<br>	cout &lt;&lt; <span class="hljs-string">&quot;时间过去了&quot;</span> &lt;&lt; timer &lt;&lt; <span class="hljs-string">&quot;s&quot;</span> &lt;&lt; endl;<br>	cout &lt;&lt; <span class="hljs-string">&quot;现在时间是：&quot;</span> &lt;&lt; endl;<br>	cc-&gt;tm_hour += timer / <span class="hljs-number">3600</span>; <span class="hljs-comment">//计算当前时间</span><br>	timer %= <span class="hljs-number">3600</span>;<br>	cc-&gt;tm_min += timer / <span class="hljs-number">60</span>;<br>	timer %= <span class="hljs-number">60</span>;<br>	cc-&gt;tm_sec += timer;<br>	cout &lt;&lt; <span class="hljs-built_in">asctime</span>(cc);<br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h4 id="程序初值和运行结果"><a class="markdownIt-Anchor" href="#程序初值和运行结果"></a> 程序初值和运行结果</h4>
+<p>定时闹钟clock_alarm=5</p>
+<p><img src="/post/image-20211112110700237.png" srcset="/img/loading.gif" lazyload alt="image-20211112110700237"></p>
+<p>定时闹钟clock_alarm=3</p>
+<p><img src="/post/image-20211112110831917.png" srcset="/img/loading.gif" lazyload alt="image-20211112110831917"></p>
+<p>定时闹钟clock_alarm=6</p>
+<p><img src="/post/image-20211112111022197.png" srcset="/img/loading.gif" lazyload alt="image-20211112111022197"></p>
+<h3 id="2-思考题时钟中断程序加调度"><a class="markdownIt-Anchor" href="#2-思考题时钟中断程序加调度"></a> 2. 思考题：时钟中断程序加调度</h3>
+<h4 id="数据结构"><a class="markdownIt-Anchor" href="#数据结构"></a> 数据结构</h4>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">PCB</span> //进程结构体</span><br><span class="hljs-class">&#123;</span><br>	<span class="hljs-keyword">int</span> time_slice;	 <span class="hljs-comment">//时间片</span><br>	<span class="hljs-keyword">int</span> time_remain; <span class="hljs-comment">//进程剩余运行时间</span><br>	<span class="hljs-keyword">int</span> id;			 <span class="hljs-comment">//进程id</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+<h4 id="符号说明"><a class="markdownIt-Anchor" href="#符号说明"></a> 符号说明</h4>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++">queue&lt;PCB&gt; p; <span class="hljs-comment">//进程的就绪队列</span><br>PCB process;<span class="hljs-comment">//当前进程</span><br><span class="hljs-keyword">time_t</span> t;<span class="hljs-comment">//存储日历时间类型</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">tm</span> *<span class="hljs-title">cc</span>;</span><span class="hljs-comment">//用来保存时间和日期的结构</span><br></code></pre></td></tr></table></figure>
+<h4 id="函数说明"><a class="markdownIt-Anchor" href="#函数说明"></a> 函数说明</h4>
+<h5 id="时间计算函数"><a class="markdownIt-Anchor" href="#时间计算函数"></a> 时间计算函数</h5>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">time_caculate</span><span class="hljs-params">(<span class="hljs-keyword">int</span> timer)</span> <span class="hljs-comment">//计算当前时间</span></span><br><span class="hljs-function"></span>&#123;<br>	cout &lt;&lt; <span class="hljs-string">&quot;现在时间是：&quot;</span> &lt;&lt; endl;<br>	cc-&gt;tm_hour += timer / <span class="hljs-number">3600</span>;<br>	timer %= <span class="hljs-number">3600</span>;<br>	cc-&gt;tm_min += timer / <span class="hljs-number">60</span>;<br>	timer %= <span class="hljs-number">60</span>;<br>	cc-&gt;tm_sec += timer;<br>	cout &lt;&lt; <span class="hljs-built_in">asctime</span>(cc);<br>&#125;<br></code></pre></td></tr></table></figure>
+<h5 id="进程初始化函数"><a class="markdownIt-Anchor" href="#进程初始化函数"></a> 进程初始化函数</h5>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">process_init</span><span class="hljs-params">(queue&lt;PCB&gt; &amp;p)</span> <span class="hljs-comment">//进程初始化，给定一些进程的初值</span></span><br><span class="hljs-function"></span>&#123;<br>	PCB ex[<span class="hljs-number">4</span>];<br>	<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">4</span>; i++)<br>	&#123;<br>		ex[i].id = i + <span class="hljs-number">1</span>;<br>		ex[i].time_slice = <span class="hljs-number">2</span>;<br>		ex[i].time_remain = <span class="hljs-number">2</span> + i;<br>		p.<span class="hljs-built_in">push</span>(ex[i]);<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h5 id="进程保存函数"><a class="markdownIt-Anchor" href="#进程保存函数"></a> 进程保存函数</h5>
+<blockquote>
+<p>保存进程的时间片信息，具体其他信息的保存省略</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">process_save</span><span class="hljs-params">()</span> <span class="hljs-comment">//中断发生时的进程保存</span></span><br><span class="hljs-function"></span>&#123;<br>	cout &lt;&lt; <span class="hljs-string">&quot;正在保护现场···&quot;</span> &lt;&lt; endl;<br>	process.time_remain--; <span class="hljs-comment">//每产生一次时钟中断经处理后，被中断进程时间减1</span><br>	process.time_slice--;  <span class="hljs-comment">//时间片也减1</span><br><br>	cout &lt;&lt; <span class="hljs-string">&quot;现场保护完成&quot;</span> &lt;&lt; endl;<br>	cout &lt;&lt; <span class="hljs-string">&quot;---------------------------------------&quot;</span> &lt;&lt; endl;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h5 id="进程调度函数"><a class="markdownIt-Anchor" href="#进程调度函数"></a> 进程调度函数</h5>
+<blockquote>
+<p>分为三种情况</p>
+<p>第一种为进程运行时间已完成</p>
+<p>第二种为进程时间片用完</p>
+<p>这两种都需要切换进程</p>
+<p>第三种则是时间片和进程剩余时间均不为零，继续运行当前进程</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">process_schedule</span><span class="hljs-params">(<span class="hljs-keyword">int</span> ir, <span class="hljs-keyword">int</span> timer)</span></span><br><span class="hljs-function"></span>&#123;<br><br>	<span class="hljs-keyword">if</span> (process.time_remain == <span class="hljs-number">0</span>)<br>		ir = <span class="hljs-number">1</span>; <span class="hljs-comment">//标记进程已结束或中断，需要切换进程</span><br>	<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (process.time_slice == <span class="hljs-number">0</span>)<br>	&#123;<br>		ir = <span class="hljs-number">1</span>;					<span class="hljs-comment">//当前进程已结束或中断，需要切换进程</span><br>		process.time_slice = <span class="hljs-number">2</span>; <span class="hljs-comment">//恢复时间片</span><br>		p.<span class="hljs-built_in">push</span>(process);		<span class="hljs-comment">//再次放入就绪队列</span><br>	&#125;<br>	<span class="hljs-keyword">else</span><br>		ir = <span class="hljs-number">-1</span>; <span class="hljs-comment">//当前进程继续运行</span><br>	<span class="hljs-keyword">if</span> (ir == <span class="hljs-number">1</span>)<br>	&#123;<br><br>		cout &lt;&lt; <span class="hljs-string">&quot;正在进行处理器调度···&quot;</span> &lt;&lt; endl;<br>		cout &lt;&lt; <span class="hljs-string">&quot;---------------------------------------&quot;</span> &lt;&lt; endl;<br>		process = p.<span class="hljs-built_in">front</span>();<br>		<span class="hljs-keyword">if</span> (!p.<span class="hljs-built_in">empty</span>())<br>			p.<span class="hljs-built_in">pop</span>();<br>		<span class="hljs-keyword">else</span><br>		&#123;<br>			cout &lt;&lt; <span class="hljs-string">&quot;所以进程已经执行完成,时间过去了&quot;</span> &lt;&lt; timer &lt;&lt; <span class="hljs-string">&quot;s&quot;</span> &lt;&lt; endl;<br>			<span class="hljs-built_in">time_caculate</span>(timer); <span class="hljs-comment">//进程队列为空则结束，计算时间</span><br>			<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;			  <span class="hljs-comment">//返回0表示结束程序</span><br>		&#125;<br>	&#125;<br>	<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (ir == <span class="hljs-number">-1</span>)<br>	&#123;<br>		cout &lt;&lt; <span class="hljs-string">&quot;正在进行处理器调度···&quot;</span> &lt;&lt; endl;<br>		cout &lt;&lt; <span class="hljs-string">&quot;---------------------------------------&quot;</span> &lt;&lt; endl;<br>	&#125;<br>	<span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h4 id="源代码-2"><a class="markdownIt-Anchor" href="#源代码-2"></a> 源代码</h4>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;bits/stdc++.h&gt;</span></span><br><span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> std;<br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">PCB</span> //进程结构体</span><br><span class="hljs-class">&#123;</span><br>	<span class="hljs-keyword">int</span> time_slice;	 <span class="hljs-comment">//时间片</span><br>	<span class="hljs-keyword">int</span> time_remain; <span class="hljs-comment">//进程剩余运行时间</span><br>	<span class="hljs-keyword">int</span> id;			 <span class="hljs-comment">//进程id</span><br>&#125;;<br><br>queue&lt;PCB&gt; p;  <span class="hljs-comment">//进程的就绪队列</span><br>PCB process;   <span class="hljs-comment">//当前进程</span><br><span class="hljs-keyword">time_t</span> t;	   <span class="hljs-comment">//存储日历时间类型</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">tm</span> *<span class="hljs-title">cc</span>;</span> <span class="hljs-comment">//用来保存时间和日期的结构</span><br><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">time_caculate</span><span class="hljs-params">(<span class="hljs-keyword">int</span> timer)</span> <span class="hljs-comment">//计算当前时间</span></span><br><span class="hljs-function"></span>&#123;<br>	cout &lt;&lt; <span class="hljs-string">&quot;现在时间是：&quot;</span> &lt;&lt; endl;<br>	cc-&gt;tm_hour += timer / <span class="hljs-number">3600</span>;<br>	timer %= <span class="hljs-number">3600</span>;<br>	cc-&gt;tm_min += timer / <span class="hljs-number">60</span>;<br>	timer %= <span class="hljs-number">60</span>;<br>	cc-&gt;tm_sec += timer;<br>	cout &lt;&lt; <span class="hljs-built_in">asctime</span>(cc);<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">process_init</span><span class="hljs-params">(queue&lt;PCB&gt; &amp;p)</span> <span class="hljs-comment">//进程初始化，给定一些进程的初值</span></span><br><span class="hljs-function"></span>&#123;<br>	PCB ex[<span class="hljs-number">4</span>];<br>	<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">4</span>; i++)<br>	&#123;<br>		ex[i].id = i + <span class="hljs-number">1</span>;<br>		ex[i].time_slice = <span class="hljs-number">2</span>;<br>		ex[i].time_remain = <span class="hljs-number">2</span> + i;<br>		p.<span class="hljs-built_in">push</span>(ex[i]);<br>	&#125;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">process_save</span><span class="hljs-params">()</span> <span class="hljs-comment">//中断发生时的进程保存</span></span><br><span class="hljs-function"></span>&#123;<br>	cout &lt;&lt; <span class="hljs-string">&quot;正在保护现场···&quot;</span> &lt;&lt; endl;<br>	process.time_remain--; <span class="hljs-comment">//每产生一次时钟中断经处理后，被中断进程时间减1</span><br>	process.time_slice--;  <span class="hljs-comment">//时间片也减1</span><br><br>	cout &lt;&lt; <span class="hljs-string">&quot;现场保护完成&quot;</span> &lt;&lt; endl;<br>	cout &lt;&lt; <span class="hljs-string">&quot;---------------------------------------&quot;</span> &lt;&lt; endl;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">process_schedule</span><span class="hljs-params">(<span class="hljs-keyword">int</span> ir, <span class="hljs-keyword">int</span> timer)</span></span><br><span class="hljs-function"></span>&#123;<br><br>	<span class="hljs-keyword">if</span> (process.time_remain == <span class="hljs-number">0</span>)<br>		ir = <span class="hljs-number">1</span>; <span class="hljs-comment">//标记进程已结束或中断，需要切换进程</span><br>	<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (process.time_slice == <span class="hljs-number">0</span>)<br>	&#123;<br>		ir = <span class="hljs-number">1</span>;					<span class="hljs-comment">//当前进程已结束或中断，需要切换进程</span><br>		process.time_slice = <span class="hljs-number">2</span>; <span class="hljs-comment">//恢复时间片</span><br>		p.<span class="hljs-built_in">push</span>(process);		<span class="hljs-comment">//再次放入就绪队列</span><br>	&#125;<br>	<span class="hljs-keyword">else</span><br>		ir = <span class="hljs-number">-1</span>; <span class="hljs-comment">//当前进程继续运行</span><br>	<span class="hljs-keyword">if</span> (ir == <span class="hljs-number">1</span>)<br>	&#123;<br><br>		cout &lt;&lt; <span class="hljs-string">&quot;正在进行处理器调度···&quot;</span> &lt;&lt; endl;<br>		cout &lt;&lt; <span class="hljs-string">&quot;---------------------------------------&quot;</span> &lt;&lt; endl;<br>		process = p.<span class="hljs-built_in">front</span>();<br>		<span class="hljs-keyword">if</span> (!p.<span class="hljs-built_in">empty</span>())<br>			p.<span class="hljs-built_in">pop</span>();<br>		<span class="hljs-keyword">else</span><br>		&#123;<br>			cout &lt;&lt; <span class="hljs-string">&quot;所以进程已经执行完成,时间过去了&quot;</span> &lt;&lt; timer &lt;&lt; <span class="hljs-string">&quot;s&quot;</span> &lt;&lt; endl;<br>			<span class="hljs-built_in">time_caculate</span>(timer); <span class="hljs-comment">//进程队列为空则结束，计算时间</span><br>			<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;			  <span class="hljs-comment">//返回0表示结束程序</span><br>		&#125;<br>	&#125;<br>	<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (ir == <span class="hljs-number">-1</span>)<br>	&#123;<br>		cout &lt;&lt; <span class="hljs-string">&quot;正在进行处理器调度···&quot;</span> &lt;&lt; endl;<br>		cout &lt;&lt; <span class="hljs-string">&quot;---------------------------------------&quot;</span> &lt;&lt; endl;<br>	&#125;<br>	<span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br><br>	<span class="hljs-keyword">int</span> timer = <span class="hljs-number">0</span>;<br>	<span class="hljs-keyword">int</span> counter = <span class="hljs-number">0</span>;<br>	<span class="hljs-keyword">int</span> clock_alarm;<br>	<span class="hljs-keyword">int</span> ir = <span class="hljs-number">0</span>; <span class="hljs-comment">//中断寄存器</span><br><br>	<span class="hljs-built_in">process_init</span>(p); <span class="hljs-comment">//初始化进程</span><br><br>	<span class="hljs-built_in">time</span>(&amp;t);<br>	cc = <span class="hljs-built_in">localtime</span>(&amp;t);<br><br>	cout &lt;&lt; <span class="hljs-string">&quot;开机时间：&quot;</span> &lt;&lt; <span class="hljs-built_in">asctime</span>(cc);<br>	cout &lt;&lt; <span class="hljs-string">&quot;定时闹钟的设定值为：&quot;</span>;<br>	cin &gt;&gt; clock_alarm;<br>	cout &lt;&lt; endl;<br><br>	process = p.<span class="hljs-built_in">front</span>();<br>	p.<span class="hljs-built_in">pop</span>();<br>	<span class="hljs-keyword">while</span> (clock_alarm != <span class="hljs-number">0</span>)<br>	&#123;<br><br>		cout &lt;&lt; <span class="hljs-string">&quot;进程&quot;</span> &lt;&lt; process.id &lt;&lt; <span class="hljs-string">&quot;正在执行&quot;</span> &lt;&lt; endl;<br>		cout &lt;&lt; <span class="hljs-string">&quot;当前进程剩余的时间片：&quot;</span> &lt;&lt; process.time_slice &lt;&lt; endl;<br>		cout &lt;&lt; <span class="hljs-string">&quot;当前进程剩余执行时间：&quot;</span> &lt;&lt; process.time_remain &lt;&lt; endl;<br>		counter++;<br>		cout &lt;&lt; <span class="hljs-string">&quot;是否有中断产生，1是，0否：&quot;</span>; <span class="hljs-comment">//每输入一次频率设置为1s</span><br>		cin &gt;&gt; ir;<br>		<span class="hljs-keyword">if</span> (ir == <span class="hljs-number">0</span>)<br>		&#123;<br>			cout &lt;&lt; <span class="hljs-string">&quot;未发生中断，进程继续执行&quot;</span> &lt;&lt; endl;<br>			<span class="hljs-keyword">continue</span>;<br>		&#125;<br>		<span class="hljs-keyword">else</span><br>		&#123;<br>			<span class="hljs-built_in">process_save</span>();<br>			timer++;<br>			clock_alarm--;<br>			<span class="hljs-keyword">if</span> (<span class="hljs-built_in">process_schedule</span>(ir, timer) == <span class="hljs-number">0</span>)<br>				<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>		&#125;<br>	&#125;<br>	cout &lt;&lt; <span class="hljs-string">&quot;定时结束，时间过去了&quot;</span> &lt;&lt; timer &lt;&lt; <span class="hljs-string">&quot;s&quot;</span> &lt;&lt; endl;<br>	<span class="hljs-built_in">time_caculate</span>(timer);<br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+<h4 id="程序初值和运行结果-2"><a class="markdownIt-Anchor" href="#程序初值和运行结果-2"></a> 程序初值和运行结果</h4>
+<p>clock_alarm设定值为4</p>
+<p><img src="/post/image-20211112115344801.png" srcset="/img/loading.gif" lazyload alt="image-20211112115344801"></p>
+<p>clock_alarm设定值为5</p>
+<p><img src="/post/image-20211112115544971.png" srcset="/img/loading.gif" lazyload alt="image-20211112115544971"></p>
+<p>当所有进程运行时间小于定时闹钟设定值时：</p>
+<p><img src="/post/image-20211112120044861.png" srcset="/img/loading.gif" lazyload alt="image-20211112120044861"></p>
+<p><img src="/post/image-20211112120118837.png" srcset="/img/loading.gif" lazyload alt="image-20211112120118837"></p>
+<h3 id="五-实验总结"><a class="markdownIt-Anchor" href="#五-实验总结"></a> 五、实验总结</h3>
+<p>对于只有中断的程序设计较为简单，设置一个定时时钟，然后进行中断判断，当输入为1时，中断进程，定时闹钟减一，输入为0时，继续执行当前进程。</p>
+<p>对于思考题，需要考虑时间片轮转调度，程序主要思路就是当进程运行时间或者时间片结束时，切换进程，否则继续执行当前进程。</p>
+<p>这个实验相对较为容易，只考虑了就绪队列和当前运行进程。</p>
+<p>通过这次模拟实验，我了解了中断的过程以及中断处理程序的作用，当CPU收到中断或者异常的信号时，它会暂停执行当前的程序或任务然后通过进程调度函数进行进程切换。</p>
+<p>同时也进行了许久没写过的C++编程，代码太久没编果然会生疏，很多简单的思路总是想不清楚，但总算最后顺利完成了，还是有很多收获的。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，著作权归作者所有，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/post/3f961b4f.html">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">操作系统实验四-调度算法</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/post/da9b6b33.html">
+                        <span class="hidden-mobile">操作系统实验二</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://zino00.github.io/post/8a95bb2a.html';
+          this.page.identifier = '/post/8a95bb2a.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a  rel="nofollow noopener"><span>Copyrights © 2021</span></a> <i class="iconfont icon-love"></i> <a  target="_blank" rel="nofollow noopener"><span>Zino</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d1745c2e21adaa6ae90b93f4f4d22da9";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.10/dist/katex.min.css" />
+  
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?f45dcd001d67e8f9d84f91248ea31abf";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
