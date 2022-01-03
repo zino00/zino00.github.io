@@ -1,0 +1,694 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.jpg">
+  <link rel="icon" href="/img/favicon.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="实现先来先服务调度算法（SPF）、实现时间片轮转调度算法（RR）">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+  <title>操作系统实验四-调度算法 - Zino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"zino00.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"f45dcd001d67e8f9d84f91248ea31abf","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Zino's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/post.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="操作系统实验四-调度算法">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-11-13 08:00" pubdate>
+        2021年11月13日 早上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      5.8k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      77
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">操作系统实验四-调度算法</h1>
+            
+            <div class="markdown-body">
+              <h1 id="调度算法"><a class="markdownIt-Anchor" href="#调度算法"></a> 调度算法</h1>
+<h2 id="一-实验内容"><a class="markdownIt-Anchor" href="#一-实验内容"></a> 一、实验内容</h2>
+<ul>
+<li>实现先来先服务调度算法（SPF）</li>
+<li>实现时间片轮转调度算法（RR）</li>
+</ul>
+<h2 id="二-实验目的"><a class="markdownIt-Anchor" href="#二-实验目的"></a> 二、实验目的</h2>
+<ul>
+<li>通过对进程调度算法的设计，深入理解进程调度的原理。</li>
+<li>进程是程序在一个数据集合上运行的过程，它是系统进行资源分配和调度的一个独立单位。</li>
+<li>进程调度分配处理机，是控制协调进程对CPU的竞争，即按一定的调度算法从就绪队列中选<br>
+中一个进程，把CPU的使用权交给被选中的进程。</li>
+</ul>
+<h2 id="三-实验题目"><a class="markdownIt-Anchor" href="#三-实验题目"></a> 三、实验题目</h2>
+<ol>
+<li>先来先服务（FCFS）调度算法</li>
+</ol>
+<ul>
+<li>原理：每次调度是从就绪队列中，选择一个最先进入就绪队列的进程，把处理器分配给该进程，使之得到执行。该进程一旦占有了处理器，它就一直运行下去，直到该进程完成或因发生事件而阻塞，才退出处理器。</li>
+<li>将用户作业和就绪进程按提交顺序或变为就绪状态的先后排成队列，并按照先来先服务的方式进行调度处理，是一种最普遍和最简单的方法。它优先考虑在系统中等待时间最长的作业，而不管要求运行时间的长短。</li>
+<li>按照就绪进程进入就绪队列的先后次序进行调度，简单易实现，利于长进程，CPU繁忙型作业，不利于短进程，排队时间相对过长</li>
+</ul>
+<p><img src="/posts/3f961b4f/image-20211112131036353.png" srcset="/img/loading.gif" lazyload alt="image-20211112131036353"></p>
+<ol start="2">
+<li>时间片轮转调度算法RR</li>
+</ol>
+<ul>
+<li>原理：时间片轮转法主要用于进程调度。采用此算法的系统，其程序就绪队列往往按进程到达的时间来排序。进程调度按一定时间片(q)轮番运行各个进程.</li>
+<li>进程按到达时间在就绪队列中排队，调度程序每次把CPU分配给就绪队列首进程使用一个时间片，运行完一个时间片释放CPU，排到就绪队列末尾参加下一轮调度，CPU分配给就绪队列的首进程。</li>
+<li>固定时间片轮转法：<br>
+1 所有就绪进程按 FCFS 规则排队。<br>
+2 处理机总是分配给就绪队列的队首进程。<br>
+3 如果运行的进程用完时间片，则系统就把该<br>
+进程送回就绪队列的队尾，重新排队。<br>
+4 因等待某事件而阻塞的进程送到阻塞队列。<br>
+5 系统把被唤醒的进程送到就绪队列的队尾</li>
+</ul>
+<p><img src="/posts/3f961b4f/image-20211112130639647.png" srcset="/img/loading.gif" lazyload alt="image-20211112130639647"></p>
+<h2 id="四-实验设计和过程"><a class="markdownIt-Anchor" href="#四-实验设计和过程"></a> 四、实验设计和过程</h2>
+<h3 id="fcfs调度算法"><a class="markdownIt-Anchor" href="#fcfs调度算法"></a> FCFS调度算法</h3>
+<h4 id="数据结构"><a class="markdownIt-Anchor" href="#数据结构"></a> 数据结构</h4>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Process</span> //进程结构体，表示进程信息</span><br><span class="hljs-class">&#123;</span><br>    string name;         <span class="hljs-comment">//进程名字</span><br>    <span class="hljs-keyword">int</span> arrive_time;     <span class="hljs-comment">//到达时间</span><br>    <span class="hljs-keyword">int</span> service_time;    <span class="hljs-comment">//进程运行时间</span><br>    <span class="hljs-keyword">int</span> wait_time;       <span class="hljs-comment">//进程等待时间</span><br>    <span class="hljs-keyword">int</span> remain_time;     <span class="hljs-comment">//进程剩余运行时间</span><br>    <span class="hljs-keyword">int</span> turnaround_time; <span class="hljs-comment">//周转时间</span><br>    <span class="hljs-keyword">int</span> start_time;      <span class="hljs-comment">//进程开始运行时间</span><br>    <span class="hljs-keyword">int</span> end_time;        <span class="hljs-comment">//进程结束时间</span><br>    <span class="hljs-comment">//int time_slice;      //进程时间片</span><br>&#125; run_process, p[MAXname];<br>queue&lt;Process&gt; ready_queue, block_queue;<br></code></pre></td></tr></table></figure>
+<h4 id="符号说明"><a class="markdownIt-Anchor" href="#符号说明"></a> 符号说明</h4>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">int</span> n;                <span class="hljs-comment">//进程数量</span><br><span class="hljs-keyword">int</span> current_time = <span class="hljs-number">0</span>; <span class="hljs-comment">//当前时间</span><br><span class="hljs-keyword">int</span> t = <span class="hljs-number">0</span>;<br></code></pre></td></tr></table></figure>
+<h4 id="函数说明"><a class="markdownIt-Anchor" href="#函数说明"></a> 函数说明</h4>
+<h5 id="进程初始化函数"><a class="markdownIt-Anchor" href="#进程初始化函数"></a> <strong>进程初始化函数</strong></h5>
+<blockquote>
+<p>获取进程信息</p>
+<ul>
+<li>将进程按照到达时间加入阻塞队列</li>
+</ul>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">process_init</span><span class="hljs-params">()</span> <span class="hljs-comment">//进程初始化</span></span><br><span class="hljs-function"></span>&#123;<br>    cout &lt;&lt; <span class="hljs-string">&quot;请输入进程数量&quot;</span> &lt;&lt; endl;<br>    cin &gt;&gt; n;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++)<br>    &#123;<br>        cout &lt;&lt; <span class="hljs-string">&quot;请输入第&quot;</span> &lt;&lt; i + <span class="hljs-number">1</span> &lt;&lt; <span class="hljs-string">&quot;个进程的名字  到达时间  服务时间&quot;</span> &lt;&lt; endl;<br>        cin &gt;&gt; p[i].name &gt;&gt; p[i].arrive_time &gt;&gt; p[i].service_time;<br>        p[i].remain_time = p[i].service_time;<br>    &#125;<br>    run_process.name = <span class="hljs-string">&quot;0&quot;</span>; <span class="hljs-comment">//当前无进程运行</span><br>    <span class="hljs-built_in">sort</span>(p, p + n, cmp);<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++)<br>    &#123;<br>        block_queue.<span class="hljs-built_in">push</span>(p[i]); <span class="hljs-comment">//将进程加入阻塞队列（未达到则视为阻塞）</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h5 id="获取下一个进程函数"><a class="markdownIt-Anchor" href="#获取下一个进程函数"></a> <strong>获取下一个进程函数</strong></h5>
+<blockquote>
+<p>这部分代码重复率较高，故抽象出来组成函数</p>
+<ul>
+<li>当就绪队列非空时，从中取出一个进程运行，同时计算该进程的等待时间</li>
+<li>否则将当前进程置为空</li>
+</ul>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">nextprocess</span><span class="hljs-params">()</span> <span class="hljs-comment">//取下一个进程</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span> (!ready_queue.<span class="hljs-built_in">empty</span>()) <span class="hljs-comment">//当就绪队列非空时</span><br>    &#123;<br>        run_process = ready_queue.<span class="hljs-built_in">front</span>(); <span class="hljs-comment">//取下个进程</span><br>        run_process.start_time=current_time;<br>        run_process.wait_time += current_time - run_process.arrive_time; <span class="hljs-comment">//计算等待时间</span><br>        ready_queue.<span class="hljs-built_in">pop</span>();<br>    &#125;<br>    <span class="hljs-keyword">else</span> <span class="hljs-comment">//否则将运行进程置为空</span><br>        run_process.name = <span class="hljs-string">&quot;0&quot;</span>;<br>    <br>&#125;<br></code></pre></td></tr></table></figure>
+<h5 id="进程调度函数"><a class="markdownIt-Anchor" href="#进程调度函数"></a> <strong>进程调度函数</strong></h5>
+<blockquote>
+<p>实现进程调度</p>
+<ul>
+<li>当就绪队列、阻塞队列、运行进程都为空时，说明进程全部运行完，结束程序</li>
+<li>当阻塞队列非空且队首元素到达时间已到当前时间，则将阻塞队列队首元素加入就绪队列，并将其从阻塞队列删除</li>
+<li>就绪队列非空和运行进程为空时，则从就绪队列取元素，并将其从阻塞队列删除</li>
+<li>当有进程运行时，输出进程信息，同时改变当前时间等信息</li>
+<li>如果当前进程时间片用完，则将其记录，同时获取下一个进程，程序继续循环</li>
+</ul>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">process_schedule</span><span class="hljs-params">()</span> <span class="hljs-comment">//进程调度函数</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">srand</span>(<span class="hljs-built_in">time</span>(<span class="hljs-literal">NULL</span>)); <span class="hljs-comment">//随机数种子</span><br>    cout &lt;&lt; endl<br>         &lt;&lt; <span class="hljs-string">&quot;------------------------------------FCFS调度算法------------------------------------&quot;</span> &lt;&lt; endl<br>         &lt;&lt; endl;<br>    cout &lt;&lt; <span class="hljs-string">&quot;当前时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;当前进程  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;进程到达时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;进程等待时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;进程服务时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;剩余运行时间  &quot;</span><br>         &lt;&lt; endl;<br>    <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>)<br>    &#123;<br>        <span class="hljs-keyword">if</span> (block_queue.<span class="hljs-built_in">empty</span>() &amp;&amp; ready_queue.<span class="hljs-built_in">empty</span>() &amp;&amp; run_process.name == <span class="hljs-string">&quot;0&quot;</span>) <span class="hljs-comment">//当三个队列均为空时，说明进程全部运行完</span><br>            <span class="hljs-keyword">break</span>;                                                                 <span class="hljs-comment">//结束</span><br><br>        <span class="hljs-keyword">if</span> (!block_queue.<span class="hljs-built_in">empty</span>() &amp;&amp; block_queue.<span class="hljs-built_in">front</span>().arrive_time &lt;= current_time)<br>        &#123;                                                   <span class="hljs-comment">//阻塞队列非空且队首元素到达时间已到当前时间</span><br>            block_queue.<span class="hljs-built_in">front</span>().arrive_time = current_time; <span class="hljs-comment">//将进入就绪队列的时间作为进程到达时间（针对于阻塞过的进程）</span><br>            ready_queue.<span class="hljs-built_in">push</span>(block_queue.<span class="hljs-built_in">front</span>());          <span class="hljs-comment">//则加入就绪队列</span><br>            block_queue.<span class="hljs-built_in">pop</span>();                              <span class="hljs-comment">//从阻塞队列删除</span><br>        &#125;<br>        <span class="hljs-keyword">if</span> (!ready_queue.<span class="hljs-built_in">empty</span>() &amp;&amp; run_process.name == <span class="hljs-string">&quot;0&quot;</span>) <span class="hljs-comment">//就绪队列非空和运行进程为空时</span><br>        &#123;<br>            run_process = ready_queue.<span class="hljs-built_in">front</span>(); <span class="hljs-comment">//则从就绪队列取首元素</span><br>            run_process.start_time=current_time;<br>            ready_queue.<span class="hljs-built_in">pop</span>();                 <span class="hljs-comment">//从就绪队列删除</span><br>        &#125;<br>        <span class="hljs-keyword">if</span> (run_process.name == <span class="hljs-string">&quot;0&quot;</span>) <span class="hljs-comment">//若当前无运行进程，则输出空</span><br>        &#123;<br>            cout &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">8</span>) &lt;&lt; current_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; run_process.name &lt;&lt; endl;<br>            current_time++;<br>        &#125;<br>        <span class="hljs-keyword">else</span><br>        &#123; <span class="hljs-comment">//当前有运行进程则输出信息</span><br>            cout &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">8</span>) &lt;&lt; current_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; run_process.name<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.arrive_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.wait_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.service_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.remain_time<br>                 &lt;&lt; endl;<br>            current_time++;            <span class="hljs-comment">//当前时间加1</span><br>            run_process.remain_time--; <span class="hljs-comment">//进程剩余运行时间减1</span><br><br>            <span class="hljs-keyword">if</span> (run_process.remain_time == <span class="hljs-number">0</span>) <span class="hljs-comment">//当进程剩余运行时间为0</span><br>            &#123;<br>                run_process.end_time=current_time;<br>                run_process.turnaround_time=current_time-run_process.start_time;<br>                p[t++] = run_process;<br>                <span class="hljs-built_in">nextprocess</span>(); <span class="hljs-comment">//取下一个进程</span><br>                <span class="hljs-keyword">continue</span>;<br>            &#125;<br>            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-built_in">block</span>()) <span class="hljs-comment">//当进程有运行时间和时间片时，可能发生阻塞</span><br>            &#123;<br>                cout &lt;&lt; <span class="hljs-string">&quot;-----------------进程阻塞，切换进程----------------&quot;</span> &lt;&lt; endl;<br>                run_process.arrive_time = current_time; <span class="hljs-comment">//若发生阻塞，修改当前进程到达时间</span><br>                block_queue.<span class="hljs-built_in">push</span>(run_process);          <span class="hljs-comment">//并加入阻塞队列中</span><br>                <span class="hljs-built_in">nextprocess</span>();<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h5 id="打印进程信息函数"><a class="markdownIt-Anchor" href="#打印进程信息函数"></a> <strong>打印进程信息函数</strong></h5>
+<blockquote>
+<p>输出进程信息，并输出整个过程的平均等待时间</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">print_process_information</span><span class="hljs-params">()</span> <span class="hljs-comment">//输出进程信息</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">float</span> sumwait = <span class="hljs-number">0</span>;<br>    cout &lt;&lt; <span class="hljs-string">&quot;进程名字  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;到达时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;服务时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;开始执行时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;结束执行时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;周转时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;等待时间  &quot;</span><br>         &lt;&lt; endl;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++)<br>    &#123;<br>        cout &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">8</span>) &lt;&lt; p[i].name<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; p[i].arrive_time<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; p[i].service_time<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; p[i].start_time<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; p[i].end_time<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; p[i].turnaround_time<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; p[i].wait_time<br>             &lt;&lt; endl;<br>        sumwait += p[i].wait_time;<br>    &#125;<br>    cout &lt;&lt; <span class="hljs-string">&quot;平均等待时间为：&quot;</span> &lt;&lt; <span class="hljs-built_in">setprecision</span>(<span class="hljs-number">2</span>) &lt;&lt; <span class="hljs-built_in">setiosflags</span>(ios::fixed) &lt;&lt; <span class="hljs-built_in"><span class="hljs-keyword">float</span></span>(sumwait / n) &lt;&lt; endl;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h5 id="阻塞函数"><a class="markdownIt-Anchor" href="#阻塞函数"></a> 阻塞函数</h5>
+<blockquote>
+<p>随机概率阻塞</p>
+<p>设置了30%的阻塞概率</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">block</span><span class="hljs-params">()</span> <span class="hljs-comment">//阻塞函数，随机概率阻塞</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">int</span> a;<br>    a = <span class="hljs-built_in">rand</span>() % <span class="hljs-number">10</span>;<br>    <span class="hljs-comment">//return 0;</span><br>    <span class="hljs-keyword">if</span> (a &gt;= <span class="hljs-number">0</span> &amp;&amp; a &lt; <span class="hljs-number">3</span>)<br>    &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br>    <span class="hljs-keyword">else</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h4 id="源代码"><a class="markdownIt-Anchor" href="#源代码"></a> 源代码</h4>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;bits/stdc++.h&gt;</span></span><br><span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> std;<br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> MAXname 100</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Process</span> //进程结构体，表示进程信息</span><br><span class="hljs-class">&#123;</span><br>    string name;         <span class="hljs-comment">//进程名字</span><br>    <span class="hljs-keyword">int</span> arrive_time;     <span class="hljs-comment">//到达时间</span><br>    <span class="hljs-keyword">int</span> service_time;    <span class="hljs-comment">//进程运行时间</span><br>    <span class="hljs-keyword">int</span> wait_time;       <span class="hljs-comment">//进程等待时间</span><br>    <span class="hljs-keyword">int</span> remain_time;     <span class="hljs-comment">//进程剩余运行时间</span><br>    <span class="hljs-keyword">int</span> turnaround_time; <span class="hljs-comment">//周转时间</span><br>    <span class="hljs-keyword">int</span> start_time;      <span class="hljs-comment">//进程开始运行时间</span><br>    <span class="hljs-keyword">int</span> end_time;        <span class="hljs-comment">//进程结束时间</span><br>    <span class="hljs-comment">//int time_slice;      //进程时间片</span><br>&#125; run_process, p[MAXname];<br><br><span class="hljs-keyword">int</span> n;                <span class="hljs-comment">//进程数量</span><br><span class="hljs-keyword">int</span> current_time = <span class="hljs-number">0</span>; <span class="hljs-comment">//当前时间</span><br><span class="hljs-keyword">int</span> t = <span class="hljs-number">0</span>;<br>queue&lt;Process&gt; ready_queue, block_queue, run_queue;<br><br><span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">cmp</span><span class="hljs-params">(Process &amp;a, Process &amp;b)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">return</span> a.arrive_time &lt; b.arrive_time;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">process_init</span><span class="hljs-params">()</span> <span class="hljs-comment">//进程初始化</span></span><br><span class="hljs-function"></span>&#123;<br>    cout &lt;&lt; <span class="hljs-string">&quot;请输入进程数量&quot;</span> &lt;&lt; endl;<br>    cin &gt;&gt; n;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++)<br>    &#123;<br>        cout &lt;&lt; <span class="hljs-string">&quot;请输入第&quot;</span> &lt;&lt; i + <span class="hljs-number">1</span> &lt;&lt; <span class="hljs-string">&quot;个进程的名字  到达时间  服务时间&quot;</span> &lt;&lt; endl;<br>        cin &gt;&gt; p[i].name &gt;&gt; p[i].arrive_time &gt;&gt; p[i].service_time;<br>        p[i].remain_time = p[i].service_time;<br>    &#125;<br>    run_process.name = <span class="hljs-string">&quot;0&quot;</span>; <span class="hljs-comment">//当前无进程运行</span><br>    <span class="hljs-built_in">sort</span>(p, p + n, cmp);<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++)<br>    &#123;<br>        block_queue.<span class="hljs-built_in">push</span>(p[i]); <span class="hljs-comment">//将进程加入阻塞队列（未达到则视为阻塞）</span><br>    &#125;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">nextprocess</span><span class="hljs-params">()</span> <span class="hljs-comment">//取下一个进程</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span> (!ready_queue.<span class="hljs-built_in">empty</span>()) <span class="hljs-comment">//当就绪队列非空时</span><br>    &#123;<br>        run_process = ready_queue.<span class="hljs-built_in">front</span>(); <span class="hljs-comment">//取下个进程</span><br>        run_process.start_time=current_time;<br>        run_process.wait_time += current_time - run_process.arrive_time; <span class="hljs-comment">//计算等待时间</span><br>        ready_queue.<span class="hljs-built_in">pop</span>();<br>    &#125;<br>    <span class="hljs-keyword">else</span> <span class="hljs-comment">//否则将运行进程置为空</span><br>        run_process.name = <span class="hljs-string">&quot;0&quot;</span>;<br>    <br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">block</span><span class="hljs-params">()</span> <span class="hljs-comment">//阻塞函数，随机概率阻塞</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">int</span> a;<br>    a = <span class="hljs-built_in">rand</span>() % <span class="hljs-number">10</span>;<br>    <span class="hljs-comment">//return 0;</span><br>    <span class="hljs-keyword">if</span> (a &gt;= <span class="hljs-number">0</span> &amp;&amp; a &lt; <span class="hljs-number">3</span>)<br>    &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br>    <span class="hljs-keyword">else</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">process_schedule</span><span class="hljs-params">()</span> <span class="hljs-comment">//进程调度函数</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">srand</span>(<span class="hljs-built_in">time</span>(<span class="hljs-literal">NULL</span>)); <span class="hljs-comment">//随机数种子</span><br>    cout &lt;&lt; endl<br>         &lt;&lt; <span class="hljs-string">&quot;------------------------------------FCFS调度算法------------------------------------&quot;</span> &lt;&lt; endl<br>         &lt;&lt; endl;<br>    cout &lt;&lt; <span class="hljs-string">&quot;当前时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;当前进程  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;进程到达时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;进程等待时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;进程服务时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;剩余运行时间  &quot;</span><br>         &lt;&lt; endl;<br>    <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>)<br>    &#123;<br>        <span class="hljs-keyword">if</span> (block_queue.<span class="hljs-built_in">empty</span>() &amp;&amp; ready_queue.<span class="hljs-built_in">empty</span>() &amp;&amp; run_process.name == <span class="hljs-string">&quot;0&quot;</span>) <span class="hljs-comment">//当三个队列均为空时，说明进程全部运行完</span><br>            <span class="hljs-keyword">break</span>;                                                                 <span class="hljs-comment">//结束</span><br><br>        <span class="hljs-keyword">if</span> (!block_queue.<span class="hljs-built_in">empty</span>() &amp;&amp; block_queue.<span class="hljs-built_in">front</span>().arrive_time &lt;= current_time)<br>        &#123;                                                   <span class="hljs-comment">//阻塞队列非空且队首元素到达时间已到当前时间</span><br>            block_queue.<span class="hljs-built_in">front</span>().arrive_time = current_time; <span class="hljs-comment">//将进入就绪队列的时间作为进程到达时间（针对于阻塞过的进程）</span><br>            ready_queue.<span class="hljs-built_in">push</span>(block_queue.<span class="hljs-built_in">front</span>());          <span class="hljs-comment">//则加入就绪队列</span><br>            block_queue.<span class="hljs-built_in">pop</span>();                              <span class="hljs-comment">//从阻塞队列删除</span><br>        &#125;<br>        <span class="hljs-keyword">if</span> (!ready_queue.<span class="hljs-built_in">empty</span>() &amp;&amp; run_process.name == <span class="hljs-string">&quot;0&quot;</span>) <span class="hljs-comment">//就绪队列非空和运行进程为空时</span><br>        &#123;<br>            run_process = ready_queue.<span class="hljs-built_in">front</span>(); <span class="hljs-comment">//则从就绪对列取首元素</span><br>            run_process.start_time=current_time;<br>            ready_queue.<span class="hljs-built_in">pop</span>();                 <span class="hljs-comment">//从就绪队列删除</span><br>        &#125;<br>        <span class="hljs-keyword">if</span> (run_process.name == <span class="hljs-string">&quot;0&quot;</span>) <span class="hljs-comment">//若当前无运行进程，则输出空</span><br>        &#123;<br>            cout &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">8</span>) &lt;&lt; current_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; run_process.name &lt;&lt; endl;<br>            current_time++;<br>        &#125;<br>        <span class="hljs-keyword">else</span><br>        &#123; <span class="hljs-comment">//当前有运行进程则输出信息</span><br>            cout &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">8</span>) &lt;&lt; current_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; run_process.name<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.arrive_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.wait_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.service_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.remain_time<br>                 &lt;&lt; endl;<br>            current_time++;            <span class="hljs-comment">//当前时间加1</span><br>            run_process.remain_time--; <span class="hljs-comment">//进程剩余运行时间减1</span><br><br>            <span class="hljs-keyword">if</span> (run_process.remain_time == <span class="hljs-number">0</span>) <span class="hljs-comment">//当进程剩余运行时间为0</span><br>            &#123;<br>                run_process.end_time=current_time;<br>                run_process.turnaround_time=current_time-run_process.start_time;<br>                p[t++] = run_process;<br>                <span class="hljs-built_in">nextprocess</span>(); <span class="hljs-comment">//取下一个进程</span><br>                <span class="hljs-keyword">continue</span>;<br>            &#125;<br>            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-built_in">block</span>()) <span class="hljs-comment">//当进程有运行时间和时间片时，可能发生阻塞</span><br>            &#123;<br>                cout &lt;&lt; <span class="hljs-string">&quot;-----------------进程阻塞，切换进程----------------&quot;</span> &lt;&lt; endl;<br>                run_process.arrive_time = current_time; <span class="hljs-comment">//若发生阻塞，修改当前进程到达时间</span><br>                block_queue.<span class="hljs-built_in">push</span>(run_process);          <span class="hljs-comment">//并加入阻塞队列中</span><br>                <span class="hljs-built_in">nextprocess</span>();<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">print_process_information</span><span class="hljs-params">()</span> <span class="hljs-comment">//输出进程信息</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">float</span> sumwait = <span class="hljs-number">0</span>;<br>    cout &lt;&lt; <span class="hljs-string">&quot;进程名字  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;到达时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;服务时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;开始执行时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;结束执行时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;周转时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;等待时间  &quot;</span><br>         &lt;&lt; endl;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++)<br>    &#123;<br>        cout &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">8</span>) &lt;&lt; p[i].name<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; p[i].arrive_time<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; p[i].service_time<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; p[i].start_time<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; p[i].end_time<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; p[i].turnaround_time<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; p[i].wait_time<br>             &lt;&lt; endl;<br>        sumwait += p[i].wait_time;<br>    &#125;<br>    cout &lt;&lt; <span class="hljs-string">&quot;平均等待时间为：&quot;</span> &lt;&lt; <span class="hljs-built_in">setprecision</span>(<span class="hljs-number">2</span>) &lt;&lt; <span class="hljs-built_in">setiosflags</span>(ios::fixed) &lt;&lt; <span class="hljs-built_in"><span class="hljs-keyword">float</span></span>(sumwait / n) &lt;&lt; endl;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">process_init</span>();<br>    <span class="hljs-built_in">process_schedule</span>();<br>    <span class="hljs-built_in">print_process_information</span>();<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h4 id="程序初值和运行结果"><a class="markdownIt-Anchor" href="#程序初值和运行结果"></a> 程序初值和运行结果</h4>
+<p><strong>不考虑阻塞：</strong></p>
+<p>初值：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">3</span><br><span class="hljs-attribute">ghh</span> <span class="hljs-number">3</span> <span class="hljs-number">6</span><br><span class="hljs-attribute">ga</span> <span class="hljs-number">4</span> <span class="hljs-number">8</span><br><span class="hljs-attribute">hr</span> <span class="hljs-number">8</span> <span class="hljs-number">4</span><br></code></pre></td></tr></table></figure>
+<p>运行结果</p>
+<p><img src="/posts/3f961b4f/image-20211112212432678.png" srcset="/img/loading.gif" lazyload alt="image-20211112212432678"></p>
+<p><strong>考虑阻塞：</strong></p>
+<p>初值：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">3</span><br><span class="hljs-attribute">ghh</span> <span class="hljs-number">3</span> <span class="hljs-number">6</span><br><span class="hljs-attribute">ga</span> <span class="hljs-number">4</span> <span class="hljs-number">8</span><br><span class="hljs-attribute">hr</span> <span class="hljs-number">8</span> <span class="hljs-number">4</span><br></code></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="/posts/3f961b4f/image-20211112212806073.png" srcset="/img/loading.gif" lazyload alt="image-20211112212806073"></p>
+<h3 id="rr调度算法"><a class="markdownIt-Anchor" href="#rr调度算法"></a> RR调度算法</h3>
+<h4 id="数据结构-2"><a class="markdownIt-Anchor" href="#数据结构-2"></a> 数据结构</h4>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Process</span> //进程结构体，表示进程信息</span><br><span class="hljs-class">&#123;</span><br>    string name;         <span class="hljs-comment">//进程名字</span><br>    <span class="hljs-keyword">int</span> arrive_time;     <span class="hljs-comment">//到达时间</span><br>    <span class="hljs-keyword">int</span> service_time;    <span class="hljs-comment">//进程运行时间</span><br>    <span class="hljs-keyword">int</span> wait_time;       <span class="hljs-comment">//进程等待时间</span><br>    <span class="hljs-keyword">int</span> remain_time;     <span class="hljs-comment">//进程剩余运行时间</span><br>    <span class="hljs-keyword">int</span> turnaround_time; <span class="hljs-comment">//周转时间</span><br>    <span class="hljs-keyword">int</span> start_time;      <span class="hljs-comment">//进程开始运行时间</span><br>    <span class="hljs-keyword">int</span> end_time;        <span class="hljs-comment">//进程结束时间</span><br>    <span class="hljs-keyword">int</span> time_slice;      <span class="hljs-comment">//进程时间片</span><br>&#125; run_process, p[MAXname];<br>queue&lt;Process&gt; ready_queue, block_queue, run_queue;<br></code></pre></td></tr></table></figure>
+<h4 id="符号说明-2"><a class="markdownIt-Anchor" href="#符号说明-2"></a> 符号说明</h4>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">int</span> n;                <span class="hljs-comment">//进程数量</span><br><span class="hljs-keyword">int</span> current_time = <span class="hljs-number">0</span>; <span class="hljs-comment">//当前时间</span><br><span class="hljs-keyword">int</span> q = <span class="hljs-number">0</span>;            <span class="hljs-comment">//设定的时间片大小</span><br><span class="hljs-keyword">int</span> t = <span class="hljs-number">0</span>;<br></code></pre></td></tr></table></figure>
+<h4 id="函数说明-2"><a class="markdownIt-Anchor" href="#函数说明-2"></a> 函数说明</h4>
+<blockquote>
+<p>函数设计基本和FCFS相同</p>
+</blockquote>
+<blockquote>
+<p>少数的不同之处是</p>
+<ul>
+<li>进程初始化函数加上了时间片的初始化</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>进程调度函数加上了时间片用完时的进程切换</li>
+<li>时间片用完时回复当前进程的时间片，同时更新到达时间，并将其再次入队</li>
+</ul>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">procese_schedule</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    `````````<span class="hljs-comment">//省略部分具体见源代码</span><br>    `````````<br>        	current_time++;            <span class="hljs-comment">//当前时间加1</span><br>            run_process.remain_time--; <span class="hljs-comment">//进程剩余运行时间减1</span><br>            run_process.time_slice--;  <span class="hljs-comment">//进程时间片时间减1</span><br>			<span class="hljs-keyword">if</span> (run_process.remain_time == <span class="hljs-number">0</span>) <span class="hljs-comment">//当进程剩余运行时间为0</span><br>            &#123;<br>                p[t++] = run_process;<br>                <span class="hljs-built_in">nextprocess</span>(); <span class="hljs-comment">//取下一个进程</span><br>                <span class="hljs-keyword">continue</span>;<br>            &#125;<br>            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (run_process.time_slice == <span class="hljs-number">0</span>) <span class="hljs-comment">//当进程时间片为0时</span><br>            &#123;<br>                run_process.time_slice = q;             <span class="hljs-comment">//恢复时间片</span><br>                run_process.arrive_time = current_time; <span class="hljs-comment">//更新到达时间</span><br>                ready_queue.<span class="hljs-built_in">push</span>(run_process);          <span class="hljs-comment">//再次入队</span><br><br>                <span class="hljs-built_in">nextprocess</span>(); <span class="hljs-comment">//取下一个进程</span><br>                <span class="hljs-keyword">continue</span>;<br>            &#125;<br>            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-built_in">block</span>()) <span class="hljs-comment">//当进程有运行时间和时间片时，可能发生阻塞</span><br>            &#123;<br>                cout &lt;&lt; <span class="hljs-string">&quot;-----------------进程阻塞，切换进程----------------&quot;</span> &lt;&lt; endl;<br>                run_process.arrive_time = current_time; <span class="hljs-comment">//若发生阻塞，修改当前进程到达时间</span><br>                block_queue.<span class="hljs-built_in">push</span>(run_process);          <span class="hljs-comment">//并加入阻塞队列中</span><br>                <span class="hljs-built_in">nextprocess</span>();<br>            &#125;<br>    `````````<span class="hljs-comment">//省略部分具体见源代码</span><br>    `````````<br>&#125;<br></code></pre></td></tr></table></figure>
+<h4 id="源代码-2"><a class="markdownIt-Anchor" href="#源代码-2"></a> 源代码</h4>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;bits/stdc++.h&gt;</span></span><br><span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> std;<br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> MAXname 100</span><br><span class="hljs-keyword">int</span> n;                <span class="hljs-comment">//进程数量</span><br><span class="hljs-keyword">int</span> current_time = <span class="hljs-number">0</span>; <span class="hljs-comment">//当前时间</span><br><span class="hljs-keyword">int</span> q = <span class="hljs-number">0</span>;            <span class="hljs-comment">//设定的时间片大小</span><br><span class="hljs-keyword">int</span> t = <span class="hljs-number">0</span>;<br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Process</span> //进程结构体，表示进程信息</span><br><span class="hljs-class">&#123;</span><br>    string name;         <span class="hljs-comment">//进程名字</span><br>    <span class="hljs-keyword">int</span> arrive_time;     <span class="hljs-comment">//到达时间</span><br>    <span class="hljs-keyword">int</span> service_time;    <span class="hljs-comment">//进程运行时间</span><br>    <span class="hljs-keyword">int</span> wait_time;       <span class="hljs-comment">//进程等待时间</span><br>    <span class="hljs-keyword">int</span> remain_time;     <span class="hljs-comment">//进程剩余运行时间</span><br>    <span class="hljs-keyword">int</span> turnaround_time; <span class="hljs-comment">//周转时间</span><br>    <span class="hljs-keyword">int</span> start_time;      <span class="hljs-comment">//进程开始运行时间</span><br>    <span class="hljs-keyword">int</span> end_time;        <span class="hljs-comment">//进程结束时间</span><br>    <span class="hljs-keyword">int</span> time_slice;      <span class="hljs-comment">//进程时间片</span><br>&#125; run_process, p[MAXname];<br>queue&lt;Process&gt; ready_queue, block_queue;<span class="hljs-comment">//依次为就绪队列、阻塞队列</span><br><span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">cmp</span><span class="hljs-params">(Process &amp;a, Process &amp;b)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">return</span> a.arrive_time &lt; b.arrive_time;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">process_init</span><span class="hljs-params">()</span> <span class="hljs-comment">//进程初始化</span></span><br><span class="hljs-function"></span>&#123;<br>    cout &lt;&lt; <span class="hljs-string">&quot;请输入进程数量&quot;</span> &lt;&lt; endl;<br>    cin &gt;&gt; n;<br>    cout &lt;&lt; <span class="hljs-string">&quot;请输入时间片长度&quot;</span> &lt;&lt; endl;<br>    cin &gt;&gt; q;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++)<br>    &#123;<br>        cout &lt;&lt; <span class="hljs-string">&quot;请输入第&quot;</span> &lt;&lt; i + <span class="hljs-number">1</span> &lt;&lt; <span class="hljs-string">&quot;个进程的名字  到达时间  服务时间&quot;</span> &lt;&lt; endl;<br>        cin &gt;&gt; p[i].name &gt;&gt; p[i].arrive_time &gt;&gt; p[i].service_time;<br>        p[i].remain_time = p[i].service_time;<br>        p[i].time_slice = q; <span class="hljs-comment">//设置进程时间片</span><br>        p[i].end_time = <span class="hljs-number">0</span>;<br>    &#125;<br>    run_process.name = <span class="hljs-string">&quot;0&quot;</span>; <span class="hljs-comment">//当前无进程运行</span><br>    <span class="hljs-built_in">sort</span>(p, p + n, cmp);<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++)<br>    &#123;<br>        block_queue.<span class="hljs-built_in">push</span>(p[i]); <span class="hljs-comment">//将进程加入阻塞队列（未达到则视为阻塞）</span><br>    &#125;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">nextprocess</span><span class="hljs-params">()</span> <span class="hljs-comment">//取下一个进程</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span> (!ready_queue.<span class="hljs-built_in">empty</span>()) <span class="hljs-comment">//当就绪队列非空时</span><br>    &#123;<br>        run_process = ready_queue.<span class="hljs-built_in">front</span>(); <span class="hljs-comment">//取下个进程</span><br>        ready_queue.<span class="hljs-built_in">pop</span>();<br>    &#125;<br>    <span class="hljs-keyword">else</span> <span class="hljs-comment">//否则将运行进程置为空</span><br>        run_process.name = <span class="hljs-string">&quot;0&quot;</span>;<br>    run_process.wait_time += current_time - run_process.arrive_time; <span class="hljs-comment">//计算等待时间</span><br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">block</span><span class="hljs-params">()</span> <span class="hljs-comment">//阻塞函数，随机概率阻塞</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">int</span> a;<br>    a = <span class="hljs-built_in">rand</span>() % <span class="hljs-number">10</span>;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">if</span> (a &gt;= <span class="hljs-number">0</span> &amp;&amp; a &lt; <span class="hljs-number">3</span>)<br>    &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br>    <span class="hljs-keyword">else</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">process_schedule</span><span class="hljs-params">()</span> <span class="hljs-comment">//进程调度函数</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">srand</span>(<span class="hljs-built_in">time</span>(<span class="hljs-literal">NULL</span>)); <span class="hljs-comment">//随机数种子</span><br>    cout &lt;&lt; endl<br>         &lt;&lt; <span class="hljs-string">&quot;----------------------------------------RR调度算法----------------------------------------&quot;</span> <br>         &lt;&lt; endl<br>         &lt;&lt; endl;<br>    cout &lt;&lt; <span class="hljs-string">&quot;当前时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;当前进程  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;进程到达时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;进程等待时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;进程服务时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;剩余运行时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;剩余时间片时间&quot;</span><br>         &lt;&lt; endl;<br>    <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>)<br>    &#123;<br>        <span class="hljs-keyword">if</span> (block_queue.<span class="hljs-built_in">empty</span>() &amp;&amp; ready_queue.<span class="hljs-built_in">empty</span>() &amp;&amp; run_process.name == <span class="hljs-string">&quot;0&quot;</span>) <span class="hljs-comment">//当三个队列均为空时，说明进程全部运行完</span><br>            <span class="hljs-keyword">break</span>;                                                                 <span class="hljs-comment">//结束</span><br><br>        <span class="hljs-keyword">if</span> (!block_queue.<span class="hljs-built_in">empty</span>() &amp;&amp; block_queue.<span class="hljs-built_in">front</span>().arrive_time &lt;= current_time)<br>        &#123;                                                   <span class="hljs-comment">//阻塞队列非空且队首元素到达时间已到当前时间</span><br>            block_queue.<span class="hljs-built_in">front</span>().arrive_time = current_time; <span class="hljs-comment">//将进入就绪队列的时间作为进程到达时间（针对于阻塞过的进程）</span><br>            ready_queue.<span class="hljs-built_in">push</span>(block_queue.<span class="hljs-built_in">front</span>());          <span class="hljs-comment">//则加入就绪队列</span><br>            block_queue.<span class="hljs-built_in">pop</span>();                              <span class="hljs-comment">//从阻塞队列删除</span><br>        &#125;<br>        <span class="hljs-keyword">if</span> (!ready_queue.<span class="hljs-built_in">empty</span>() &amp;&amp; run_process.name == <span class="hljs-string">&quot;0&quot;</span>) <span class="hljs-comment">//就绪队列非空和运行进程非空</span><br>        &#123;<br>            run_process = ready_queue.<span class="hljs-built_in">front</span>(); <span class="hljs-comment">//则从就绪对列取首元素</span><br>            ready_queue.<span class="hljs-built_in">pop</span>();                 <span class="hljs-comment">//从就绪队列删除</span><br>        &#125;<br>        <span class="hljs-keyword">if</span> (run_process.name == <span class="hljs-string">&quot;0&quot;</span>) <span class="hljs-comment">//若当前无运行进程，则输出空</span><br>        &#123;<br>            cout &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">8</span>) &lt;&lt; current_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; run_process.name &lt;&lt; endl;<br>            current_time++;<br>        &#125;<br>        <span class="hljs-keyword">else</span><br>        &#123; <span class="hljs-comment">//当前有运行进程则输出信息</span><br>            cout &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">8</span>) &lt;&lt; current_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; run_process.name<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.arrive_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.wait_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.service_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.remain_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.time_slice<br>                 &lt;&lt; endl;<br>            current_time++;            <span class="hljs-comment">//当前时间加1</span><br>            run_process.remain_time--; <span class="hljs-comment">//进程剩余运行时间减1</span><br>            run_process.time_slice--;  <span class="hljs-comment">//进程时间片时间减1</span><br><br>            <span class="hljs-keyword">if</span> (run_process.remain_time == <span class="hljs-number">0</span>) <span class="hljs-comment">//当进程剩余运行时间为0</span><br>            &#123;<br>                p[t++] = run_process;<br>                <span class="hljs-built_in">nextprocess</span>(); <span class="hljs-comment">//取下一个进程</span><br>                <span class="hljs-keyword">continue</span>;<br>            &#125;<br>            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (run_process.time_slice == <span class="hljs-number">0</span>) <span class="hljs-comment">//当进程时间片为0时</span><br>            &#123;<br>                run_process.time_slice = q;             <span class="hljs-comment">//恢复时间片</span><br>                run_process.arrive_time = current_time; <span class="hljs-comment">//更新到达时间</span><br>                ready_queue.<span class="hljs-built_in">push</span>(run_process);          <span class="hljs-comment">//再次入队</span><br><br>                <span class="hljs-built_in">nextprocess</span>(); <span class="hljs-comment">//取下一个进程</span><br>                <span class="hljs-keyword">continue</span>;<br>            &#125;<br>            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-built_in">block</span>()) <span class="hljs-comment">//当进程有运行时间和时间片时，可能发生阻塞</span><br>            &#123;<br>                cout &lt;&lt; <span class="hljs-string">&quot;-----------------进程阻塞，切换进程----------------&quot;</span> &lt;&lt; endl;<br>                run_process.arrive_time = current_time; <span class="hljs-comment">//若发生阻塞，修改当前进程到达时间</span><br>                block_queue.<span class="hljs-built_in">push</span>(run_process);          <span class="hljs-comment">//并加入阻塞队列中</span><br>                <span class="hljs-built_in">nextprocess</span>();<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">print_process_information</span><span class="hljs-params">()</span> <span class="hljs-comment">//输出进程信息</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">float</span> sumwait = <span class="hljs-number">0</span>;<br>    cout &lt;&lt; <span class="hljs-string">&quot;进程名字  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;服务时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;等待时间  &quot;</span><br>         &lt;&lt; endl;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++)<br>    &#123;<br>        cout &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">8</span>) &lt;&lt; p[i].name<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; p[i].service_time<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; p[i].wait_time<br>             &lt;&lt; endl;<br>        sumwait += p[i].wait_time;<br>    &#125;<br>    cout &lt;&lt; <span class="hljs-string">&quot;平均等待时间为：&quot;</span> &lt;&lt; <span class="hljs-built_in">setprecision</span>(<span class="hljs-number">2</span>) &lt;&lt; <span class="hljs-built_in">setiosflags</span>(ios::fixed) &lt;&lt; <span class="hljs-built_in"><span class="hljs-keyword">float</span></span>(sumwait / n) &lt;&lt; endl;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">process_init</span>();<br>    <span class="hljs-built_in">process_schedule</span>();<br>    <span class="hljs-built_in">print_process_information</span>();<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h4 id="程序初值和运行结果-2"><a class="markdownIt-Anchor" href="#程序初值和运行结果-2"></a> 程序初值和运行结果</h4>
+<p><strong>不考虑阻塞：</strong></p>
+<p>初值（小时间片）：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">3</span><br><span class="hljs-attribute">2</span><br><span class="hljs-attribute">ghh</span> <span class="hljs-number">3</span> <span class="hljs-number">6</span><br><span class="hljs-attribute">ga</span> <span class="hljs-number">4</span> <span class="hljs-number">8</span><br><span class="hljs-attribute">hr</span> <span class="hljs-number">8</span> <span class="hljs-number">4</span><br></code></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="/posts/3f961b4f/image-20211112213852527.png" srcset="/img/loading.gif" lazyload alt="image-20211112213852527"></p>
+<p><strong>考虑阻塞：</strong></p>
+<p>初值（小时间片）：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">3</span><br><span class="hljs-attribute">2</span><br><span class="hljs-attribute">ghh</span> <span class="hljs-number">3</span> <span class="hljs-number">6</span><br><span class="hljs-attribute">ga</span> <span class="hljs-number">4</span> <span class="hljs-number">8</span><br><span class="hljs-attribute">hr</span> <span class="hljs-number">8</span> <span class="hljs-number">4</span><br></code></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="/posts/3f961b4f/image-20211112213737120.png" srcset="/img/loading.gif" lazyload alt="image-20211112213737120"></p>
+<p><strong>时间片很大（等同于FCFS）</strong></p>
+<p>初值：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">3</span><br><span class="hljs-attribute">60</span><br><span class="hljs-attribute">ghh</span> <span class="hljs-number">3</span> <span class="hljs-number">6</span><br><span class="hljs-attribute">ga</span> <span class="hljs-number">4</span> <span class="hljs-number">8</span><br><span class="hljs-attribute">hr</span> <span class="hljs-number">8</span> <span class="hljs-number">4</span><br></code></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="/posts/3f961b4f/image-20211112213941550.png" srcset="/img/loading.gif" lazyload alt="image-20211112213941550"></p>
+<h3 id="思考题"><a class="markdownIt-Anchor" href="#思考题"></a> 思考题</h3>
+<blockquote>
+<p>根据上面的观察结果，比较这两种算法各自的优缺点，根据结果再和其他的算法比较。</p>
+</blockquote>
+<p><strong>FCFS 调度</strong>的代码编写简单且容易理解。但是， 采用FCFS 策略的平均等待时间通常较长。</p>
+<p>RR算法的性能很大程度上依赖于时间片的大小。在极端情况下，如果时间片非常大，那么RR算法与FCFS算法一样，如果时间片很小(如1ms)，那么R算法称为处理器共享。</p>
+<p>而<strong>SJF 调度算法</strong>可证明为最佳的， 这是因为对于给定的一组进程， SJF 算法的平均等待时间最小。</p>
+<p><strong>优先级调度算法</strong>可以自行选择进程优先级来调度，但是其一个主要问题是<strong>无穷阻塞</strong>（indefinite blocking）或饥饿（ starvation）。可以运行但缺乏CPU 的进程可认为是阻塞的，它在等待CPU。优先级调度算法会使某个低优先级进程无穷等待CPU。</p>
+<p><strong>多级反馈队列调度算法</strong>允许进程在队列之间移动。主要思想是根据不同CPU区间的特点以区分进程。如果进程使用过多CPU时间， 那么它会被转移到更低优先级队列。这种方案将I/O约束和交互进程留在更高优先级队列。此外， 在较低优先级队列中等待时间过长的进程会被转移到更高优先级队列。这种形式的老化阻止饥饿的发生。</p>
+<h2 id="五-实验总结"><a class="markdownIt-Anchor" href="#五-实验总结"></a> 五、实验总结</h2>
+<p>这次实验主要实现了FCFS进程调度算法和RR进程调度算法，本实验设计了两版代码，最开始设计FCFS时，想的较为简单，将全部进程都排序加入了队列，然后依次出队列即完成了调度，这思路导致了我之后设计RR算法时也采用了这种策略，但这样使得一旦有一个进程被中断后要加入包含全部进程的队列，需要和队列里的所有进程比较到达时间，而我最开始采取的解决方法是全部出队，排序后再次入队，虽然这样是可以的，但是却不符合模拟的初衷。</p>
+<p>后来在仔细看流程图后，发现自己第一版的代码里没有设计阻塞进程的函数，而且原来的设计很难加进去这个功能，所以干脆重新写了一版RR调度算法的代码。按照实际调度时的情况，我建立了就绪队列、阻塞队列、当前运行进程三个队列，首先将全部进程加入阻塞队列（未到到达时间的进程默认为阻塞）,然后根据时间加入就绪队列，当前进程为空时，从就绪队列取元素。同时设计了一个随机阻塞函数 ，来完成进程的阻塞，被阻塞进程再次加入阻塞队列。</p>
+<p>而之后我又根据这一版的RR调度算法更改了FCFS的代码，只需要去掉RR轮转部分的代码就可以变成FCFS了，这与RR算法在时间片无限长时等价于FCFS算法的规律也是相同的（关于这个结果上方的运行结果中也有比较），虽然FCFS代码比第一版复杂了很多，但结构和逻辑上更为完善了。</p>
+<p>从这两个实验，让我更加理解了FCFS和轮转法调度的规则，对于进程在调度时就绪队列阻塞队列等的变化也有了更深刻的理解。在实验编写过程中，也遇到许多错误，但后来总结起来看，很多都是没有弄清楚进程入队出队的关系导致的，理清楚就绪和运行队列的具体关系后，按次序将进程加入队列，再执行，逐个判断进程结束的条件，弄清楚这些，代码也就顺利完成了。</p>
+<p>总的来说，这次实验收获也很大。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，著作权归作者所有，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/posts/8ce3e425/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">操作系统笔记</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/8a95bb2a/">
+                        <span class="hidden-mobile">操作系统实验三-中断处理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://zino00.github.io/posts/3f961b4f/';
+          this.page.identifier = '/posts/3f961b4f/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a  rel="nofollow noopener"><span>Copyrights © 2021</span></a> <i class="iconfont icon-love"></i> <a  target="_blank" rel="nofollow noopener"><span>Zino</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d1745c2e21adaa6ae90b93f4f4d22da9";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.10/dist/katex.min.css" />
+  
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?f45dcd001d67e8f9d84f91248ea31abf";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
