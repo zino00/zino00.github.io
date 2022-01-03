@@ -238,47 +238,47 @@
             <div class="markdown-body">
               <h1 id="environment-variable-and-set-uid-program-lab"><a class="markdownIt-Anchor" href="#environment-variable-and-set-uid-program-lab"></a> Environment Variable and Set-UID Program Lab</h1>
 <h2 id="task-1"><a class="markdownIt-Anchor" href="#task-1"></a> Task 1</h2>
-<p><img src="/3c8e3d23image-20211021190558511.png" srcset="/img/loading.gif" lazyload alt="image-20211021190558511"></p>
+<p><img src="/3c8e3d23/image-20211021190558511.png" srcset="/img/loading.gif" lazyload alt="image-20211021190558511"></p>
 <ul>
 <li>
 <p>使用<code>printenv</code>打印环境变量</p>
-<p><img src="/3c8e3d23image-20211021190734705.png" srcset="/img/loading.gif" lazyload alt="image-20211021190734705"></p>
+<p><img src="/3c8e3d23/image-20211021190734705.png" srcset="/img/loading.gif" lazyload alt="image-20211021190734705"></p>
 </li>
 <li>
 <p>使用<code>export</code>设置环境变量的值,用<code>echo</code>查看设置结果</p>
-<p><img src="/3c8e3d23image-20211021192046493.png" srcset="/img/loading.gif" lazyload alt="image-20211021192046493"></p>
+<p><img src="/3c8e3d23/image-20211021192046493.png" srcset="/img/loading.gif" lazyload alt="image-20211021192046493"></p>
 </li>
 <li>
 <p>使用<code>unset</code>删除环境变量，用<code>echo</code>查看设置结果</p>
-<p><img src="/3c8e3d23image-20211021192112022.png" srcset="/img/loading.gif" lazyload alt="image-20211021192112022"></p>
+<p><img src="/3c8e3d23/image-20211021192112022.png" srcset="/img/loading.gif" lazyload alt="image-20211021192112022"></p>
 </li>
 </ul>
 <h2 id="task-2"><a class="markdownIt-Anchor" href="#task-2"></a> Task 2</h2>
 <h3 id="step-1"><a class="markdownIt-Anchor" href="#step-1"></a> Step 1.</h3>
 <p>首先编译<code>myprintenv.c</code>文件</p>
 <p>然后结果保存在<code>file</code>中</p>
-<p><img src="/3c8e3d23image-20211021192345242.png" srcset="/img/loading.gif" lazyload alt="image-20211021192345242"></p>
+<p><img src="/3c8e3d23/image-20211021192345242.png" srcset="/img/loading.gif" lazyload alt="image-20211021192345242"></p>
 <p>观察file文件，我们可以发现是各个环境变量的值</p>
-<p><img src="/3c8e3d23image-20211021192715013.png" srcset="/img/loading.gif" lazyload alt="image-20211021192715013"></p>
+<p><img src="/3c8e3d23/image-20211021192715013.png" srcset="/img/loading.gif" lazyload alt="image-20211021192715013"></p>
 <h3 id="step-2"><a class="markdownIt-Anchor" href="#step-2"></a> Step 2</h3>
 <p>按照要求注释掉子进程的printenv语句，将父进程的printenv语句取消注释</p>
 <p>重新编译，将结果保存在file2文件中，发现同样是环境变量的值</p>
-<p><img src="/3c8e3d23image-20211021194639135.png" srcset="/img/loading.gif" lazyload alt="image-20211021194639135"></p>
+<p><img src="/3c8e3d23/image-20211021194639135.png" srcset="/img/loading.gif" lazyload alt="image-20211021194639135"></p>
 <h3 id="step-3"><a class="markdownIt-Anchor" href="#step-3"></a> Step 3</h3>
 <p>用diff命令比较file和file2的差异，发现两者是相同的，说明子进程完全继承了父进程的环境变量。</p>
-<p><img src="/3c8e3d23image-20211021194823695.png" srcset="/img/loading.gif" lazyload alt="image-20211021194823695"></p>
+<p><img src="/3c8e3d23/image-20211021194823695.png" srcset="/img/loading.gif" lazyload alt="image-20211021194823695"></p>
 <p>进一步查阅资料可知</p>
 <p>子进程完全复制了父进程的资源，包括进程上下文、代码区、数据区、堆区、栈区、内存信息、打开文件的文件描述符、信号处理函数、进程优先级、进程组号、当前工作目录、根目录、资源限制和控制终端等信息，而子进程与父进程的区别有进程号、资源使用情况和计时器等。</p>
 <h2 id="task-3"><a class="markdownIt-Anchor" href="#task-3"></a> Task 3</h2>
 <h3 id="step-1-2"><a class="markdownIt-Anchor" href="#step-1-2"></a> Step 1</h3>
 <p>编译运行myenv.c，发现结果为空</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;unistd.h&gt;</span></span><br><br><span class="hljs-keyword">extern</span> <span class="hljs-keyword">char</span> **environ;<br><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>  <span class="hljs-keyword">char</span> *argv[<span class="hljs-number">2</span>];<br><br>  argv[<span class="hljs-number">0</span>] = <span class="hljs-string">&quot;/usr/bin/env&quot;</span>;<br>  argv[<span class="hljs-number">1</span>] = <span class="hljs-literal">NULL</span>;<br><br>  <span class="hljs-built_in">execve</span>(<span class="hljs-string">&quot;/usr/bin/env&quot;</span>, argv, <span class="hljs-literal">NULL</span>);  <br><br>  <span class="hljs-keyword">return</span> <span class="hljs-number">0</span> ;<br>&#125;<br></code></pre></td></tr></table></figure>
-<p><img src="/3c8e3d23image-20211021195206499.png" srcset="/img/loading.gif" lazyload alt="image-20211021195206499"></p>
+<p><img src="/3c8e3d23/image-20211021195206499.png" srcset="/img/loading.gif" lazyload alt="image-20211021195206499"></p>
 <h3 id="step-2-2"><a class="markdownIt-Anchor" href="#step-2-2"></a> Step 2</h3>
 <p>将代码修改为如下方所示的代码后，再次编译运行</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;unistd.h&gt;</span></span><br><br><span class="hljs-keyword">extern</span> <span class="hljs-keyword">char</span> **environ;<br><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>  <span class="hljs-keyword">char</span> *argv[<span class="hljs-number">2</span>];<br><br>  argv[<span class="hljs-number">0</span>] = <span class="hljs-string">&quot;/usr/bin/env&quot;</span>;<br>  argv[<span class="hljs-number">1</span>] = <span class="hljs-literal">NULL</span>;<br><br>  <span class="hljs-comment">//execve(&quot;/usr/bin/env&quot;, argv, NULL);  </span><br>  <span class="hljs-built_in">execve</span>(<span class="hljs-string">&quot;/usr/bin/env&quot;</span>, argv, environ);<br><br>  <span class="hljs-keyword">return</span> <span class="hljs-number">0</span> ;<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>发现程序打印出了环境变量的值。</p>
-<p><img src="/3c8e3d23image-20211021195323867.png" srcset="/img/loading.gif" lazyload alt="image-20211021195323867">函数execve()的作用，其调用格式如下：<br>
+<p><img src="/3c8e3d23/image-20211021195323867.png" srcset="/img/loading.gif" lazyload alt="image-20211021195323867">函数execve()的作用，其调用格式如下：<br>
 int execve(const char * filename，char * const argv[]，char * const envp[])<br>
 其有三个参数，第一个参数filename指向要运行的新程序的路径，第二个参数argv数组包含新程序的所有参数，第三个参数envp数组包含新程序的环境变量。</p>
 <p>如果将envrion传给execve()函数，则新进程想将他自己的环境变量传给新程序。如果设为NULL，则不传递任何环境变量</p>
@@ -289,7 +289,7 @@ int execve(const char * filename，char * const argv[]，char * const envp[])<br
 <h2 id="task-4"><a class="markdownIt-Anchor" href="#task-4"></a> Task 4</h2>
 <p>保存编译运行下方的代码，可以发现结果是打印出了环境变量</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-built_in">system</span>(<span class="hljs-string">&quot;/usr/bin/env&quot;</span>);<br>	return0 ;<br>&#125;<br></code></pre></td></tr></table></figure>
-<p><img src="/3c8e3d23image-20211021202226212.png" srcset="/img/loading.gif" lazyload alt="image-20211021202226212"></p>
+<p><img src="/3c8e3d23/image-20211021202226212.png" srcset="/img/loading.gif" lazyload alt="image-20211021202226212"></p>
 <p>system（）的函数说明</p>
 <p>system（）会调用fork()产生子进程，由子进程来调用/bin/sh-c string来执行参数string字符串所代表的命令，此命令执行完后随即返回原调用的进程。在调用system（）期间SIGCHLD 信号会被暂时搁置，SIGINT和SIGQUIT 信号则会被忽略。</p>
 <p>返回值</p>
@@ -302,19 +302,19 @@ int execve(const char * filename，char * const argv[]，char * const envp[])<br
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-keyword">extern</span> <span class="hljs-keyword">char</span>**environ;<br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br><span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">while</span> (environ[i] != <span class="hljs-literal">NULL</span>) &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%s\n&quot;</span>, environ[i]);<br>        i++;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>将代码保存在foo.c中</p>
 <p>编译运行，打印出环境变量</p>
-<p><img src="/3c8e3d23image-20211021203257312.png" srcset="/img/loading.gif" lazyload alt="image-20211021203257312"></p>
+<p><img src="/3c8e3d23/image-20211021203257312.png" srcset="/img/loading.gif" lazyload alt="image-20211021203257312"></p>
 <h3 id="step-2-3"><a class="markdownIt-Anchor" href="#step-2-3"></a> Step 2</h3>
 <p>将程序的拥有者改为root, 同时将其变成set-UID程序</p>
-<p><img src="/3c8e3d23image-20211021204849038.png" srcset="/img/loading.gif" lazyload alt="image-20211021204849038"></p>
+<p><img src="/3c8e3d23/image-20211021204849038.png" srcset="/img/loading.gif" lazyload alt="image-20211021204849038"></p>
 <h3 id="step-3-3"><a class="markdownIt-Anchor" href="#step-3-3"></a> Step 3</h3>
 <p>按照题目要求设置三个环境变量，然后运行已经是特权程序的foo。</p>
 <p>我们可以看到wza和PATH环境变量都成功出现，但是LD_LIBRARY_PATH始终没有出现在环境变量中</p>
-<p><img src="/3c8e3d23image-20211022110105522.png" srcset="/img/loading.gif" lazyload alt="image-20211022110105522"></p>
-<p><img src="/3c8e3d23image-20211022110154632.png" srcset="/img/loading.gif" lazyload alt="image-20211022110154632"></p>
+<p><img src="/3c8e3d23/image-20211022110105522.png" srcset="/img/loading.gif" lazyload alt="image-20211022110105522"></p>
+<p><img src="/3c8e3d23/image-20211022110154632.png" srcset="/img/loading.gif" lazyload alt="image-20211022110154632"></p>
 <p>运行foo单独抓去LD变量，可以发现输出为空白，没有找到</p>
 <p>我们将foo的拥有者改回seed ，发现LD_LIBRARY_PATH这个出现了。</p>
 <p>这说明这个环境变量会对动态链接器的行为产生影响，所以它在动态链接器的进程中被屏蔽掉了，从而不会再对特权程序的动态链接产生影响。</p>
-<p><img src="/3c8e3d23image-20211022110351472.png" srcset="/img/loading.gif" lazyload alt="image-20211022110351472"></p>
+<p><img src="/3c8e3d23/image-20211022110351472.png" srcset="/img/loading.gif" lazyload alt="image-20211022110351472"></p>
 <h2 id="task-6"><a class="markdownIt-Anchor" href="#task-6"></a> Task 6</h2>
 <p>运行代码</p>
 <p>task6.c</p>
@@ -326,8 +326,8 @@ int execve(const char * filename，char * const argv[]，char * const envp[])<br
 <p>将恶意代码编译保存为ls,保存在当前文件夹中</p>
 <p>首先我们执行task6,此时正常调用/bin/ls指令</p>
 <p>然后我们改变task6的所有者为root,同时设置其为特权程序，然后将当前文件夹包含在环境变量PATH中，再次执行我们发现程序得到的只是一个普通的shell</p>
-<p><img src="/3c8e3d23image-20211024152521937.png" srcset="/img/loading.gif" lazyload alt="image-20211024152521937"></p>
-<p><img src="/3c8e3d23image-20211022115545732.png" srcset="/img/loading.gif" lazyload alt="image-20211022115545732"></p>
+<p><img src="/3c8e3d23/image-20211024152521937.png" srcset="/img/loading.gif" lazyload alt="image-20211024152521937"></p>
+<p><img src="/3c8e3d23/image-20211022115545732.png" srcset="/img/loading.gif" lazyload alt="image-20211022115545732"></p>
 <p>阅读资料后我们可以知道，这是由于Ubuntu20.04的保护机制导致的，我们采用<code>sudo ln -sf /bin/zsh /bin/sh</code>将/bin/sh指向一个特别的shell的程序即可</p>
 <p>再次执行，我们发现程序成功创建了一个具有root权限的shell程序。</p>
 <p><strong>实验原理</strong>是system会调用/bin/sh来执行命令，而shell会在PATH中搜索要使用的命令，所以当我们把我们的恶意程序放在当前目录，并且把当前目录加到环境变量PATH中时，当执行task6就会调用我们的恶意代码，从而成功创建一个shell进程，又因为task6是一个具有root权限的特权程序，所以我们创建的是一个具有root权限的shell进程。</p>
@@ -337,7 +337,7 @@ int execve(const char * filename，char * const argv[]，char * const envp[])<br
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">sleep</span> <span class="hljs-params">(<span class="hljs-keyword">int</span> s)</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-comment">/*If this is invoked by a privileged program,</span><br><span class="hljs-comment">	you can do damages here!*/</span><br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;I am not sleeping!\n&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>按照题目要求编译但不链接mylib.c</p>
 <p>创建一个新的共享库，并将该共享库加入LD_PRELOAD环境变量。</p>
-<p><img src="/3c8e3d23image-20211022170152068.png" srcset="/img/loading.gif" lazyload alt="image-20211022170152068"></p>
+<p><img src="/3c8e3d23/image-20211022170152068.png" srcset="/img/loading.gif" lazyload alt="image-20211022170152068"></p>
 <p>myprog.c</p>
 <p>编译该文件，保存可执行文件为myprog</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">/*myprog.c*/</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-built_in">sleep</span>(<span class="hljs-number">1</span>);<br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
@@ -345,17 +345,17 @@ int execve(const char * filename，char * const argv[]，char * const envp[])<br
 <ul>
 <li>
 <p>正常运行myprog</p>
-<p><img src="/3c8e3d23image-20211022172148790.png" srcset="/img/loading.gif" lazyload alt="image-20211022172148790"></p>
+<p><img src="/3c8e3d23/image-20211022172148790.png" srcset="/img/loading.gif" lazyload alt="image-20211022172148790"></p>
 <p>程序行为被改变，调用了mylib.c 的sleep程序</p>
 </li>
 <li>
 <p>将myprog设置为具有root权限的set-UID程序后再次执行</p>
-<p><img src="/3c8e3d23image-20211022172502079.png" srcset="/img/loading.gif" lazyload alt="image-20211022172502079"></p>
+<p><img src="/3c8e3d23/image-20211022172502079.png" srcset="/img/loading.gif" lazyload alt="image-20211022172502079"></p>
 <p>程序行为正常，正常调用了lib中的sleep语句 ，睡眠了1s后返回。</p>
 </li>
 <li>
 <p>在root权限下再次export LD_LIBRARY变量，然后再次执行</p>
-<p><img src="/3c8e3d23image-20211022182847388.png" srcset="/img/loading.gif" lazyload alt="image-20211022182847388"></p>
+<p><img src="/3c8e3d23/image-20211022182847388.png" srcset="/img/loading.gif" lazyload alt="image-20211022182847388"></p>
 <p>发现程序行为再次被改变，调用了mylib.c 的sleep程序</p>
 </li>
 <li>
@@ -363,12 +363,12 @@ int execve(const char * filename，char * const argv[]，char * const envp[])<br
 <p>首先利用<code>sudo su</code> 进入root用户</p>
 <p>然后用<code>sudo adduser seed2</code> 创建一个新的用户seed2</p>
 <p>然后<code>su seed2</code>切换到 seed2</p>
-<p><img src="/3c8e3d23image-20211022185658486.png" srcset="/img/loading.gif" lazyload alt="image-20211022185658486"></p>
+<p><img src="/3c8e3d23/image-20211022185658486.png" srcset="/img/loading.gif" lazyload alt="image-20211022185658486"></p>
 <p>运行root权限的set-UID程序，程序正常执行lib库的sleep函数，睡眠1s</p>
-<p><img src="/3c8e3d23image-20211022190037146.png" srcset="/img/loading.gif" lazyload alt="image-20211022190037146"></p>
+<p><img src="/3c8e3d23/image-20211022190037146.png" srcset="/img/loading.gif" lazyload alt="image-20211022190037146"></p>
 <p>返回seed用户，将程序改为seed用户的特权程序，然后重新重新export LD_LIBRARY变量</p>
 <p>运行，程序依旧正常执行lib库的sleep函数，睡眠1s</p>
-<p><img src="/3c8e3d23image-20211022190532236.png" srcset="/img/loading.gif" lazyload alt="image-20211022190532236"></p>
+<p><img src="/3c8e3d23/image-20211022190532236.png" srcset="/img/loading.gif" lazyload alt="image-20211022190532236"></p>
 </li>
 </ul>
 <h3 id="step-3-4"><a class="markdownIt-Anchor" href="#step-3-4"></a> Step 3</h3>
@@ -379,26 +379,26 @@ int execve(const char * filename，char * const argv[]，char * const envp[])<br
 <p>在第三种情况下，我们将用户改为root, 然后在运行具有root权限的特权程序后，程序再次改变了行为，调用了mylib.c代码，这是因为真实用户ID和有效用户ID一样，导致防御措施失效了</p>
 <p>在第四种情况下，我们将用户改为seed2，挺好运行然后在运行具有seed用户的特权程序，程序依旧正常执行，防御措施有效。</p>
 <p><strong>实验验证</strong></p>
-<p><img src="/3c8e3d23image-20211022192624573.png" srcset="/img/loading.gif" lazyload alt="image-20211022192624573"></p>
+<p><img src="/3c8e3d23/image-20211022192624573.png" srcset="/img/loading.gif" lazyload alt="image-20211022192624573"></p>
 <p>我们复制eve到 当前目录为myenv，然后将其设置为root权限的特权程序，之后设置三个LD变量，用env打印，可以发现三个变量都出现了，用myenv打印发现只出现了一个变量LD_MYOWN</p>
 <p>这就是因为那两个变量对动态链接器的行为会产生影响，所以他们在Set-UID程序中被屏蔽了，从而不会再对特权程序的动态链接产生任何影响，而LD_MYOWN是自己定义的，不会被动态链接器使用，所以没有安全威胁，因此没有被屏蔽。</p>
 <h2 id="task-8"><a class="markdownIt-Anchor" href="#task-8"></a> Task 8</h2>
 <h3 id="step-1-5"><a class="markdownIt-Anchor" href="#step-1-5"></a> Step 1</h3>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;string.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">int</span> argc,<span class="hljs-keyword">char</span> *argv[])</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">char</span> * v[<span class="hljs-number">3</span>];<br>    <span class="hljs-keyword">char</span> * command;<br>    <span class="hljs-keyword">if</span>(argc &lt; <span class="hljs-number">2</span>) &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Please type a filename.\n&quot;</span>);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br>    v[<span class="hljs-number">0</span>] =<span class="hljs-string">&quot;/bin/cat&quot;</span>; v[<span class="hljs-number">1</span>] = argv[<span class="hljs-number">1</span>]; v[<span class="hljs-number">2</span>] = <span class="hljs-literal">NULL</span>;<br>    command = <span class="hljs-built_in">malloc</span>(<span class="hljs-built_in">strlen</span>(v[<span class="hljs-number">0</span>]) + <span class="hljs-built_in">strlen</span>(v[<span class="hljs-number">1</span>]) + <span class="hljs-number">2</span>);<br>    <span class="hljs-built_in">sprintf</span>(command,<span class="hljs-string">&quot;%s%s&quot;</span>, v[<span class="hljs-number">0</span>], v[<span class="hljs-number">1</span>]);<br>    <span class="hljs-comment">//Useonlyoneofthefollowings.</span><br>    <span class="hljs-built_in">system</span>(command);<br>    <span class="hljs-comment">//execve(v[0],v,NULL);</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span> ;<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>编译catall文件，然后将其设置为root权限的特权程序</p>
-<p><img src="/3c8e3d23image-20211022195314688.png" srcset="/img/loading.gif" lazyload alt="image-20211022195314688"></p>
+<p><img src="/3c8e3d23/image-20211022195314688.png" srcset="/img/loading.gif" lazyload alt="image-20211022195314688"></p>
 <p>执行如下图所示的指令，可以发现程序创建了一个shell进程，但最开始我们只得到了一个普通的shell程序，这是由于Ubuntu20.04的一个保护机制导致的，我们采用</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">sudo ln -sf <span class="hljs-regexp">/bin/</span>zsh <span class="hljs-regexp">/bin/</span>sh<br></code></pre></td></tr></table></figure>
 <p>来使得/bin/sh指向/bin/zsh</p>
 <p>再次调用catall “aa;/bin/sh&quot;，我们发现这次创建了一个具有root权限的shell进程，用cat  /etc/shadow 指令验证，发现成功输出密码，说明我们权限窃取成功。</p>
-<p><img src="/3c8e3d23image-20211022195229974.png" srcset="/img/loading.gif" lazyload alt="image-20211022195229974"></p>
-<p><img src="/3c8e3d23image-20211022200809708.png" srcset="/img/loading.gif" lazyload alt="image-20211022200809708"></p>
+<p><img src="/3c8e3d23/image-20211022195229974.png" srcset="/img/loading.gif" lazyload alt="image-20211022195229974"></p>
+<p><img src="/3c8e3d23/image-20211022200809708.png" srcset="/img/loading.gif" lazyload alt="image-20211022200809708"></p>
 <h3 id="step-2-5"><a class="markdownIt-Anchor" href="#step-2-5"></a> Step 2</h3>
 <p>注释掉system()，取消注释execve()</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;string.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">int</span> argc,<span class="hljs-keyword">char</span> *argv[])</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">char</span> * v[<span class="hljs-number">3</span>];<br>    <span class="hljs-keyword">char</span> * command;<br>    <span class="hljs-keyword">if</span>(argc &lt; <span class="hljs-number">2</span>) &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Please type a filename.\n&quot;</span>);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br>    v[<span class="hljs-number">0</span>] =<span class="hljs-string">&quot;/bin/cat&quot;</span>; v[<span class="hljs-number">1</span>] = argv[<span class="hljs-number">1</span>]; v[<span class="hljs-number">2</span>] = <span class="hljs-literal">NULL</span>;<br>    command = <span class="hljs-built_in">malloc</span>(<span class="hljs-built_in">strlen</span>(v[<span class="hljs-number">0</span>]) + <span class="hljs-built_in">strlen</span>(v[<span class="hljs-number">1</span>]) + <span class="hljs-number">2</span>);<br>    <span class="hljs-built_in">sprintf</span>(command,<span class="hljs-string">&quot;%s%s&quot;</span>, v[<span class="hljs-number">0</span>], v[<span class="hljs-number">1</span>]);<br>    <span class="hljs-comment">//Useonlyoneofthefollowings.</span><br>    <span class="hljs-comment">//system(command);</span><br>    <span class="hljs-built_in">execve</span>(v[<span class="hljs-number">0</span>],v,<span class="hljs-literal">NULL</span>);<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span> ;<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>编译修改后的代码保存为safecatall</p>
 <p>依旧将其设置为root权限的特权程序，再次运行<code>safecatall “aa;/bin/sh&quot;</code>我们发现程序没有出现错误</p>
-<p><img src="/3c8e3d23image-20211022201948533.png" srcset="/img/loading.gif" lazyload alt="image-20211022201948533"></p>
+<p><img src="/3c8e3d23/image-20211022201948533.png" srcset="/img/loading.gif" lazyload alt="image-20211022201948533"></p>
 <p>第一步中我们得到root权限的原因是因为system(command)函数是通过调用&quot;/bin/sh -c command&quot;完成command指令的，换句话说，外部指令不是上述程序直接执行的，而是shell程序首先被执行，然后shell将command作为输入并解析。但是因为shell过于强大，它可以解析用分号隔开的两条命令，所以当我们输入 “aa;/bin/sh&quot;是，分号后面的指令也被解析并执行了，由此我们得到了一个root权限的shell。</p>
 <p>而使用execve()函数则不会如此，因为它会把那整个字符串作为参数，所以不会发生权限泄露的情况。</p>
 <h2 id="task-9"><a class="markdownIt-Anchor" href="#task-9"></a> Task 9</h2>
@@ -406,7 +406,7 @@ int execve(const char * filename，char * const argv[]，char * const envp[])<br
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;fcntl.h&gt;</span></span><br><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>  <span class="hljs-keyword">int</span> fd;<br>  <span class="hljs-keyword">char</span> *v[<span class="hljs-number">2</span>];<br><br>  <span class="hljs-comment">/* Assume that /etc/zzz is an important system file,</span><br><span class="hljs-comment">   * and it is owned by root with permission 0644.</span><br><span class="hljs-comment">   * Before running this program, you should create</span><br><span class="hljs-comment">   * the file /etc/zzz first. */</span><br>  fd = <span class="hljs-built_in">open</span>(<span class="hljs-string">&quot;/etc/zzz&quot;</span>, O_RDWR | O_APPEND);        <br>  <span class="hljs-keyword">if</span> (fd == <span class="hljs-number">-1</span>) &#123;<br>     <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Cannot open /etc/zzz\n&quot;</span>);<br>     <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>  &#125;<br><br>  <span class="hljs-comment">// Print out the file descriptor value</span><br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;fd is %d\n&quot;</span>, fd);<br><br>  <span class="hljs-comment">// Permanently disable the privilege by making the</span><br>  <span class="hljs-comment">// effective uid the same as the real uid</span><br>  <span class="hljs-built_in">setuid</span>(<span class="hljs-built_in">getuid</span>());                                <br><br>  <span class="hljs-comment">// Execute /bin/sh</span><br>  v[<span class="hljs-number">0</span>] = <span class="hljs-string">&quot;/bin/sh&quot;</span>; v[<span class="hljs-number">1</span>] = <span class="hljs-number">0</span>;<br>  <span class="hljs-built_in">execve</span>(v[<span class="hljs-number">0</span>], v, <span class="hljs-number">0</span>);                             <br>&#125;<br></code></pre></td></tr></table></figure>
 <p>上述代码展示了一个root用户的Set-UID程序。程序运行分为三步。第一步，它打开了一个只有root用户可以修改的文件/etc/zz。在文件被打开后，程序定义了一个文件描述符，通过该文件描述符完成后续对文件的操作。文件描述符是权限的一种形式，任何拥有它的人都可以访问对应的文件。第二步，通过将有效用户ID(roo)变得跟真实用户ID一样，程序降低了自身的权限，实际上相当于放弃了进程的root特权。第三步，程序调用了一个 shell 程序</p>
 <p>然而上述程序忘记了关闭文件，文件描述符仍然有效，因此这个非特权进程仍然可以修改/etc/zzz文件。从程序的执行结果来看，可以发现文件描述符的值是3.通过echo&gt;&amp;3”命令可以修改/etc/zz文件。这里“&amp;3”表示文件描述符3. 在运行这个 SET-UID程序之前，无法修改受保护的/ete/zz文件。但是通过 SET-UID程序获得文件描述符后，可以成功地修改该文件。</p>
-<p><img src="/3c8e3d23image-20211022204515258.png" srcset="/img/loading.gif" lazyload alt="image-20211022204515258"></p>
+<p><img src="/3c8e3d23/image-20211022204515258.png" srcset="/img/loading.gif" lazyload alt="image-20211022204515258"></p>
 <p>为了修复该程序中的权限泄露问题，应该在降低特权之前先销毁权限，用close(fd)关闭文件描述符即可。</p>
 
             </div>
