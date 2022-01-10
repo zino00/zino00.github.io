@@ -30,7 +30,7 @@
     
     
       
-      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/rainbow.min.css" />
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/atom-one-dark.min.css" />
     
   
 
@@ -256,7 +256,7 @@
 <p>configure是一个shell脚本，它可以自动设定源程序以符合各种不同平台上Unix系统的特性，并且根据系统叁数及环境产生合适的Makefile文件或是C的头文件(header file)，让源程序可以很方便地在这些不同的平台上被编译连接。</p>
 <p>这时，就可运行configure脚本了，运行configure脚本，就可产生出符合GNU规范的Makefile文件了： $ ./configure</p>
 <p>到此时，就可以运行make进行编译，在运行make install进行安装了，最后运行make clean删除临时文件。</p>
-<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs elixir"><span class="hljs-variable">$ </span>make<br><span class="hljs-variable">$ </span>make install           (注：运行这个要有足够的权限)<br><span class="hljs-variable">$ </span>make clean<br></code></pre></td></tr></table></figure>
+<figure class="highlight elixir"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs elixir"><span class="hljs-variable">$ </span>make<br><span class="hljs-variable">$ </span>make install           (注：运行这个要有足够的权限)<br><span class="hljs-variable">$ </span>make clean<br></code></pre></div></td></tr></table></figure>
 <p>利用configure所产生的Makefile文件有几个预设的目标可供使用，其中几个重要的简述如下：</p>
 <ul>
 <li>

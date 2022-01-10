@@ -30,7 +30,7 @@
     
     
       
-      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/rainbow.min.css" />
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/atom-one-dark.min.css" />
     
   
 
@@ -238,7 +238,7 @@
             <div class="markdown-body">
               <h1 id="shellshock_attack_lab"><a class="markdownIt-Anchor" href="#shellshock_attack_lab"></a> Shellshock_Attack_lab</h1>
 <h2 id="task-1"><a class="markdownIt-Anchor" href="#task-1"></a> task 1</h2>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">//vul.c</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>&#123;<br>	setuid(geteuid());<br>	system(<span class="hljs-string">&quot;/bin/ls -l&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">//vul.c</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>&#123;<br>	setuid(geteuid());<br>	system(<span class="hljs-string">&quot;/bin/ls -l&quot;</span>);<br>&#125;<br></code></pre></div></td></tr></table></figure>
 <p>首先准备有漏洞的程序vul.c</p>
 <p>然后我们编译运行，并将其变成一个set-UID程序</p>
 <p>因为Ubuntu20.04中/bin/sh指向/bin/dash，而这个程序没有shellshock漏洞，所以需要更改符号链接，采用命令</p>
@@ -255,16 +255,16 @@
 <p><img src="/posts/35f73974/image-20211027180830505.png" srcset="/img/loading.gif" lazyload alt="image-20211027180830505"></p>
 <p>Apache服务器会从http请求头中获取信息，赋值给CGI程序的环境变量。</p>
 <h3 id="task-2b-using-curl"><a class="markdownIt-Anchor" href="#task-2b-using-curl"></a> task 2.B Using curl</h3>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">curl -v www.seedlab-shellshock.com<span class="hljs-regexp">/cgi-bin/g</span>etenv.cgi<br></code></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs awk">curl -v www.seedlab-shellshock.com<span class="hljs-regexp">/cgi-bin/g</span>etenv.cgi<br></code></pre></div></td></tr></table></figure>
 <p>-v  打印出http请求头</p>
 <p><img src="/posts/35f73974/image-20211028162819689.png" srcset="/img/loading.gif" lazyload alt="image-20211028162819689"></p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">curl -A <span class="hljs-string">&quot;my data&quot;</span> -v www.seedlab-shellshock.com<span class="hljs-regexp">/cgi-bin/g</span>etenv.cgi<br></code></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs awk">curl -A <span class="hljs-string">&quot;my data&quot;</span> -v www.seedlab-shellshock.com<span class="hljs-regexp">/cgi-bin/g</span>etenv.cgi<br></code></pre></div></td></tr></table></figure>
 <p>-A  设置User-Agent</p>
 <p><img src="/posts/35f73974/image-20211028162913084.png" srcset="/img/loading.gif" lazyload alt="image-20211028162913084"></p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">curl -e <span class="hljs-string">&quot;my data&quot;</span> -v www.seedlab-shellshock.com<span class="hljs-regexp">/cgi-bin/g</span>etenv.cgi<br></code></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs awk">curl -e <span class="hljs-string">&quot;my data&quot;</span> -v www.seedlab-shellshock.com<span class="hljs-regexp">/cgi-bin/g</span>etenv.cgi<br></code></pre></div></td></tr></table></figure>
 <p>-e 设置Referer字段</p>
 <p><img src="/posts/35f73974/image-20211028163009475.png" srcset="/img/loading.gif" lazyload alt="image-20211028163009475"></p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">curl -H <span class="hljs-string">&quot;AAAAAA: BBBBBB&quot;</span> -v www.seedlab-shellshock.com<span class="hljs-regexp">/cgi-bin/g</span>etenv.cgi<br></code></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs awk">curl -H <span class="hljs-string">&quot;AAAAAA: BBBBBB&quot;</span> -v www.seedlab-shellshock.com<span class="hljs-regexp">/cgi-bin/g</span>etenv.cgi<br></code></pre></div></td></tr></table></figure>
 <p>-H 设置额外头字段</p>
 <p><img src="/posts/35f73974/image-20211028163108646.png" srcset="/img/loading.gif" lazyload alt="image-20211028163108646"></p>
 <h2 id="task-3"><a class="markdownIt-Anchor" href="#task-3"></a> task 3</h2>
