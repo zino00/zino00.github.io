@@ -1245,51 +1245,7 @@ boolean lock;</p>
 <li>设置计数器<code>readCount</code>实现多个读者访问临界资源，通过设置信号量<code>readCountSignal</code>实现对<code>readCount</code>计数器的互斥访问。</li>
 <li>设置信号量<code>keySignal</code>实现读者和写者的公平竞争（令牌）。</li>
 </ol>
-<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">&#x2F;* 读者队列初始值为0，其他资源初始值为1*&#x2F;
-int readCount &#x3D; 0;
-semaphore keySignal &#x3D; 1;
-semaphore fileSrc &#x3D; 1;
-semaphore readCountSignal &#x3D; 1;
-
-reader()
-&#123;
-    while(true)
-    &#123;
-      wait(keySignal);        &#x2F;&#x2F;申请令牌
-      wait(readCountSignal);  &#x2F;&#x2F;申请计数器资源
-      if(!readCount)          &#x2F;&#x2F;为零则申请文件资源
-         wait(fileSrc);
-      readCount++;
-      signal(readCountSignal); &#x2F;&#x2F;释放计数器资源
-      signal(keySignal);      &#x2F;&#x2F;释放令牌
- 
-      ...
-      perform read operation  &#x2F;&#x2F;执行临界区代码
-      ...
-  
-      wait(readCountSignal);  &#x2F;&#x2F;申请计数器资源
-      readCount--;
-      if(!readCount)                &#x2F;&#x2F;为零则释放文件资源
-         signal(fileSrc);
-      signal(readCountSignal); &#x2F;&#x2F;释放读者计数器资源
-    &#125;
-&#125;
- 
-writer()
-&#123;
-     while(true)
-     &#123;
-        wait(keySignal);     &#x2F;&#x2F;申请令牌
-        wait(fileSrc);       &#x2F;&#x2F;申请文件资源
- 
-        ...
-        perform write operation &#x2F;&#x2F;执行临界区代码
-        ...
- 
-        signal(fileSrc);   &#x2F;&#x2F;释放文件资源
-        signal(keysignal); &#x2F;&#x2F;释放令牌
-     &#125;
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">/* 读者队列初始值为0，其他资源初始值为1*/</span><br><span class="hljs-keyword">int</span> readCount = <span class="hljs-number">0</span>;<br>semaphore keySignal = <span class="hljs-number">1</span>;<br>semaphore fileSrc = <span class="hljs-number">1</span>;<br>semaphore readCountSignal = <span class="hljs-number">1</span>;<br><br><span class="hljs-built_in">reader</span>()<br>&#123;<br>    <span class="hljs-keyword">while</span>(<span class="hljs-literal">true</span>)<br>    &#123;<br>      <span class="hljs-built_in">wait</span>(keySignal);        <span class="hljs-comment">//申请令牌</span><br>      <span class="hljs-built_in">wait</span>(readCountSignal);  <span class="hljs-comment">//申请计数器资源</span><br>      <span class="hljs-keyword">if</span>(!readCount)          <span class="hljs-comment">//为零则申请文件资源</span><br>         <span class="hljs-built_in">wait</span>(fileSrc);<br>      readCount++;<br>      <span class="hljs-built_in">signal</span>(readCountSignal); <span class="hljs-comment">//释放计数器资源</span><br>      <span class="hljs-built_in">signal</span>(keySignal);      <span class="hljs-comment">//释放令牌</span><br> <br>      ...<br>      perform read operation  <span class="hljs-comment">//执行临界区代码</span><br>      ...<br>  <br>      <span class="hljs-built_in">wait</span>(readCountSignal);  <span class="hljs-comment">//申请计数器资源</span><br>      readCount--;<br>      <span class="hljs-keyword">if</span>(!readCount)                <span class="hljs-comment">//为零则释放文件资源</span><br>         <span class="hljs-built_in">signal</span>(fileSrc);<br>      <span class="hljs-built_in">signal</span>(readCountSignal); <span class="hljs-comment">//释放读者计数器资源</span><br>    &#125;<br>&#125;<br> <br><span class="hljs-built_in">writer</span>()<br>&#123;<br>     <span class="hljs-keyword">while</span>(<span class="hljs-literal">true</span>)<br>     &#123;<br>        <span class="hljs-built_in">wait</span>(keySignal);     <span class="hljs-comment">//申请令牌</span><br>        <span class="hljs-built_in">wait</span>(fileSrc);       <span class="hljs-comment">//申请文件资源</span><br> <br>        ...<br>        perform write operation <span class="hljs-comment">//执行临界区代码</span><br>        ...<br> <br>        <span class="hljs-built_in">signal</span>(fileSrc);   <span class="hljs-comment">//释放文件资源</span><br>        <span class="hljs-built_in">signal</span>(keysignal); <span class="hljs-comment">//释放令牌</span><br>     &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 <h4 id="663-哲学家进餐回题"><a class="markdownIt-Anchor" href="#663-哲学家进餐回题"></a> 6.6.3 哲学家进餐回题</h4>
 <p><img src="/posts/8ce3e425/image-20211116170946819.png" srcset="/img/loading.gif" lazyload alt="image-20211116170946819"></p>
 <p><strong>死锁解决方法：</strong></p>

@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      320 字
+      315 字
     </span>
   
 
@@ -241,17 +241,11 @@
 <p>原理：</p>
 <p>对<code>标题</code>+<code>时间</code>进行<code>md5</code>而后再转<code>base64</code>，保存在<code>front-matter</code>中。</p>
 <p>安装：</p>
-<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">npm install hexo-abbrlink --save<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ada">npm install hexo-abbrlink <span class="hljs-comment">--save</span><br></code></pre></td></tr></table></figure>
 <p>配置博客站点配置文件_config.yml：</p>
-<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">permalink: posts&#x2F;:abbrlink&#x2F;
-# abbrlink config
-abbrlink:
-  alg: crc32  #support crc16(default) and crc32
-  rep: hex    #support dec(default) and hex<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs dts"><span class="hljs-symbol">permalink:</span> posts/:abbrlink/<br><span class="hljs-meta"># abbrlink config</span><br><span class="hljs-symbol">abbrlink:</span><br><span class="hljs-symbol">  alg:</span> crc32  <span class="hljs-meta">#support crc16(default) and crc32</span><br><span class="hljs-symbol">  rep:</span> hex    <span class="hljs-meta">#support dec(default) and hex</span><br></code></pre></td></tr></table></figure>
 <p>测试：</p>
-<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">hexo clean
-hexo g
-hexo s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">hexo clean</span><br><span class="hljs-attribute">hexo g</span><br><span class="hljs-attribute">hexo s</span><br></code></pre></td></tr></table></figure>
 <p>问题：</p>
 <p>链接是修改了，但是图片不能成功显示</p>
 <p>后来发现是与hexo-asset-image不能适配的问题，hexo-abbrlink使用后导致图片路径变化，所以不能成功识别图片，所以需要修改下面的文件</p>

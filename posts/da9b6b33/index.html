@@ -700,13 +700,7 @@ make命令本身可带有四种参数：标志、宏定义、描述文件名和�
 <h4 id="1-gcc-2"><a class="markdownIt-Anchor" href="#1-gcc-2"></a> 1. Gcc</h4>
 <p><strong>(1) 用熟悉的编辑器输入清单1所示的代码:</strong></p>
 <p>清单1：</p>
-<div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">//hello.c</span>
-<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdio.h></span></span>
-<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>
-<span class="token punctuation">&#123;</span>
-    <span class="token function">printf</span> <span class="token punctuation">(</span><span class="token string">"Hello world, Linux programming!\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">//hello.c</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">printf</span> (<span class="hljs-string">&quot;Hello world, Linux programming!\n&quot;</span>);<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>然后执行下面的命令编译和运行这段程序：</p>
 <p>$ gcc hello.c -o hello</p>
 <p>$./hello</p>
@@ -718,13 +712,7 @@ make命令本身可带有四种参数：标志、宏定义、描述文件名和�
 链接（Linking) # gcc hello.o -o hello</p>
 <p><strong>(2) 使用gcc发现程序错误</strong></p>
 <p>清单2：</p>
-<div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">//illcode.c</span>
-<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdio.h></span></span>
-<span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>
-<span class="token punctuation">&#123;</span>
-    <span class="token keyword">long</span> <span class="token keyword">long</span> <span class="token keyword">int</span> var <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
-    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"It is not standard C code!\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">//illcode.c</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">long</span> <span class="hljs-keyword">long</span> <span class="hljs-keyword">int</span> var = <span class="hljs-number">1</span>;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;It is not standard C code!\n&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>当GCC在编译不符合ANSI/ISO C语言标准的源代码时，如果加上了-pedantic选项，那么使用了扩展语法的地方将产生相应的警告信息：</p>
 <p>$ gcc -pedantic illcode.c -o illcode</p>
 <p>illcode.c: In function ‘main’:<br>
@@ -753,44 +741,10 @@ prog2.o:prog2.c<br>
 gcc -c prog2.c</p>
 <p>测试例子</p>
 <p>makefile</p>
-<div class="code-wrapper"><pre class="line-numbers language-makefile" data-language="makefile"><code class="language-makefile"><span class="token symbol">test</span><span class="token punctuation">:</span> test1.o test2.o 
-	gcc -Wall test1.o test2.o -o test
-    
-<span class="token symbol">test1.o</span><span class="token punctuation">:</span> test1.c test2.h
-	gcc -c -Wall test1.c -o test1.o
-
-<span class="token symbol">test2.o</span><span class="token punctuation">:</span> test2.c test2.h
-	gcc -c -Wall test2.c -o test2.o
-
-<span class="token symbol">clean</span><span class="token punctuation">:</span> 
-    rm -rf *.o test
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
-<div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">//test1.h</span>
-<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">&lt;stdio.h></span></span>
-<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">"test2.h"</span></span>
- 
-<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> 
-<span class="token punctuation">&#123;</span>
-    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"This is test1!\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token function">PrintTest2</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
-<div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">//test2.h</span>
-<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">&lt;stdio.h></span></span>
-<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">"test2.h"</span></span>
-<span class="token keyword">void</span> <span class="token function">PrintTest2</span><span class="token punctuation">(</span><span class="token punctuation">)</span> 
-<span class="token punctuation">&#123;</span>
-    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"This is test2!\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
-<div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">//test2.h</span>
-
- <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">ifndef</span> <span class="token expression">TEST2_H_</span></span>
- <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">TEST2_H_</span></span>
- 
-<span class="token keyword">void</span> <span class="token function">PrintTest2</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
- <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">endif</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs makefile"><span class="hljs-section">test: test1.o test2.o </span><br>	gcc -Wall test1.o test2.o -o test<br>    <br><span class="hljs-section">test1.o: test1.c test2.h</span><br>	gcc -c -Wall test1.c -o test1.o<br><br><span class="hljs-section">test2.o: test2.c test2.h</span><br>	gcc -c -Wall test2.c -o test2.o<br><br><span class="hljs-section">clean: </span><br>    rm -rf *.o test<br><br></code></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">//test1.h</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&quot;test2.h&quot;</span></span><br> <br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;This is test1!\n&quot;</span>);<br>    PrintTest2();<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">//test2.h</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&quot;test2.h&quot;</span></span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">PrintTest2</span><span class="hljs-params">()</span> </span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;This is test2!\n&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">//test2.h</span><br><br> <span class="hljs-meta">#<span class="hljs-meta-keyword">ifndef</span> TEST2_H_</span><br> <span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> TEST2_H_</span><br> <br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">PrintTest2</span><span class="hljs-params">()</span></span>;<br><br> <span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span><br></code></pre></td></tr></table></figure>
 <p><img src="/posts/da9b6b33/image-20211102154641480.png" srcset="/img/loading.gif" lazyload alt="image-20211102154641480"></p>
 <p><strong>#使用缩写的Makefile</strong><br>
 prog:prog1.o prog2.o<br>

@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      3.7k 字
+      3.6k 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      45
+      44
        分钟
     </span>
   
@@ -272,40 +272,11 @@
 <h2 id="task-3"><a class="markdownIt-Anchor" href="#task-3"></a> Task 3</h2>
 <h3 id="step-1-2"><a class="markdownIt-Anchor" href="#step-1-2"></a> Step 1</h3>
 <p>编译运行myenv.c，发现结果为空</p>
-<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;unistd.h&gt;
-
-extern char **environ;
-
-int main()
-&#123;
-  char *argv[2];
-
-  argv[0] &#x3D; &quot;&#x2F;usr&#x2F;bin&#x2F;env&quot;;
-  argv[1] &#x3D; NULL;
-
-  execve(&quot;&#x2F;usr&#x2F;bin&#x2F;env&quot;, argv, NULL);  
-
-  return 0 ;
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;unistd.h&gt;</span></span><br><br><span class="hljs-keyword">extern</span> <span class="hljs-keyword">char</span> **environ;<br><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>  <span class="hljs-keyword">char</span> *argv[<span class="hljs-number">2</span>];<br><br>  argv[<span class="hljs-number">0</span>] = <span class="hljs-string">&quot;/usr/bin/env&quot;</span>;<br>  argv[<span class="hljs-number">1</span>] = <span class="hljs-literal">NULL</span>;<br><br>  <span class="hljs-built_in">execve</span>(<span class="hljs-string">&quot;/usr/bin/env&quot;</span>, argv, <span class="hljs-literal">NULL</span>);  <br><br>  <span class="hljs-keyword">return</span> <span class="hljs-number">0</span> ;<br>&#125;<br></code></pre></td></tr></table></figure>
 <p><img src="/posts/3c8e3d23/image-20211021195206499.png" srcset="/img/loading.gif" lazyload alt="image-20211021195206499"></p>
 <h3 id="step-2-2"><a class="markdownIt-Anchor" href="#step-2-2"></a> Step 2</h3>
 <p>将代码修改为如下方所示的代码后，再次编译运行</p>
-<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;unistd.h&gt;
-
-extern char **environ;
-
-int main()
-&#123;
-  char *argv[2];
-
-  argv[0] &#x3D; &quot;&#x2F;usr&#x2F;bin&#x2F;env&quot;;
-  argv[1] &#x3D; NULL;
-
-  &#x2F;&#x2F;execve(&quot;&#x2F;usr&#x2F;bin&#x2F;env&quot;, argv, NULL);  
-  execve(&quot;&#x2F;usr&#x2F;bin&#x2F;env&quot;, argv, environ);
-
-  return 0 ;
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;unistd.h&gt;</span></span><br><br><span class="hljs-keyword">extern</span> <span class="hljs-keyword">char</span> **environ;<br><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>  <span class="hljs-keyword">char</span> *argv[<span class="hljs-number">2</span>];<br><br>  argv[<span class="hljs-number">0</span>] = <span class="hljs-string">&quot;/usr/bin/env&quot;</span>;<br>  argv[<span class="hljs-number">1</span>] = <span class="hljs-literal">NULL</span>;<br><br>  <span class="hljs-comment">//execve(&quot;/usr/bin/env&quot;, argv, NULL);  </span><br>  <span class="hljs-built_in">execve</span>(<span class="hljs-string">&quot;/usr/bin/env&quot;</span>, argv, environ);<br><br>  <span class="hljs-keyword">return</span> <span class="hljs-number">0</span> ;<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>发现程序打印出了环境变量的值。</p>
 <p><img src="/posts/3c8e3d23/image-20211021195323867.png" srcset="/img/loading.gif" lazyload alt="image-20211021195323867">函数execve()的作用，其调用格式如下：<br>
 int execve(const char * filename，char * const argv[]，char * const envp[])<br>
@@ -317,13 +288,7 @@ int execve(const char * filename，char * const argv[]，char * const envp[])<br
 <p>第二种方式，如果进程自身通过 execve（）系统调用运行一个新的程序（而不是在子进程中运行），进程的内存将会被新程序的数据覆盖，因此进程中存储的所有环境变量将会丢失。如果一个进程希望将环境变量传递给新运行的程序，它需要在调用 execve（）函数时显式地传递环境变量。</p>
 <h2 id="task-4"><a class="markdownIt-Anchor" href="#task-4"></a> Task 4</h2>
 <p>保存编译运行下方的代码，可以发现结果是打印出了环境变量</p>
-<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-int main()
-&#123;
-	system(&quot;&#x2F;usr&#x2F;bin&#x2F;env&quot;);
-	return0 ;
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-built_in">system</span>(<span class="hljs-string">&quot;/usr/bin/env&quot;</span>);<br>	return0 ;<br>&#125;<br></code></pre></td></tr></table></figure>
 <p><img src="/posts/3c8e3d23/image-20211021202226212.png" srcset="/img/loading.gif" lazyload alt="image-20211021202226212"></p>
 <p>system（）的函数说明</p>
 <p>system（）会调用fork()产生子进程，由子进程来调用/bin/sh-c string来执行参数string字符串所代表的命令，此命令执行完后随即返回原调用的进程。在调用system（）期间SIGCHLD 信号会被暂时搁置，SIGINT和SIGQUIT 信号则会被忽略。</p>
@@ -334,17 +299,7 @@ int main()
 <p>如果system（）在调用/bin/sh时失败则返回127，其他失败原因返回-1。若参数string为空指针（NULL），仅当命令处理程序可用时，返回非零值，可以通过这一特征判断在一个给定的操作系统上是否支持system函数(当system函数返回值为0时，表明system函数无效，在UNIX系统中，system函数总是可用的)；。如果system（）调用成功则最后会返回执行shell命令后的返回值，但是此返回值也有可能为 system（）调用/bin/sh失败所返回的127，因此最好能再检查errno 来确认执行成功。</p>
 <h2 id="task-5"><a class="markdownIt-Anchor" href="#task-5"></a> Task 5</h2>
 <h3 id="step-1-3"><a class="markdownIt-Anchor" href="#step-1-3"></a> Step 1</h3>
-<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-extern char**environ;
-int main()
-&#123;
-int i &#x3D; 0;
-    while (environ[i] !&#x3D; NULL) &#123;
-        printf(&quot;%s\n&quot;, environ[i]);
-        i++;
-	&#125;
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-keyword">extern</span> <span class="hljs-keyword">char</span>**environ;<br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br><span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">while</span> (environ[i] != <span class="hljs-literal">NULL</span>) &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%s\n&quot;</span>, environ[i]);<br>        i++;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>将代码保存在foo.c中</p>
 <p>编译运行，打印出环境变量</p>
 <p><img src="/posts/3c8e3d23/image-20211021203257312.png" srcset="/img/loading.gif" lazyload alt="image-20211021203257312"></p>
@@ -363,18 +318,10 @@ int i &#x3D; 0;
 <h2 id="task-6"><a class="markdownIt-Anchor" href="#task-6"></a> Task 6</h2>
 <p>运行代码</p>
 <p>task6.c</p>
-<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-int main()
-&#123;
-	system(&quot;ls&quot;);
-	return 0;
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-built_in">system</span>(<span class="hljs-string">&quot;ls&quot;</span>);<br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>恶意代码</p>
 <p>ls.c</p>
-<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;stdlib.h&gt;
-int main()&#123;
-	system(&quot;&#x2F;bin&#x2F;bash -p&quot;);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>&#123;<br>	<span class="hljs-built_in">system</span>(<span class="hljs-string">&quot;/bin/bash -p&quot;</span>);<br></code></pre></td></tr></table></figure>
 <p>将运行代码编译后保存为task6可执行文件</p>
 <p>将恶意代码编译保存为ls,保存在当前文件夹中</p>
 <p>首先我们执行task6,此时正常调用/bin/ls指令</p>
@@ -387,25 +334,13 @@ int main()&#123;
 <h2 id="task-7"><a class="markdownIt-Anchor" href="#task-7"></a> Task 7</h2>
 <h3 id="step-1-4"><a class="markdownIt-Anchor" href="#step-1-4"></a> Step 1</h3>
 <p>mylib.c</p>
-<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;stdio.h&gt;
-void sleep (int s)
-&#123;
-	&#x2F;*If this is invoked by a privileged program,
-	you can do damages here!*&#x2F;
-	printf(&quot;I am not sleeping!\n&quot;);
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">sleep</span> <span class="hljs-params">(<span class="hljs-keyword">int</span> s)</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-comment">/*If this is invoked by a privileged program,</span><br><span class="hljs-comment">	you can do damages here!*/</span><br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;I am not sleeping!\n&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>按照题目要求编译但不链接mylib.c</p>
 <p>创建一个新的共享库，并将该共享库加入LD_PRELOAD环境变量。</p>
 <p><img src="/posts/3c8e3d23/image-20211022170152068.png" srcset="/img/loading.gif" lazyload alt="image-20211022170152068"></p>
 <p>myprog.c</p>
 <p>编译该文件，保存可执行文件为myprog</p>
-<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">&#x2F;*myprog.c*&#x2F;
-#include &lt;unistd.h&gt;
-int main()
-&#123;
-	sleep(1);
-	return 0;
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">/*myprog.c*/</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-built_in">sleep</span>(<span class="hljs-number">1</span>);<br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
 <h3 id="step-2-4"><a class="markdownIt-Anchor" href="#step-2-4"></a> Step 2</h3>
 <ul>
 <li>
@@ -449,54 +384,18 @@ int main()
 <p>这就是因为那两个变量对动态链接器的行为会产生影响，所以他们在Set-UID程序中被屏蔽了，从而不会再对特权程序的动态链接产生任何影响，而LD_MYOWN是自己定义的，不会被动态链接器使用，所以没有安全威胁，因此没有被屏蔽。</p>
 <h2 id="task-8"><a class="markdownIt-Anchor" href="#task-8"></a> Task 8</h2>
 <h3 id="step-1-5"><a class="markdownIt-Anchor" href="#step-1-5"></a> Step 1</h3>
-<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;string.h&gt;
-#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-int main(int argc,char *argv[])
-&#123;
-    char * v[3];
-    char * command;
-    if(argc &lt; 2) &#123;
-        printf(&quot;Please type a filename.\n&quot;);
-        return 1;
-    &#125;
-    v[0] &#x3D;&quot;&#x2F;bin&#x2F;cat&quot;; v[1] &#x3D; argv[1]; v[2] &#x3D; NULL;
-    command &#x3D; malloc(strlen(v[0]) + strlen(v[1]) + 2);
-    sprintf(command,&quot;%s%s&quot;, v[0], v[1]);
-    &#x2F;&#x2F;Useonlyoneofthefollowings.
-    system(command);
-    &#x2F;&#x2F;execve(v[0],v,NULL);
-    return 0 ;
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;string.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">int</span> argc,<span class="hljs-keyword">char</span> *argv[])</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">char</span> * v[<span class="hljs-number">3</span>];<br>    <span class="hljs-keyword">char</span> * command;<br>    <span class="hljs-keyword">if</span>(argc &lt; <span class="hljs-number">2</span>) &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Please type a filename.\n&quot;</span>);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br>    v[<span class="hljs-number">0</span>] =<span class="hljs-string">&quot;/bin/cat&quot;</span>; v[<span class="hljs-number">1</span>] = argv[<span class="hljs-number">1</span>]; v[<span class="hljs-number">2</span>] = <span class="hljs-literal">NULL</span>;<br>    command = <span class="hljs-built_in">malloc</span>(<span class="hljs-built_in">strlen</span>(v[<span class="hljs-number">0</span>]) + <span class="hljs-built_in">strlen</span>(v[<span class="hljs-number">1</span>]) + <span class="hljs-number">2</span>);<br>    <span class="hljs-built_in">sprintf</span>(command,<span class="hljs-string">&quot;%s%s&quot;</span>, v[<span class="hljs-number">0</span>], v[<span class="hljs-number">1</span>]);<br>    <span class="hljs-comment">//Useonlyoneofthefollowings.</span><br>    <span class="hljs-built_in">system</span>(command);<br>    <span class="hljs-comment">//execve(v[0],v,NULL);</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span> ;<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>编译catall文件，然后将其设置为root权限的特权程序</p>
 <p><img src="/posts/3c8e3d23/image-20211022195314688.png" srcset="/img/loading.gif" lazyload alt="image-20211022195314688"></p>
 <p>执行如下图所示的指令，可以发现程序创建了一个shell进程，但最开始我们只得到了一个普通的shell程序，这是由于Ubuntu20.04的一个保护机制导致的，我们采用</p>
-<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">sudo ln -sf &#x2F;bin&#x2F;zsh &#x2F;bin&#x2F;sh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">sudo ln -sf <span class="hljs-regexp">/bin/</span>zsh <span class="hljs-regexp">/bin/</span>sh<br></code></pre></td></tr></table></figure>
 <p>来使得/bin/sh指向/bin/zsh</p>
 <p>再次调用catall “aa;/bin/sh&quot;，我们发现这次创建了一个具有root权限的shell进程，用cat  /etc/shadow 指令验证，发现成功输出密码，说明我们权限窃取成功。</p>
 <p><img src="/posts/3c8e3d23/image-20211022195229974.png" srcset="/img/loading.gif" lazyload alt="image-20211022195229974"></p>
 <p><img src="/posts/3c8e3d23/image-20211022200809708.png" srcset="/img/loading.gif" lazyload alt="image-20211022200809708"></p>
 <h3 id="step-2-5"><a class="markdownIt-Anchor" href="#step-2-5"></a> Step 2</h3>
 <p>注释掉system()，取消注释execve()</p>
-<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;string.h&gt;
-#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-int main(int argc,char *argv[])
-&#123;
-    char * v[3];
-    char * command;
-    if(argc &lt; 2) &#123;
-        printf(&quot;Please type a filename.\n&quot;);
-        return 1;
-    &#125;
-    v[0] &#x3D;&quot;&#x2F;bin&#x2F;cat&quot;; v[1] &#x3D; argv[1]; v[2] &#x3D; NULL;
-    command &#x3D; malloc(strlen(v[0]) + strlen(v[1]) + 2);
-    sprintf(command,&quot;%s%s&quot;, v[0], v[1]);
-    &#x2F;&#x2F;Useonlyoneofthefollowings.
-    &#x2F;&#x2F;system(command);
-    execve(v[0],v,NULL);
-    return 0 ;
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;string.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">int</span> argc,<span class="hljs-keyword">char</span> *argv[])</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">char</span> * v[<span class="hljs-number">3</span>];<br>    <span class="hljs-keyword">char</span> * command;<br>    <span class="hljs-keyword">if</span>(argc &lt; <span class="hljs-number">2</span>) &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Please type a filename.\n&quot;</span>);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br>    v[<span class="hljs-number">0</span>] =<span class="hljs-string">&quot;/bin/cat&quot;</span>; v[<span class="hljs-number">1</span>] = argv[<span class="hljs-number">1</span>]; v[<span class="hljs-number">2</span>] = <span class="hljs-literal">NULL</span>;<br>    command = <span class="hljs-built_in">malloc</span>(<span class="hljs-built_in">strlen</span>(v[<span class="hljs-number">0</span>]) + <span class="hljs-built_in">strlen</span>(v[<span class="hljs-number">1</span>]) + <span class="hljs-number">2</span>);<br>    <span class="hljs-built_in">sprintf</span>(command,<span class="hljs-string">&quot;%s%s&quot;</span>, v[<span class="hljs-number">0</span>], v[<span class="hljs-number">1</span>]);<br>    <span class="hljs-comment">//Useonlyoneofthefollowings.</span><br>    <span class="hljs-comment">//system(command);</span><br>    <span class="hljs-built_in">execve</span>(v[<span class="hljs-number">0</span>],v,<span class="hljs-literal">NULL</span>);<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span> ;<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>编译修改后的代码保存为safecatall</p>
 <p>依旧将其设置为root权限的特权程序，再次运行<code>safecatall “aa;/bin/sh&quot;</code>我们发现程序没有出现错误</p>
 <p><img src="/posts/3c8e3d23/image-20211022201948533.png" srcset="/img/loading.gif" lazyload alt="image-20211022201948533"></p>
@@ -504,37 +403,7 @@ int main(int argc,char *argv[])
 <p>而使用execve()函数则不会如此，因为它会把那整个字符串作为参数，所以不会发生权限泄露的情况。</p>
 <h2 id="task-9"><a class="markdownIt-Anchor" href="#task-9"></a> Task 9</h2>
 <p>cap_leak.c</p>
-<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;unistd.h&gt;
-#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-#include &lt;fcntl.h&gt;
-
-void main()
-&#123;
-  int fd;
-  char *v[2];
-
-  &#x2F;* Assume that &#x2F;etc&#x2F;zzz is an important system file,
-   * and it is owned by root with permission 0644.
-   * Before running this program, you should create
-   * the file &#x2F;etc&#x2F;zzz first. *&#x2F;
-  fd &#x3D; open(&quot;&#x2F;etc&#x2F;zzz&quot;, O_RDWR | O_APPEND);        
-  if (fd &#x3D;&#x3D; -1) &#123;
-     printf(&quot;Cannot open &#x2F;etc&#x2F;zzz\n&quot;);
-     exit(0);
-  &#125;
-
-  &#x2F;&#x2F; Print out the file descriptor value
-  printf(&quot;fd is %d\n&quot;, fd);
-
-  &#x2F;&#x2F; Permanently disable the privilege by making the
-  &#x2F;&#x2F; effective uid the same as the real uid
-  setuid(getuid());                                
-
-  &#x2F;&#x2F; Execute &#x2F;bin&#x2F;sh
-  v[0] &#x3D; &quot;&#x2F;bin&#x2F;sh&quot;; v[1] &#x3D; 0;
-  execve(v[0], v, 0);                             
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;fcntl.h&gt;</span></span><br><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>  <span class="hljs-keyword">int</span> fd;<br>  <span class="hljs-keyword">char</span> *v[<span class="hljs-number">2</span>];<br><br>  <span class="hljs-comment">/* Assume that /etc/zzz is an important system file,</span><br><span class="hljs-comment">   * and it is owned by root with permission 0644.</span><br><span class="hljs-comment">   * Before running this program, you should create</span><br><span class="hljs-comment">   * the file /etc/zzz first. */</span><br>  fd = <span class="hljs-built_in">open</span>(<span class="hljs-string">&quot;/etc/zzz&quot;</span>, O_RDWR | O_APPEND);        <br>  <span class="hljs-keyword">if</span> (fd == <span class="hljs-number">-1</span>) &#123;<br>     <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Cannot open /etc/zzz\n&quot;</span>);<br>     <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>  &#125;<br><br>  <span class="hljs-comment">// Print out the file descriptor value</span><br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;fd is %d\n&quot;</span>, fd);<br><br>  <span class="hljs-comment">// Permanently disable the privilege by making the</span><br>  <span class="hljs-comment">// effective uid the same as the real uid</span><br>  <span class="hljs-built_in">setuid</span>(<span class="hljs-built_in">getuid</span>());                                <br><br>  <span class="hljs-comment">// Execute /bin/sh</span><br>  v[<span class="hljs-number">0</span>] = <span class="hljs-string">&quot;/bin/sh&quot;</span>; v[<span class="hljs-number">1</span>] = <span class="hljs-number">0</span>;<br>  <span class="hljs-built_in">execve</span>(v[<span class="hljs-number">0</span>], v, <span class="hljs-number">0</span>);                             <br>&#125;<br></code></pre></td></tr></table></figure>
 <p>上述代码展示了一个root用户的Set-UID程序。程序运行分为三步。第一步，它打开了一个只有root用户可以修改的文件/etc/zz。在文件被打开后，程序定义了一个文件描述符，通过该文件描述符完成后续对文件的操作。文件描述符是权限的一种形式，任何拥有它的人都可以访问对应的文件。第二步，通过将有效用户ID(roo)变得跟真实用户ID一样，程序降低了自身的权限，实际上相当于放弃了进程的root特权。第三步，程序调用了一个 shell 程序</p>
 <p>然而上述程序忘记了关闭文件，文件描述符仍然有效，因此这个非特权进程仍然可以修改/etc/zzz文件。从程序的执行结果来看，可以发现文件描述符的值是3.通过echo&gt;&amp;3”命令可以修改/etc/zz文件。这里“&amp;3”表示文件描述符3. 在运行这个 SET-UID程序之前，无法修改受保护的/ete/zz文件。但是通过 SET-UID程序获得文件描述符后，可以成功地修改该文件。</p>
 <p><img src="/posts/3c8e3d23/image-20211022204515258.png" srcset="/img/loading.gif" lazyload alt="image-20211022204515258"></p>

@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      6.3k 字
+      5.8k 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      87
+      77
        分钟
     </span>
   
@@ -277,23 +277,9 @@
 <h2 id="四-实验设计和过程"><a class="markdownIt-Anchor" href="#四-实验设计和过程"></a> 四、实验设计和过程</h2>
 <h3 id="fcfs调度算法"><a class="markdownIt-Anchor" href="#fcfs调度算法"></a> FCFS调度算法</h3>
 <h4 id="数据结构"><a class="markdownIt-Anchor" href="#数据结构"></a> 数据结构</h4>
-<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">struct Process &#x2F;&#x2F;进程结构体，表示进程信息
-&#123;
-    string name;         &#x2F;&#x2F;进程名字
-    int arrive_time;     &#x2F;&#x2F;到达时间
-    int service_time;    &#x2F;&#x2F;进程运行时间
-    int wait_time;       &#x2F;&#x2F;进程等待时间
-    int remain_time;     &#x2F;&#x2F;进程剩余运行时间
-    int turnaround_time; &#x2F;&#x2F;周转时间
-    int start_time;      &#x2F;&#x2F;进程开始运行时间
-    int end_time;        &#x2F;&#x2F;进程结束时间
-    &#x2F;&#x2F;int time_slice;      &#x2F;&#x2F;进程时间片
-&#125; run_process, p[MAXname];
-queue&lt;Process&gt; ready_queue, block_queue;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Process</span> //进程结构体，表示进程信息</span><br><span class="hljs-class">&#123;</span><br>    string name;         <span class="hljs-comment">//进程名字</span><br>    <span class="hljs-keyword">int</span> arrive_time;     <span class="hljs-comment">//到达时间</span><br>    <span class="hljs-keyword">int</span> service_time;    <span class="hljs-comment">//进程运行时间</span><br>    <span class="hljs-keyword">int</span> wait_time;       <span class="hljs-comment">//进程等待时间</span><br>    <span class="hljs-keyword">int</span> remain_time;     <span class="hljs-comment">//进程剩余运行时间</span><br>    <span class="hljs-keyword">int</span> turnaround_time; <span class="hljs-comment">//周转时间</span><br>    <span class="hljs-keyword">int</span> start_time;      <span class="hljs-comment">//进程开始运行时间</span><br>    <span class="hljs-keyword">int</span> end_time;        <span class="hljs-comment">//进程结束时间</span><br>    <span class="hljs-comment">//int time_slice;      //进程时间片</span><br>&#125; run_process, p[MAXname];<br>queue&lt;Process&gt; ready_queue, block_queue;<br></code></pre></td></tr></table></figure>
 <h4 id="符号说明"><a class="markdownIt-Anchor" href="#符号说明"></a> 符号说明</h4>
-<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">int n;                &#x2F;&#x2F;进程数量
-int current_time &#x3D; 0; &#x2F;&#x2F;当前时间
-int t &#x3D; 0;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">int</span> n;                <span class="hljs-comment">//进程数量</span><br><span class="hljs-keyword">int</span> current_time = <span class="hljs-number">0</span>; <span class="hljs-comment">//当前时间</span><br><span class="hljs-keyword">int</span> t = <span class="hljs-number">0</span>;<br></code></pre></td></tr></table></figure>
 <h4 id="函数说明"><a class="markdownIt-Anchor" href="#函数说明"></a> 函数说明</h4>
 <h5 id="进程初始化函数"><a class="markdownIt-Anchor" href="#进程初始化函数"></a> <strong>进程初始化函数</strong></h5>
 <blockquote>
@@ -302,23 +288,7 @@ int t &#x3D; 0;<span aria-hidden="true" class="line-numbers-rows"><span></span><
 <li>将进程按照到达时间加入阻塞队列</li>
 </ul>
 </blockquote>
-<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">void process_init() &#x2F;&#x2F;进程初始化
-&#123;
-    cout &lt;&lt; &quot;请输入进程数量&quot; &lt;&lt; endl;
-    cin &gt;&gt; n;
-    for (int i &#x3D; 0; i &lt; n; i++)
-    &#123;
-        cout &lt;&lt; &quot;请输入第&quot; &lt;&lt; i + 1 &lt;&lt; &quot;个进程的名字  到达时间  服务时间&quot; &lt;&lt; endl;
-        cin &gt;&gt; p[i].name &gt;&gt; p[i].arrive_time &gt;&gt; p[i].service_time;
-        p[i].remain_time &#x3D; p[i].service_time;
-    &#125;
-    run_process.name &#x3D; &quot;0&quot;; &#x2F;&#x2F;当前无进程运行
-    sort(p, p + n, cmp);
-    for (int i &#x3D; 0; i &lt; n; i++)
-    &#123;
-        block_queue.push(p[i]); &#x2F;&#x2F;将进程加入阻塞队列（未达到则视为阻塞）
-    &#125;
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">process_init</span><span class="hljs-params">()</span> <span class="hljs-comment">//进程初始化</span></span><br><span class="hljs-function"></span>&#123;<br>    cout &lt;&lt; <span class="hljs-string">&quot;请输入进程数量&quot;</span> &lt;&lt; endl;<br>    cin &gt;&gt; n;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++)<br>    &#123;<br>        cout &lt;&lt; <span class="hljs-string">&quot;请输入第&quot;</span> &lt;&lt; i + <span class="hljs-number">1</span> &lt;&lt; <span class="hljs-string">&quot;个进程的名字  到达时间  服务时间&quot;</span> &lt;&lt; endl;<br>        cin &gt;&gt; p[i].name &gt;&gt; p[i].arrive_time &gt;&gt; p[i].service_time;<br>        p[i].remain_time = p[i].service_time;<br>    &#125;<br>    run_process.name = <span class="hljs-string">&quot;0&quot;</span>; <span class="hljs-comment">//当前无进程运行</span><br>    <span class="hljs-built_in">sort</span>(p, p + n, cmp);<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++)<br>    &#123;<br>        block_queue.<span class="hljs-built_in">push</span>(p[i]); <span class="hljs-comment">//将进程加入阻塞队列（未达到则视为阻塞）</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 <h5 id="获取下一个进程函数"><a class="markdownIt-Anchor" href="#获取下一个进程函数"></a> <strong>获取下一个进程函数</strong></h5>
 <blockquote>
 <p>这部分代码重复率较高，故抽象出来组成函数</p>
@@ -327,19 +297,7 @@ int t &#x3D; 0;<span aria-hidden="true" class="line-numbers-rows"><span></span><
 <li>否则将当前进程置为空</li>
 </ul>
 </blockquote>
-<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">void nextprocess() &#x2F;&#x2F;取下一个进程
-&#123;
-    if (!ready_queue.empty()) &#x2F;&#x2F;当就绪队列非空时
-    &#123;
-        run_process &#x3D; ready_queue.front(); &#x2F;&#x2F;取下个进程
-        run_process.start_time&#x3D;current_time;
-        run_process.wait_time +&#x3D; current_time - run_process.arrive_time; &#x2F;&#x2F;计算等待时间
-        ready_queue.pop();
-    &#125;
-    else &#x2F;&#x2F;否则将运行进程置为空
-        run_process.name &#x3D; &quot;0&quot;;
-    
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">nextprocess</span><span class="hljs-params">()</span> <span class="hljs-comment">//取下一个进程</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span> (!ready_queue.<span class="hljs-built_in">empty</span>()) <span class="hljs-comment">//当就绪队列非空时</span><br>    &#123;<br>        run_process = ready_queue.<span class="hljs-built_in">front</span>(); <span class="hljs-comment">//取下个进程</span><br>        run_process.start_time=current_time;<br>        run_process.wait_time += current_time - run_process.arrive_time; <span class="hljs-comment">//计算等待时间</span><br>        ready_queue.<span class="hljs-built_in">pop</span>();<br>    &#125;<br>    <span class="hljs-keyword">else</span> <span class="hljs-comment">//否则将运行进程置为空</span><br>        run_process.name = <span class="hljs-string">&quot;0&quot;</span>;<br>    <br>&#125;<br></code></pre></td></tr></table></figure>
 <h5 id="进程调度函数"><a class="markdownIt-Anchor" href="#进程调度函数"></a> <strong>进程调度函数</strong></h5>
 <blockquote>
 <p>实现进程调度</p>
@@ -351,321 +309,36 @@ int t &#x3D; 0;<span aria-hidden="true" class="line-numbers-rows"><span></span><
 <li>如果当前进程时间片用完，则将其记录，同时获取下一个进程，程序继续循环</li>
 </ul>
 </blockquote>
-<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">void process_schedule() &#x2F;&#x2F;进程调度函数
-&#123;
-    srand(time(NULL)); &#x2F;&#x2F;随机数种子
-    cout &lt;&lt; endl
-         &lt;&lt; &quot;------------------------------------FCFS调度算法------------------------------------&quot; &lt;&lt; endl
-         &lt;&lt; endl;
-    cout &lt;&lt; &quot;当前时间  &quot;
-         &lt;&lt; &quot;当前进程  &quot;
-         &lt;&lt; &quot;进程到达时间  &quot;
-         &lt;&lt; &quot;进程等待时间  &quot;
-         &lt;&lt; &quot;进程服务时间  &quot;
-         &lt;&lt; &quot;剩余运行时间  &quot;
-         &lt;&lt; endl;
-    while (1)
-    &#123;
-        if (block_queue.empty() &amp;&amp; ready_queue.empty() &amp;&amp; run_process.name &#x3D;&#x3D; &quot;0&quot;) &#x2F;&#x2F;当三个队列均为空时，说明进程全部运行完
-            break;                                                                 &#x2F;&#x2F;结束
-
-        if (!block_queue.empty() &amp;&amp; block_queue.front().arrive_time &lt;&#x3D; current_time)
-        &#123;                                                   &#x2F;&#x2F;阻塞队列非空且队首元素到达时间已到当前时间
-            block_queue.front().arrive_time &#x3D; current_time; &#x2F;&#x2F;将进入就绪队列的时间作为进程到达时间（针对于阻塞过的进程）
-            ready_queue.push(block_queue.front());          &#x2F;&#x2F;则加入就绪队列
-            block_queue.pop();                              &#x2F;&#x2F;从阻塞队列删除
-        &#125;
-        if (!ready_queue.empty() &amp;&amp; run_process.name &#x3D;&#x3D; &quot;0&quot;) &#x2F;&#x2F;就绪队列非空和运行进程为空时
-        &#123;
-            run_process &#x3D; ready_queue.front(); &#x2F;&#x2F;则从就绪队列取首元素
-            run_process.start_time&#x3D;current_time;
-            ready_queue.pop();                 &#x2F;&#x2F;从就绪队列删除
-        &#125;
-        if (run_process.name &#x3D;&#x3D; &quot;0&quot;) &#x2F;&#x2F;若当前无运行进程，则输出空
-        &#123;
-            cout &lt;&lt; setw(8) &lt;&lt; current_time
-                 &lt;&lt; setw(10) &lt;&lt; run_process.name &lt;&lt; endl;
-            current_time++;
-        &#125;
-        else
-        &#123; &#x2F;&#x2F;当前有运行进程则输出信息
-            cout &lt;&lt; setw(8) &lt;&lt; current_time
-                 &lt;&lt; setw(10) &lt;&lt; run_process.name
-                 &lt;&lt; setw(14) &lt;&lt; run_process.arrive_time
-                 &lt;&lt; setw(14) &lt;&lt; run_process.wait_time
-                 &lt;&lt; setw(14) &lt;&lt; run_process.service_time
-                 &lt;&lt; setw(14) &lt;&lt; run_process.remain_time
-                 &lt;&lt; endl;
-            current_time++;            &#x2F;&#x2F;当前时间加1
-            run_process.remain_time--; &#x2F;&#x2F;进程剩余运行时间减1
-
-            if (run_process.remain_time &#x3D;&#x3D; 0) &#x2F;&#x2F;当进程剩余运行时间为0
-            &#123;
-                run_process.end_time&#x3D;current_time;
-                run_process.turnaround_time&#x3D;current_time-run_process.start_time;
-                p[t++] &#x3D; run_process;
-                nextprocess(); &#x2F;&#x2F;取下一个进程
-                continue;
-            &#125;
-            else if (block()) &#x2F;&#x2F;当进程有运行时间和时间片时，可能发生阻塞
-            &#123;
-                cout &lt;&lt; &quot;-----------------进程阻塞，切换进程----------------&quot; &lt;&lt; endl;
-                run_process.arrive_time &#x3D; current_time; &#x2F;&#x2F;若发生阻塞，修改当前进程到达时间
-                block_queue.push(run_process);          &#x2F;&#x2F;并加入阻塞队列中
-                nextprocess();
-            &#125;
-        &#125;
-    &#125;
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">process_schedule</span><span class="hljs-params">()</span> <span class="hljs-comment">//进程调度函数</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">srand</span>(<span class="hljs-built_in">time</span>(<span class="hljs-literal">NULL</span>)); <span class="hljs-comment">//随机数种子</span><br>    cout &lt;&lt; endl<br>         &lt;&lt; <span class="hljs-string">&quot;------------------------------------FCFS调度算法------------------------------------&quot;</span> &lt;&lt; endl<br>         &lt;&lt; endl;<br>    cout &lt;&lt; <span class="hljs-string">&quot;当前时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;当前进程  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;进程到达时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;进程等待时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;进程服务时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;剩余运行时间  &quot;</span><br>         &lt;&lt; endl;<br>    <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>)<br>    &#123;<br>        <span class="hljs-keyword">if</span> (block_queue.<span class="hljs-built_in">empty</span>() &amp;&amp; ready_queue.<span class="hljs-built_in">empty</span>() &amp;&amp; run_process.name == <span class="hljs-string">&quot;0&quot;</span>) <span class="hljs-comment">//当三个队列均为空时，说明进程全部运行完</span><br>            <span class="hljs-keyword">break</span>;                                                                 <span class="hljs-comment">//结束</span><br><br>        <span class="hljs-keyword">if</span> (!block_queue.<span class="hljs-built_in">empty</span>() &amp;&amp; block_queue.<span class="hljs-built_in">front</span>().arrive_time &lt;= current_time)<br>        &#123;                                                   <span class="hljs-comment">//阻塞队列非空且队首元素到达时间已到当前时间</span><br>            block_queue.<span class="hljs-built_in">front</span>().arrive_time = current_time; <span class="hljs-comment">//将进入就绪队列的时间作为进程到达时间（针对于阻塞过的进程）</span><br>            ready_queue.<span class="hljs-built_in">push</span>(block_queue.<span class="hljs-built_in">front</span>());          <span class="hljs-comment">//则加入就绪队列</span><br>            block_queue.<span class="hljs-built_in">pop</span>();                              <span class="hljs-comment">//从阻塞队列删除</span><br>        &#125;<br>        <span class="hljs-keyword">if</span> (!ready_queue.<span class="hljs-built_in">empty</span>() &amp;&amp; run_process.name == <span class="hljs-string">&quot;0&quot;</span>) <span class="hljs-comment">//就绪队列非空和运行进程为空时</span><br>        &#123;<br>            run_process = ready_queue.<span class="hljs-built_in">front</span>(); <span class="hljs-comment">//则从就绪队列取首元素</span><br>            run_process.start_time=current_time;<br>            ready_queue.<span class="hljs-built_in">pop</span>();                 <span class="hljs-comment">//从就绪队列删除</span><br>        &#125;<br>        <span class="hljs-keyword">if</span> (run_process.name == <span class="hljs-string">&quot;0&quot;</span>) <span class="hljs-comment">//若当前无运行进程，则输出空</span><br>        &#123;<br>            cout &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">8</span>) &lt;&lt; current_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; run_process.name &lt;&lt; endl;<br>            current_time++;<br>        &#125;<br>        <span class="hljs-keyword">else</span><br>        &#123; <span class="hljs-comment">//当前有运行进程则输出信息</span><br>            cout &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">8</span>) &lt;&lt; current_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; run_process.name<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.arrive_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.wait_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.service_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.remain_time<br>                 &lt;&lt; endl;<br>            current_time++;            <span class="hljs-comment">//当前时间加1</span><br>            run_process.remain_time--; <span class="hljs-comment">//进程剩余运行时间减1</span><br><br>            <span class="hljs-keyword">if</span> (run_process.remain_time == <span class="hljs-number">0</span>) <span class="hljs-comment">//当进程剩余运行时间为0</span><br>            &#123;<br>                run_process.end_time=current_time;<br>                run_process.turnaround_time=current_time-run_process.start_time;<br>                p[t++] = run_process;<br>                <span class="hljs-built_in">nextprocess</span>(); <span class="hljs-comment">//取下一个进程</span><br>                <span class="hljs-keyword">continue</span>;<br>            &#125;<br>            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-built_in">block</span>()) <span class="hljs-comment">//当进程有运行时间和时间片时，可能发生阻塞</span><br>            &#123;<br>                cout &lt;&lt; <span class="hljs-string">&quot;-----------------进程阻塞，切换进程----------------&quot;</span> &lt;&lt; endl;<br>                run_process.arrive_time = current_time; <span class="hljs-comment">//若发生阻塞，修改当前进程到达时间</span><br>                block_queue.<span class="hljs-built_in">push</span>(run_process);          <span class="hljs-comment">//并加入阻塞队列中</span><br>                <span class="hljs-built_in">nextprocess</span>();<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 <h5 id="打印进程信息函数"><a class="markdownIt-Anchor" href="#打印进程信息函数"></a> <strong>打印进程信息函数</strong></h5>
 <blockquote>
 <p>输出进程信息，并输出整个过程的平均等待时间</p>
 </blockquote>
-<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">void print_process_information() &#x2F;&#x2F;输出进程信息
-&#123;
-    float sumwait &#x3D; 0;
-    cout &lt;&lt; &quot;进程名字  &quot;
-         &lt;&lt; &quot;到达时间  &quot;
-         &lt;&lt; &quot;服务时间  &quot;
-         &lt;&lt; &quot;开始执行时间  &quot;
-         &lt;&lt; &quot;结束执行时间  &quot;
-         &lt;&lt; &quot;周转时间  &quot;
-         &lt;&lt; &quot;等待时间  &quot;
-         &lt;&lt; endl;
-    for (int i &#x3D; 0; i &lt; n; i++)
-    &#123;
-        cout &lt;&lt; setw(8) &lt;&lt; p[i].name
-             &lt;&lt; setw(10) &lt;&lt; p[i].arrive_time
-             &lt;&lt; setw(10) &lt;&lt; p[i].service_time
-             &lt;&lt; setw(14) &lt;&lt; p[i].start_time
-             &lt;&lt; setw(14) &lt;&lt; p[i].end_time
-             &lt;&lt; setw(10) &lt;&lt; p[i].turnaround_time
-             &lt;&lt; setw(10) &lt;&lt; p[i].wait_time
-             &lt;&lt; endl;
-        sumwait +&#x3D; p[i].wait_time;
-    &#125;
-    cout &lt;&lt; &quot;平均等待时间为：&quot; &lt;&lt; setprecision(2) &lt;&lt; setiosflags(ios::fixed) &lt;&lt; float(sumwait &#x2F; n) &lt;&lt; endl;
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">print_process_information</span><span class="hljs-params">()</span> <span class="hljs-comment">//输出进程信息</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">float</span> sumwait = <span class="hljs-number">0</span>;<br>    cout &lt;&lt; <span class="hljs-string">&quot;进程名字  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;到达时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;服务时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;开始执行时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;结束执行时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;周转时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;等待时间  &quot;</span><br>         &lt;&lt; endl;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++)<br>    &#123;<br>        cout &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">8</span>) &lt;&lt; p[i].name<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; p[i].arrive_time<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; p[i].service_time<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; p[i].start_time<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; p[i].end_time<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; p[i].turnaround_time<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; p[i].wait_time<br>             &lt;&lt; endl;<br>        sumwait += p[i].wait_time;<br>    &#125;<br>    cout &lt;&lt; <span class="hljs-string">&quot;平均等待时间为：&quot;</span> &lt;&lt; <span class="hljs-built_in">setprecision</span>(<span class="hljs-number">2</span>) &lt;&lt; <span class="hljs-built_in">setiosflags</span>(ios::fixed) &lt;&lt; <span class="hljs-built_in"><span class="hljs-keyword">float</span></span>(sumwait / n) &lt;&lt; endl;<br>&#125;<br></code></pre></td></tr></table></figure>
 <h5 id="阻塞函数"><a class="markdownIt-Anchor" href="#阻塞函数"></a> 阻塞函数</h5>
 <blockquote>
 <p>随机概率阻塞</p>
 <p>设置了30%的阻塞概率</p>
 </blockquote>
-<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">int block() &#x2F;&#x2F;阻塞函数，随机概率阻塞
-&#123;
-    int a;
-    a &#x3D; rand() % 10;
-    &#x2F;&#x2F;return 0;
-    if (a &gt;&#x3D; 0 &amp;&amp; a &lt; 3)
-    &#123;
-        return 1;
-    &#125;
-    else
-        return 0;
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">block</span><span class="hljs-params">()</span> <span class="hljs-comment">//阻塞函数，随机概率阻塞</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">int</span> a;<br>    a = <span class="hljs-built_in">rand</span>() % <span class="hljs-number">10</span>;<br>    <span class="hljs-comment">//return 0;</span><br>    <span class="hljs-keyword">if</span> (a &gt;= <span class="hljs-number">0</span> &amp;&amp; a &lt; <span class="hljs-number">3</span>)<br>    &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br>    <span class="hljs-keyword">else</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
 <h4 id="源代码"><a class="markdownIt-Anchor" href="#源代码"></a> 源代码</h4>
-<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;bits&#x2F;stdc++.h&gt;
-using namespace std;
-#define MAXname 100
-struct Process &#x2F;&#x2F;进程结构体，表示进程信息
-&#123;
-    string name;         &#x2F;&#x2F;进程名字
-    int arrive_time;     &#x2F;&#x2F;到达时间
-    int service_time;    &#x2F;&#x2F;进程运行时间
-    int wait_time;       &#x2F;&#x2F;进程等待时间
-    int remain_time;     &#x2F;&#x2F;进程剩余运行时间
-    int turnaround_time; &#x2F;&#x2F;周转时间
-    int start_time;      &#x2F;&#x2F;进程开始运行时间
-    int end_time;        &#x2F;&#x2F;进程结束时间
-    &#x2F;&#x2F;int time_slice;      &#x2F;&#x2F;进程时间片
-&#125; run_process, p[MAXname];
-
-int n;                &#x2F;&#x2F;进程数量
-int current_time &#x3D; 0; &#x2F;&#x2F;当前时间
-int t &#x3D; 0;
-queue&lt;Process&gt; ready_queue, block_queue, run_queue;
-
-bool cmp(Process &amp;a, Process &amp;b)
-&#123;
-    return a.arrive_time &lt; b.arrive_time;
-&#125;
-void process_init() &#x2F;&#x2F;进程初始化
-&#123;
-    cout &lt;&lt; &quot;请输入进程数量&quot; &lt;&lt; endl;
-    cin &gt;&gt; n;
-    for (int i &#x3D; 0; i &lt; n; i++)
-    &#123;
-        cout &lt;&lt; &quot;请输入第&quot; &lt;&lt; i + 1 &lt;&lt; &quot;个进程的名字  到达时间  服务时间&quot; &lt;&lt; endl;
-        cin &gt;&gt; p[i].name &gt;&gt; p[i].arrive_time &gt;&gt; p[i].service_time;
-        p[i].remain_time &#x3D; p[i].service_time;
-    &#125;
-    run_process.name &#x3D; &quot;0&quot;; &#x2F;&#x2F;当前无进程运行
-    sort(p, p + n, cmp);
-    for (int i &#x3D; 0; i &lt; n; i++)
-    &#123;
-        block_queue.push(p[i]); &#x2F;&#x2F;将进程加入阻塞队列（未达到则视为阻塞）
-    &#125;
-&#125;
-void nextprocess() &#x2F;&#x2F;取下一个进程
-&#123;
-    if (!ready_queue.empty()) &#x2F;&#x2F;当就绪队列非空时
-    &#123;
-        run_process &#x3D; ready_queue.front(); &#x2F;&#x2F;取下个进程
-        run_process.start_time&#x3D;current_time;
-        run_process.wait_time +&#x3D; current_time - run_process.arrive_time; &#x2F;&#x2F;计算等待时间
-        ready_queue.pop();
-    &#125;
-    else &#x2F;&#x2F;否则将运行进程置为空
-        run_process.name &#x3D; &quot;0&quot;;
-    
-&#125;
-int block() &#x2F;&#x2F;阻塞函数，随机概率阻塞
-&#123;
-    int a;
-    a &#x3D; rand() % 10;
-    &#x2F;&#x2F;return 0;
-    if (a &gt;&#x3D; 0 &amp;&amp; a &lt; 3)
-    &#123;
-        return 1;
-    &#125;
-    else
-        return 0;
-&#125;
-void process_schedule() &#x2F;&#x2F;进程调度函数
-&#123;
-    srand(time(NULL)); &#x2F;&#x2F;随机数种子
-    cout &lt;&lt; endl
-         &lt;&lt; &quot;------------------------------------FCFS调度算法------------------------------------&quot; &lt;&lt; endl
-         &lt;&lt; endl;
-    cout &lt;&lt; &quot;当前时间  &quot;
-         &lt;&lt; &quot;当前进程  &quot;
-         &lt;&lt; &quot;进程到达时间  &quot;
-         &lt;&lt; &quot;进程等待时间  &quot;
-         &lt;&lt; &quot;进程服务时间  &quot;
-         &lt;&lt; &quot;剩余运行时间  &quot;
-         &lt;&lt; endl;
-    while (1)
-    &#123;
-        if (block_queue.empty() &amp;&amp; ready_queue.empty() &amp;&amp; run_process.name &#x3D;&#x3D; &quot;0&quot;) &#x2F;&#x2F;当三个队列均为空时，说明进程全部运行完
-            break;                                                                 &#x2F;&#x2F;结束
-
-        if (!block_queue.empty() &amp;&amp; block_queue.front().arrive_time &lt;&#x3D; current_time)
-        &#123;                                                   &#x2F;&#x2F;阻塞队列非空且队首元素到达时间已到当前时间
-            block_queue.front().arrive_time &#x3D; current_time; &#x2F;&#x2F;将进入就绪队列的时间作为进程到达时间（针对于阻塞过的进程）
-            ready_queue.push(block_queue.front());          &#x2F;&#x2F;则加入就绪队列
-            block_queue.pop();                              &#x2F;&#x2F;从阻塞队列删除
-        &#125;
-        if (!ready_queue.empty() &amp;&amp; run_process.name &#x3D;&#x3D; &quot;0&quot;) &#x2F;&#x2F;就绪队列非空和运行进程为空时
-        &#123;
-            run_process &#x3D; ready_queue.front(); &#x2F;&#x2F;则从就绪对列取首元素
-            run_process.start_time&#x3D;current_time;
-            ready_queue.pop();                 &#x2F;&#x2F;从就绪队列删除
-        &#125;
-        if (run_process.name &#x3D;&#x3D; &quot;0&quot;) &#x2F;&#x2F;若当前无运行进程，则输出空
-        &#123;
-            cout &lt;&lt; setw(8) &lt;&lt; current_time
-                 &lt;&lt; setw(10) &lt;&lt; run_process.name &lt;&lt; endl;
-            current_time++;
-        &#125;
-        else
-        &#123; &#x2F;&#x2F;当前有运行进程则输出信息
-            cout &lt;&lt; setw(8) &lt;&lt; current_time
-                 &lt;&lt; setw(10) &lt;&lt; run_process.name
-                 &lt;&lt; setw(14) &lt;&lt; run_process.arrive_time
-                 &lt;&lt; setw(14) &lt;&lt; run_process.wait_time
-                 &lt;&lt; setw(14) &lt;&lt; run_process.service_time
-                 &lt;&lt; setw(14) &lt;&lt; run_process.remain_time
-                 &lt;&lt; endl;
-            current_time++;            &#x2F;&#x2F;当前时间加1
-            run_process.remain_time--; &#x2F;&#x2F;进程剩余运行时间减1
-
-            if (run_process.remain_time &#x3D;&#x3D; 0) &#x2F;&#x2F;当进程剩余运行时间为0
-            &#123;
-                run_process.end_time&#x3D;current_time;
-                run_process.turnaround_time&#x3D;current_time-run_process.start_time;
-                p[t++] &#x3D; run_process;
-                nextprocess(); &#x2F;&#x2F;取下一个进程
-                continue;
-            &#125;
-            else if (block()) &#x2F;&#x2F;当进程有运行时间和时间片时，可能发生阻塞
-            &#123;
-                cout &lt;&lt; &quot;-----------------进程阻塞，切换进程----------------&quot; &lt;&lt; endl;
-                run_process.arrive_time &#x3D; current_time; &#x2F;&#x2F;若发生阻塞，修改当前进程到达时间
-                block_queue.push(run_process);          &#x2F;&#x2F;并加入阻塞队列中
-                nextprocess();
-            &#125;
-        &#125;
-    &#125;
-&#125;
-void print_process_information() &#x2F;&#x2F;输出进程信息
-&#123;
-    float sumwait &#x3D; 0;
-    cout &lt;&lt; &quot;进程名字  &quot;
-         &lt;&lt; &quot;到达时间  &quot;
-         &lt;&lt; &quot;服务时间  &quot;
-         &lt;&lt; &quot;开始执行时间  &quot;
-         &lt;&lt; &quot;结束执行时间  &quot;
-         &lt;&lt; &quot;周转时间  &quot;
-         &lt;&lt; &quot;等待时间  &quot;
-         &lt;&lt; endl;
-    for (int i &#x3D; 0; i &lt; n; i++)
-    &#123;
-        cout &lt;&lt; setw(8) &lt;&lt; p[i].name
-             &lt;&lt; setw(10) &lt;&lt; p[i].arrive_time
-             &lt;&lt; setw(10) &lt;&lt; p[i].service_time
-             &lt;&lt; setw(14) &lt;&lt; p[i].start_time
-             &lt;&lt; setw(14) &lt;&lt; p[i].end_time
-             &lt;&lt; setw(10) &lt;&lt; p[i].turnaround_time
-             &lt;&lt; setw(10) &lt;&lt; p[i].wait_time
-             &lt;&lt; endl;
-        sumwait +&#x3D; p[i].wait_time;
-    &#125;
-    cout &lt;&lt; &quot;平均等待时间为：&quot; &lt;&lt; setprecision(2) &lt;&lt; setiosflags(ios::fixed) &lt;&lt; float(sumwait &#x2F; n) &lt;&lt; endl;
-&#125;
-int main()
-&#123;
-    process_init();
-    process_schedule();
-    print_process_information();
-    return 0;
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;bits/stdc++.h&gt;</span></span><br><span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> std;<br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> MAXname 100</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Process</span> //进程结构体，表示进程信息</span><br><span class="hljs-class">&#123;</span><br>    string name;         <span class="hljs-comment">//进程名字</span><br>    <span class="hljs-keyword">int</span> arrive_time;     <span class="hljs-comment">//到达时间</span><br>    <span class="hljs-keyword">int</span> service_time;    <span class="hljs-comment">//进程运行时间</span><br>    <span class="hljs-keyword">int</span> wait_time;       <span class="hljs-comment">//进程等待时间</span><br>    <span class="hljs-keyword">int</span> remain_time;     <span class="hljs-comment">//进程剩余运行时间</span><br>    <span class="hljs-keyword">int</span> turnaround_time; <span class="hljs-comment">//周转时间</span><br>    <span class="hljs-keyword">int</span> start_time;      <span class="hljs-comment">//进程开始运行时间</span><br>    <span class="hljs-keyword">int</span> end_time;        <span class="hljs-comment">//进程结束时间</span><br>    <span class="hljs-comment">//int time_slice;      //进程时间片</span><br>&#125; run_process, p[MAXname];<br><br><span class="hljs-keyword">int</span> n;                <span class="hljs-comment">//进程数量</span><br><span class="hljs-keyword">int</span> current_time = <span class="hljs-number">0</span>; <span class="hljs-comment">//当前时间</span><br><span class="hljs-keyword">int</span> t = <span class="hljs-number">0</span>;<br>queue&lt;Process&gt; ready_queue, block_queue, run_queue;<br><br><span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">cmp</span><span class="hljs-params">(Process &amp;a, Process &amp;b)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">return</span> a.arrive_time &lt; b.arrive_time;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">process_init</span><span class="hljs-params">()</span> <span class="hljs-comment">//进程初始化</span></span><br><span class="hljs-function"></span>&#123;<br>    cout &lt;&lt; <span class="hljs-string">&quot;请输入进程数量&quot;</span> &lt;&lt; endl;<br>    cin &gt;&gt; n;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++)<br>    &#123;<br>        cout &lt;&lt; <span class="hljs-string">&quot;请输入第&quot;</span> &lt;&lt; i + <span class="hljs-number">1</span> &lt;&lt; <span class="hljs-string">&quot;个进程的名字  到达时间  服务时间&quot;</span> &lt;&lt; endl;<br>        cin &gt;&gt; p[i].name &gt;&gt; p[i].arrive_time &gt;&gt; p[i].service_time;<br>        p[i].remain_time = p[i].service_time;<br>    &#125;<br>    run_process.name = <span class="hljs-string">&quot;0&quot;</span>; <span class="hljs-comment">//当前无进程运行</span><br>    <span class="hljs-built_in">sort</span>(p, p + n, cmp);<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++)<br>    &#123;<br>        block_queue.<span class="hljs-built_in">push</span>(p[i]); <span class="hljs-comment">//将进程加入阻塞队列（未达到则视为阻塞）</span><br>    &#125;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">nextprocess</span><span class="hljs-params">()</span> <span class="hljs-comment">//取下一个进程</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span> (!ready_queue.<span class="hljs-built_in">empty</span>()) <span class="hljs-comment">//当就绪队列非空时</span><br>    &#123;<br>        run_process = ready_queue.<span class="hljs-built_in">front</span>(); <span class="hljs-comment">//取下个进程</span><br>        run_process.start_time=current_time;<br>        run_process.wait_time += current_time - run_process.arrive_time; <span class="hljs-comment">//计算等待时间</span><br>        ready_queue.<span class="hljs-built_in">pop</span>();<br>    &#125;<br>    <span class="hljs-keyword">else</span> <span class="hljs-comment">//否则将运行进程置为空</span><br>        run_process.name = <span class="hljs-string">&quot;0&quot;</span>;<br>    <br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">block</span><span class="hljs-params">()</span> <span class="hljs-comment">//阻塞函数，随机概率阻塞</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">int</span> a;<br>    a = <span class="hljs-built_in">rand</span>() % <span class="hljs-number">10</span>;<br>    <span class="hljs-comment">//return 0;</span><br>    <span class="hljs-keyword">if</span> (a &gt;= <span class="hljs-number">0</span> &amp;&amp; a &lt; <span class="hljs-number">3</span>)<br>    &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br>    <span class="hljs-keyword">else</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">process_schedule</span><span class="hljs-params">()</span> <span class="hljs-comment">//进程调度函数</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">srand</span>(<span class="hljs-built_in">time</span>(<span class="hljs-literal">NULL</span>)); <span class="hljs-comment">//随机数种子</span><br>    cout &lt;&lt; endl<br>         &lt;&lt; <span class="hljs-string">&quot;------------------------------------FCFS调度算法------------------------------------&quot;</span> &lt;&lt; endl<br>         &lt;&lt; endl;<br>    cout &lt;&lt; <span class="hljs-string">&quot;当前时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;当前进程  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;进程到达时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;进程等待时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;进程服务时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;剩余运行时间  &quot;</span><br>         &lt;&lt; endl;<br>    <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>)<br>    &#123;<br>        <span class="hljs-keyword">if</span> (block_queue.<span class="hljs-built_in">empty</span>() &amp;&amp; ready_queue.<span class="hljs-built_in">empty</span>() &amp;&amp; run_process.name == <span class="hljs-string">&quot;0&quot;</span>) <span class="hljs-comment">//当三个队列均为空时，说明进程全部运行完</span><br>            <span class="hljs-keyword">break</span>;                                                                 <span class="hljs-comment">//结束</span><br><br>        <span class="hljs-keyword">if</span> (!block_queue.<span class="hljs-built_in">empty</span>() &amp;&amp; block_queue.<span class="hljs-built_in">front</span>().arrive_time &lt;= current_time)<br>        &#123;                                                   <span class="hljs-comment">//阻塞队列非空且队首元素到达时间已到当前时间</span><br>            block_queue.<span class="hljs-built_in">front</span>().arrive_time = current_time; <span class="hljs-comment">//将进入就绪队列的时间作为进程到达时间（针对于阻塞过的进程）</span><br>            ready_queue.<span class="hljs-built_in">push</span>(block_queue.<span class="hljs-built_in">front</span>());          <span class="hljs-comment">//则加入就绪队列</span><br>            block_queue.<span class="hljs-built_in">pop</span>();                              <span class="hljs-comment">//从阻塞队列删除</span><br>        &#125;<br>        <span class="hljs-keyword">if</span> (!ready_queue.<span class="hljs-built_in">empty</span>() &amp;&amp; run_process.name == <span class="hljs-string">&quot;0&quot;</span>) <span class="hljs-comment">//就绪队列非空和运行进程为空时</span><br>        &#123;<br>            run_process = ready_queue.<span class="hljs-built_in">front</span>(); <span class="hljs-comment">//则从就绪对列取首元素</span><br>            run_process.start_time=current_time;<br>            ready_queue.<span class="hljs-built_in">pop</span>();                 <span class="hljs-comment">//从就绪队列删除</span><br>        &#125;<br>        <span class="hljs-keyword">if</span> (run_process.name == <span class="hljs-string">&quot;0&quot;</span>) <span class="hljs-comment">//若当前无运行进程，则输出空</span><br>        &#123;<br>            cout &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">8</span>) &lt;&lt; current_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; run_process.name &lt;&lt; endl;<br>            current_time++;<br>        &#125;<br>        <span class="hljs-keyword">else</span><br>        &#123; <span class="hljs-comment">//当前有运行进程则输出信息</span><br>            cout &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">8</span>) &lt;&lt; current_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; run_process.name<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.arrive_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.wait_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.service_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.remain_time<br>                 &lt;&lt; endl;<br>            current_time++;            <span class="hljs-comment">//当前时间加1</span><br>            run_process.remain_time--; <span class="hljs-comment">//进程剩余运行时间减1</span><br><br>            <span class="hljs-keyword">if</span> (run_process.remain_time == <span class="hljs-number">0</span>) <span class="hljs-comment">//当进程剩余运行时间为0</span><br>            &#123;<br>                run_process.end_time=current_time;<br>                run_process.turnaround_time=current_time-run_process.start_time;<br>                p[t++] = run_process;<br>                <span class="hljs-built_in">nextprocess</span>(); <span class="hljs-comment">//取下一个进程</span><br>                <span class="hljs-keyword">continue</span>;<br>            &#125;<br>            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-built_in">block</span>()) <span class="hljs-comment">//当进程有运行时间和时间片时，可能发生阻塞</span><br>            &#123;<br>                cout &lt;&lt; <span class="hljs-string">&quot;-----------------进程阻塞，切换进程----------------&quot;</span> &lt;&lt; endl;<br>                run_process.arrive_time = current_time; <span class="hljs-comment">//若发生阻塞，修改当前进程到达时间</span><br>                block_queue.<span class="hljs-built_in">push</span>(run_process);          <span class="hljs-comment">//并加入阻塞队列中</span><br>                <span class="hljs-built_in">nextprocess</span>();<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">print_process_information</span><span class="hljs-params">()</span> <span class="hljs-comment">//输出进程信息</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">float</span> sumwait = <span class="hljs-number">0</span>;<br>    cout &lt;&lt; <span class="hljs-string">&quot;进程名字  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;到达时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;服务时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;开始执行时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;结束执行时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;周转时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;等待时间  &quot;</span><br>         &lt;&lt; endl;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++)<br>    &#123;<br>        cout &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">8</span>) &lt;&lt; p[i].name<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; p[i].arrive_time<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; p[i].service_time<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; p[i].start_time<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; p[i].end_time<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; p[i].turnaround_time<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; p[i].wait_time<br>             &lt;&lt; endl;<br>        sumwait += p[i].wait_time;<br>    &#125;<br>    cout &lt;&lt; <span class="hljs-string">&quot;平均等待时间为：&quot;</span> &lt;&lt; <span class="hljs-built_in">setprecision</span>(<span class="hljs-number">2</span>) &lt;&lt; <span class="hljs-built_in">setiosflags</span>(ios::fixed) &lt;&lt; <span class="hljs-built_in"><span class="hljs-keyword">float</span></span>(sumwait / n) &lt;&lt; endl;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">process_init</span>();<br>    <span class="hljs-built_in">process_schedule</span>();<br>    <span class="hljs-built_in">print_process_information</span>();<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
 <h4 id="程序初值和运行结果"><a class="markdownIt-Anchor" href="#程序初值和运行结果"></a> 程序初值和运行结果</h4>
 <p><strong>不考虑阻塞：</strong></p>
 <p>初值：</p>
-<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">3
-ghh 3 6
-ga 4 8
-hr 8 4<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">3</span><br><span class="hljs-attribute">ghh</span> <span class="hljs-number">3</span> <span class="hljs-number">6</span><br><span class="hljs-attribute">ga</span> <span class="hljs-number">4</span> <span class="hljs-number">8</span><br><span class="hljs-attribute">hr</span> <span class="hljs-number">8</span> <span class="hljs-number">4</span><br></code></pre></td></tr></table></figure>
 <p>运行结果</p>
 <p><img src="/posts/3f961b4f/image-20211112212432678.png" srcset="/img/loading.gif" lazyload alt="image-20211112212432678"></p>
 <p><strong>考虑阻塞：</strong></p>
 <p>初值：</p>
-<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">3
-ghh 3 6
-ga 4 8
-hr 8 4<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">3</span><br><span class="hljs-attribute">ghh</span> <span class="hljs-number">3</span> <span class="hljs-number">6</span><br><span class="hljs-attribute">ga</span> <span class="hljs-number">4</span> <span class="hljs-number">8</span><br><span class="hljs-attribute">hr</span> <span class="hljs-number">8</span> <span class="hljs-number">4</span><br></code></pre></td></tr></table></figure>
 <p>运行结果：</p>
 <p><img src="/posts/3f961b4f/image-20211112212806073.png" srcset="/img/loading.gif" lazyload alt="image-20211112212806073"></p>
 <h3 id="rr调度算法"><a class="markdownIt-Anchor" href="#rr调度算法"></a> RR调度算法</h3>
 <h4 id="数据结构-2"><a class="markdownIt-Anchor" href="#数据结构-2"></a> 数据结构</h4>
-<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">struct Process &#x2F;&#x2F;进程结构体，表示进程信息
-&#123;
-    string name;         &#x2F;&#x2F;进程名字
-    int arrive_time;     &#x2F;&#x2F;到达时间
-    int service_time;    &#x2F;&#x2F;进程运行时间
-    int wait_time;       &#x2F;&#x2F;进程等待时间
-    int remain_time;     &#x2F;&#x2F;进程剩余运行时间
-    int turnaround_time; &#x2F;&#x2F;周转时间
-    int start_time;      &#x2F;&#x2F;进程开始运行时间
-    int end_time;        &#x2F;&#x2F;进程结束时间
-    int time_slice;      &#x2F;&#x2F;进程时间片
-&#125; run_process, p[MAXname];
-queue&lt;Process&gt; ready_queue, block_queue, run_queue;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Process</span> //进程结构体，表示进程信息</span><br><span class="hljs-class">&#123;</span><br>    string name;         <span class="hljs-comment">//进程名字</span><br>    <span class="hljs-keyword">int</span> arrive_time;     <span class="hljs-comment">//到达时间</span><br>    <span class="hljs-keyword">int</span> service_time;    <span class="hljs-comment">//进程运行时间</span><br>    <span class="hljs-keyword">int</span> wait_time;       <span class="hljs-comment">//进程等待时间</span><br>    <span class="hljs-keyword">int</span> remain_time;     <span class="hljs-comment">//进程剩余运行时间</span><br>    <span class="hljs-keyword">int</span> turnaround_time; <span class="hljs-comment">//周转时间</span><br>    <span class="hljs-keyword">int</span> start_time;      <span class="hljs-comment">//进程开始运行时间</span><br>    <span class="hljs-keyword">int</span> end_time;        <span class="hljs-comment">//进程结束时间</span><br>    <span class="hljs-keyword">int</span> time_slice;      <span class="hljs-comment">//进程时间片</span><br>&#125; run_process, p[MAXname];<br>queue&lt;Process&gt; ready_queue, block_queue, run_queue;<br></code></pre></td></tr></table></figure>
 <h4 id="符号说明-2"><a class="markdownIt-Anchor" href="#符号说明-2"></a> 符号说明</h4>
-<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">int n;                &#x2F;&#x2F;进程数量
-int current_time &#x3D; 0; &#x2F;&#x2F;当前时间
-int q &#x3D; 0;            &#x2F;&#x2F;设定的时间片大小
-int t &#x3D; 0;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">int</span> n;                <span class="hljs-comment">//进程数量</span><br><span class="hljs-keyword">int</span> current_time = <span class="hljs-number">0</span>; <span class="hljs-comment">//当前时间</span><br><span class="hljs-keyword">int</span> q = <span class="hljs-number">0</span>;            <span class="hljs-comment">//设定的时间片大小</span><br><span class="hljs-keyword">int</span> t = <span class="hljs-number">0</span>;<br></code></pre></td></tr></table></figure>
 <h4 id="函数说明-2"><a class="markdownIt-Anchor" href="#函数说明-2"></a> 函数说明</h4>
 <blockquote>
 <p>函数设计基本和FCFS相同</p>
@@ -682,233 +355,23 @@ int t &#x3D; 0;<span aria-hidden="true" class="line-numbers-rows"><span></span><
 <li>时间片用完时回复当前进程的时间片，同时更新到达时间，并将其再次入队</li>
 </ul>
 </blockquote>
-<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">void procese_schedule()
-&#123;
-    &#96;&#96;&#96;&#96;&#96;&#96;&#96;&#96;&#96;&#x2F;&#x2F;省略部分具体见源代码
-    &#96;&#96;&#96;&#96;&#96;&#96;&#96;&#96;&#96;
-        	current_time++;            &#x2F;&#x2F;当前时间加1
-            run_process.remain_time--; &#x2F;&#x2F;进程剩余运行时间减1
-            run_process.time_slice--;  &#x2F;&#x2F;进程时间片时间减1
-			if (run_process.remain_time &#x3D;&#x3D; 0) &#x2F;&#x2F;当进程剩余运行时间为0
-            &#123;
-                p[t++] &#x3D; run_process;
-                nextprocess(); &#x2F;&#x2F;取下一个进程
-                continue;
-            &#125;
-            else if (run_process.time_slice &#x3D;&#x3D; 0) &#x2F;&#x2F;当进程时间片为0时
-            &#123;
-                run_process.time_slice &#x3D; q;             &#x2F;&#x2F;恢复时间片
-                run_process.arrive_time &#x3D; current_time; &#x2F;&#x2F;更新到达时间
-                ready_queue.push(run_process);          &#x2F;&#x2F;再次入队
-
-                nextprocess(); &#x2F;&#x2F;取下一个进程
-                continue;
-            &#125;
-            else if (block()) &#x2F;&#x2F;当进程有运行时间和时间片时，可能发生阻塞
-            &#123;
-                cout &lt;&lt; &quot;-----------------进程阻塞，切换进程----------------&quot; &lt;&lt; endl;
-                run_process.arrive_time &#x3D; current_time; &#x2F;&#x2F;若发生阻塞，修改当前进程到达时间
-                block_queue.push(run_process);          &#x2F;&#x2F;并加入阻塞队列中
-                nextprocess();
-            &#125;
-    &#96;&#96;&#96;&#96;&#96;&#96;&#96;&#96;&#96;&#x2F;&#x2F;省略部分具体见源代码
-    &#96;&#96;&#96;&#96;&#96;&#96;&#96;&#96;&#96;
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">procese_schedule</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    `````````<span class="hljs-comment">//省略部分具体见源代码</span><br>    `````````<br>        	current_time++;            <span class="hljs-comment">//当前时间加1</span><br>            run_process.remain_time--; <span class="hljs-comment">//进程剩余运行时间减1</span><br>            run_process.time_slice--;  <span class="hljs-comment">//进程时间片时间减1</span><br>			<span class="hljs-keyword">if</span> (run_process.remain_time == <span class="hljs-number">0</span>) <span class="hljs-comment">//当进程剩余运行时间为0</span><br>            &#123;<br>                p[t++] = run_process;<br>                <span class="hljs-built_in">nextprocess</span>(); <span class="hljs-comment">//取下一个进程</span><br>                <span class="hljs-keyword">continue</span>;<br>            &#125;<br>            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (run_process.time_slice == <span class="hljs-number">0</span>) <span class="hljs-comment">//当进程时间片为0时</span><br>            &#123;<br>                run_process.time_slice = q;             <span class="hljs-comment">//恢复时间片</span><br>                run_process.arrive_time = current_time; <span class="hljs-comment">//更新到达时间</span><br>                ready_queue.<span class="hljs-built_in">push</span>(run_process);          <span class="hljs-comment">//再次入队</span><br><br>                <span class="hljs-built_in">nextprocess</span>(); <span class="hljs-comment">//取下一个进程</span><br>                <span class="hljs-keyword">continue</span>;<br>            &#125;<br>            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-built_in">block</span>()) <span class="hljs-comment">//当进程有运行时间和时间片时，可能发生阻塞</span><br>            &#123;<br>                cout &lt;&lt; <span class="hljs-string">&quot;-----------------进程阻塞，切换进程----------------&quot;</span> &lt;&lt; endl;<br>                run_process.arrive_time = current_time; <span class="hljs-comment">//若发生阻塞，修改当前进程到达时间</span><br>                block_queue.<span class="hljs-built_in">push</span>(run_process);          <span class="hljs-comment">//并加入阻塞队列中</span><br>                <span class="hljs-built_in">nextprocess</span>();<br>            &#125;<br>    `````````<span class="hljs-comment">//省略部分具体见源代码</span><br>    `````````<br>&#125;<br></code></pre></td></tr></table></figure>
 <h4 id="源代码-2"><a class="markdownIt-Anchor" href="#源代码-2"></a> 源代码</h4>
-<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;bits&#x2F;stdc++.h&gt;
-using namespace std;
-#define MAXname 100
-int n;                &#x2F;&#x2F;进程数量
-int current_time &#x3D; 0; &#x2F;&#x2F;当前时间
-int q &#x3D; 0;            &#x2F;&#x2F;设定的时间片大小
-int t &#x3D; 0;
-struct Process &#x2F;&#x2F;进程结构体，表示进程信息
-&#123;
-    string name;         &#x2F;&#x2F;进程名字
-    int arrive_time;     &#x2F;&#x2F;到达时间
-    int service_time;    &#x2F;&#x2F;进程运行时间
-    int wait_time;       &#x2F;&#x2F;进程等待时间
-    int remain_time;     &#x2F;&#x2F;进程剩余运行时间
-    int turnaround_time; &#x2F;&#x2F;周转时间
-    int start_time;      &#x2F;&#x2F;进程开始运行时间
-    int end_time;        &#x2F;&#x2F;进程结束时间
-    int time_slice;      &#x2F;&#x2F;进程时间片
-&#125; run_process, p[MAXname];
-queue&lt;Process&gt; ready_queue, block_queue;&#x2F;&#x2F;依次为就绪队列、阻塞队列
-bool cmp(Process &amp;a, Process &amp;b)
-&#123;
-    return a.arrive_time &lt; b.arrive_time;
-&#125;
-void process_init() &#x2F;&#x2F;进程初始化
-&#123;
-    cout &lt;&lt; &quot;请输入进程数量&quot; &lt;&lt; endl;
-    cin &gt;&gt; n;
-    cout &lt;&lt; &quot;请输入时间片长度&quot; &lt;&lt; endl;
-    cin &gt;&gt; q;
-    for (int i &#x3D; 0; i &lt; n; i++)
-    &#123;
-        cout &lt;&lt; &quot;请输入第&quot; &lt;&lt; i + 1 &lt;&lt; &quot;个进程的名字  到达时间  服务时间&quot; &lt;&lt; endl;
-        cin &gt;&gt; p[i].name &gt;&gt; p[i].arrive_time &gt;&gt; p[i].service_time;
-        p[i].remain_time &#x3D; p[i].service_time;
-        p[i].time_slice &#x3D; q; &#x2F;&#x2F;设置进程时间片
-        p[i].end_time &#x3D; 0;
-    &#125;
-    run_process.name &#x3D; &quot;0&quot;; &#x2F;&#x2F;当前无进程运行
-    sort(p, p + n, cmp);
-    for (int i &#x3D; 0; i &lt; n; i++)
-    &#123;
-        block_queue.push(p[i]); &#x2F;&#x2F;将进程加入阻塞队列（未达到则视为阻塞）
-    &#125;
-&#125;
-void nextprocess() &#x2F;&#x2F;取下一个进程
-&#123;
-    if (!ready_queue.empty()) &#x2F;&#x2F;当就绪队列非空时
-    &#123;
-        run_process &#x3D; ready_queue.front(); &#x2F;&#x2F;取下个进程
-        ready_queue.pop();
-    &#125;
-    else &#x2F;&#x2F;否则将运行进程置为空
-        run_process.name &#x3D; &quot;0&quot;;
-    run_process.wait_time +&#x3D; current_time - run_process.arrive_time; &#x2F;&#x2F;计算等待时间
-&#125;
-int block() &#x2F;&#x2F;阻塞函数，随机概率阻塞
-&#123;
-    int a;
-    a &#x3D; rand() % 10;
-    return 0;
-    if (a &gt;&#x3D; 0 &amp;&amp; a &lt; 3)
-    &#123;
-        return 1;
-    &#125;
-    else
-        return 0;
-&#125;
-void process_schedule() &#x2F;&#x2F;进程调度函数
-&#123;
-    srand(time(NULL)); &#x2F;&#x2F;随机数种子
-    cout &lt;&lt; endl
-         &lt;&lt; &quot;----------------------------------------RR调度算法----------------------------------------&quot; 
-         &lt;&lt; endl
-         &lt;&lt; endl;
-    cout &lt;&lt; &quot;当前时间  &quot;
-         &lt;&lt; &quot;当前进程  &quot;
-         &lt;&lt; &quot;进程到达时间  &quot;
-         &lt;&lt; &quot;进程等待时间  &quot;
-         &lt;&lt; &quot;进程服务时间  &quot;
-         &lt;&lt; &quot;剩余运行时间  &quot;
-         &lt;&lt; &quot;剩余时间片时间&quot;
-         &lt;&lt; endl;
-    while (1)
-    &#123;
-        if (block_queue.empty() &amp;&amp; ready_queue.empty() &amp;&amp; run_process.name &#x3D;&#x3D; &quot;0&quot;) &#x2F;&#x2F;当三个队列均为空时，说明进程全部运行完
-            break;                                                                 &#x2F;&#x2F;结束
-
-        if (!block_queue.empty() &amp;&amp; block_queue.front().arrive_time &lt;&#x3D; current_time)
-        &#123;                                                   &#x2F;&#x2F;阻塞队列非空且队首元素到达时间已到当前时间
-            block_queue.front().arrive_time &#x3D; current_time; &#x2F;&#x2F;将进入就绪队列的时间作为进程到达时间（针对于阻塞过的进程）
-            ready_queue.push(block_queue.front());          &#x2F;&#x2F;则加入就绪队列
-            block_queue.pop();                              &#x2F;&#x2F;从阻塞队列删除
-        &#125;
-        if (!ready_queue.empty() &amp;&amp; run_process.name &#x3D;&#x3D; &quot;0&quot;) &#x2F;&#x2F;就绪队列非空和运行进程非空
-        &#123;
-            run_process &#x3D; ready_queue.front(); &#x2F;&#x2F;则从就绪对列取首元素
-            ready_queue.pop();                 &#x2F;&#x2F;从就绪队列删除
-        &#125;
-        if (run_process.name &#x3D;&#x3D; &quot;0&quot;) &#x2F;&#x2F;若当前无运行进程，则输出空
-        &#123;
-            cout &lt;&lt; setw(8) &lt;&lt; current_time
-                 &lt;&lt; setw(10) &lt;&lt; run_process.name &lt;&lt; endl;
-            current_time++;
-        &#125;
-        else
-        &#123; &#x2F;&#x2F;当前有运行进程则输出信息
-            cout &lt;&lt; setw(8) &lt;&lt; current_time
-                 &lt;&lt; setw(10) &lt;&lt; run_process.name
-                 &lt;&lt; setw(14) &lt;&lt; run_process.arrive_time
-                 &lt;&lt; setw(14) &lt;&lt; run_process.wait_time
-                 &lt;&lt; setw(14) &lt;&lt; run_process.service_time
-                 &lt;&lt; setw(14) &lt;&lt; run_process.remain_time
-                 &lt;&lt; setw(14) &lt;&lt; run_process.time_slice
-                 &lt;&lt; endl;
-            current_time++;            &#x2F;&#x2F;当前时间加1
-            run_process.remain_time--; &#x2F;&#x2F;进程剩余运行时间减1
-            run_process.time_slice--;  &#x2F;&#x2F;进程时间片时间减1
-
-            if (run_process.remain_time &#x3D;&#x3D; 0) &#x2F;&#x2F;当进程剩余运行时间为0
-            &#123;
-                p[t++] &#x3D; run_process;
-                nextprocess(); &#x2F;&#x2F;取下一个进程
-                continue;
-            &#125;
-            else if (run_process.time_slice &#x3D;&#x3D; 0) &#x2F;&#x2F;当进程时间片为0时
-            &#123;
-                run_process.time_slice &#x3D; q;             &#x2F;&#x2F;恢复时间片
-                run_process.arrive_time &#x3D; current_time; &#x2F;&#x2F;更新到达时间
-                ready_queue.push(run_process);          &#x2F;&#x2F;再次入队
-
-                nextprocess(); &#x2F;&#x2F;取下一个进程
-                continue;
-            &#125;
-            else if (block()) &#x2F;&#x2F;当进程有运行时间和时间片时，可能发生阻塞
-            &#123;
-                cout &lt;&lt; &quot;-----------------进程阻塞，切换进程----------------&quot; &lt;&lt; endl;
-                run_process.arrive_time &#x3D; current_time; &#x2F;&#x2F;若发生阻塞，修改当前进程到达时间
-                block_queue.push(run_process);          &#x2F;&#x2F;并加入阻塞队列中
-                nextprocess();
-            &#125;
-        &#125;
-    &#125;
-&#125;
-void print_process_information() &#x2F;&#x2F;输出进程信息
-&#123;
-    float sumwait &#x3D; 0;
-    cout &lt;&lt; &quot;进程名字  &quot;
-         &lt;&lt; &quot;服务时间  &quot;
-         &lt;&lt; &quot;等待时间  &quot;
-         &lt;&lt; endl;
-    for (int i &#x3D; 0; i &lt; n; i++)
-    &#123;
-        cout &lt;&lt; setw(8) &lt;&lt; p[i].name
-             &lt;&lt; setw(10) &lt;&lt; p[i].service_time
-             &lt;&lt; setw(10) &lt;&lt; p[i].wait_time
-             &lt;&lt; endl;
-        sumwait +&#x3D; p[i].wait_time;
-    &#125;
-    cout &lt;&lt; &quot;平均等待时间为：&quot; &lt;&lt; setprecision(2) &lt;&lt; setiosflags(ios::fixed) &lt;&lt; float(sumwait &#x2F; n) &lt;&lt; endl;
-&#125;
-int main()
-&#123;
-    process_init();
-    process_schedule();
-    print_process_information();
-    return 0;
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;bits/stdc++.h&gt;</span></span><br><span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> std;<br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> MAXname 100</span><br><span class="hljs-keyword">int</span> n;                <span class="hljs-comment">//进程数量</span><br><span class="hljs-keyword">int</span> current_time = <span class="hljs-number">0</span>; <span class="hljs-comment">//当前时间</span><br><span class="hljs-keyword">int</span> q = <span class="hljs-number">0</span>;            <span class="hljs-comment">//设定的时间片大小</span><br><span class="hljs-keyword">int</span> t = <span class="hljs-number">0</span>;<br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Process</span> //进程结构体，表示进程信息</span><br><span class="hljs-class">&#123;</span><br>    string name;         <span class="hljs-comment">//进程名字</span><br>    <span class="hljs-keyword">int</span> arrive_time;     <span class="hljs-comment">//到达时间</span><br>    <span class="hljs-keyword">int</span> service_time;    <span class="hljs-comment">//进程运行时间</span><br>    <span class="hljs-keyword">int</span> wait_time;       <span class="hljs-comment">//进程等待时间</span><br>    <span class="hljs-keyword">int</span> remain_time;     <span class="hljs-comment">//进程剩余运行时间</span><br>    <span class="hljs-keyword">int</span> turnaround_time; <span class="hljs-comment">//周转时间</span><br>    <span class="hljs-keyword">int</span> start_time;      <span class="hljs-comment">//进程开始运行时间</span><br>    <span class="hljs-keyword">int</span> end_time;        <span class="hljs-comment">//进程结束时间</span><br>    <span class="hljs-keyword">int</span> time_slice;      <span class="hljs-comment">//进程时间片</span><br>&#125; run_process, p[MAXname];<br>queue&lt;Process&gt; ready_queue, block_queue;<span class="hljs-comment">//依次为就绪队列、阻塞队列</span><br><span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">cmp</span><span class="hljs-params">(Process &amp;a, Process &amp;b)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">return</span> a.arrive_time &lt; b.arrive_time;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">process_init</span><span class="hljs-params">()</span> <span class="hljs-comment">//进程初始化</span></span><br><span class="hljs-function"></span>&#123;<br>    cout &lt;&lt; <span class="hljs-string">&quot;请输入进程数量&quot;</span> &lt;&lt; endl;<br>    cin &gt;&gt; n;<br>    cout &lt;&lt; <span class="hljs-string">&quot;请输入时间片长度&quot;</span> &lt;&lt; endl;<br>    cin &gt;&gt; q;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++)<br>    &#123;<br>        cout &lt;&lt; <span class="hljs-string">&quot;请输入第&quot;</span> &lt;&lt; i + <span class="hljs-number">1</span> &lt;&lt; <span class="hljs-string">&quot;个进程的名字  到达时间  服务时间&quot;</span> &lt;&lt; endl;<br>        cin &gt;&gt; p[i].name &gt;&gt; p[i].arrive_time &gt;&gt; p[i].service_time;<br>        p[i].remain_time = p[i].service_time;<br>        p[i].time_slice = q; <span class="hljs-comment">//设置进程时间片</span><br>        p[i].end_time = <span class="hljs-number">0</span>;<br>    &#125;<br>    run_process.name = <span class="hljs-string">&quot;0&quot;</span>; <span class="hljs-comment">//当前无进程运行</span><br>    <span class="hljs-built_in">sort</span>(p, p + n, cmp);<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++)<br>    &#123;<br>        block_queue.<span class="hljs-built_in">push</span>(p[i]); <span class="hljs-comment">//将进程加入阻塞队列（未达到则视为阻塞）</span><br>    &#125;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">nextprocess</span><span class="hljs-params">()</span> <span class="hljs-comment">//取下一个进程</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span> (!ready_queue.<span class="hljs-built_in">empty</span>()) <span class="hljs-comment">//当就绪队列非空时</span><br>    &#123;<br>        run_process = ready_queue.<span class="hljs-built_in">front</span>(); <span class="hljs-comment">//取下个进程</span><br>        ready_queue.<span class="hljs-built_in">pop</span>();<br>    &#125;<br>    <span class="hljs-keyword">else</span> <span class="hljs-comment">//否则将运行进程置为空</span><br>        run_process.name = <span class="hljs-string">&quot;0&quot;</span>;<br>    run_process.wait_time += current_time - run_process.arrive_time; <span class="hljs-comment">//计算等待时间</span><br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">block</span><span class="hljs-params">()</span> <span class="hljs-comment">//阻塞函数，随机概率阻塞</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">int</span> a;<br>    a = <span class="hljs-built_in">rand</span>() % <span class="hljs-number">10</span>;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">if</span> (a &gt;= <span class="hljs-number">0</span> &amp;&amp; a &lt; <span class="hljs-number">3</span>)<br>    &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br>    <span class="hljs-keyword">else</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">process_schedule</span><span class="hljs-params">()</span> <span class="hljs-comment">//进程调度函数</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">srand</span>(<span class="hljs-built_in">time</span>(<span class="hljs-literal">NULL</span>)); <span class="hljs-comment">//随机数种子</span><br>    cout &lt;&lt; endl<br>         &lt;&lt; <span class="hljs-string">&quot;----------------------------------------RR调度算法----------------------------------------&quot;</span> <br>         &lt;&lt; endl<br>         &lt;&lt; endl;<br>    cout &lt;&lt; <span class="hljs-string">&quot;当前时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;当前进程  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;进程到达时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;进程等待时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;进程服务时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;剩余运行时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;剩余时间片时间&quot;</span><br>         &lt;&lt; endl;<br>    <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>)<br>    &#123;<br>        <span class="hljs-keyword">if</span> (block_queue.<span class="hljs-built_in">empty</span>() &amp;&amp; ready_queue.<span class="hljs-built_in">empty</span>() &amp;&amp; run_process.name == <span class="hljs-string">&quot;0&quot;</span>) <span class="hljs-comment">//当三个队列均为空时，说明进程全部运行完</span><br>            <span class="hljs-keyword">break</span>;                                                                 <span class="hljs-comment">//结束</span><br><br>        <span class="hljs-keyword">if</span> (!block_queue.<span class="hljs-built_in">empty</span>() &amp;&amp; block_queue.<span class="hljs-built_in">front</span>().arrive_time &lt;= current_time)<br>        &#123;                                                   <span class="hljs-comment">//阻塞队列非空且队首元素到达时间已到当前时间</span><br>            block_queue.<span class="hljs-built_in">front</span>().arrive_time = current_time; <span class="hljs-comment">//将进入就绪队列的时间作为进程到达时间（针对于阻塞过的进程）</span><br>            ready_queue.<span class="hljs-built_in">push</span>(block_queue.<span class="hljs-built_in">front</span>());          <span class="hljs-comment">//则加入就绪队列</span><br>            block_queue.<span class="hljs-built_in">pop</span>();                              <span class="hljs-comment">//从阻塞队列删除</span><br>        &#125;<br>        <span class="hljs-keyword">if</span> (!ready_queue.<span class="hljs-built_in">empty</span>() &amp;&amp; run_process.name == <span class="hljs-string">&quot;0&quot;</span>) <span class="hljs-comment">//就绪队列非空和运行进程非空</span><br>        &#123;<br>            run_process = ready_queue.<span class="hljs-built_in">front</span>(); <span class="hljs-comment">//则从就绪对列取首元素</span><br>            ready_queue.<span class="hljs-built_in">pop</span>();                 <span class="hljs-comment">//从就绪队列删除</span><br>        &#125;<br>        <span class="hljs-keyword">if</span> (run_process.name == <span class="hljs-string">&quot;0&quot;</span>) <span class="hljs-comment">//若当前无运行进程，则输出空</span><br>        &#123;<br>            cout &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">8</span>) &lt;&lt; current_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; run_process.name &lt;&lt; endl;<br>            current_time++;<br>        &#125;<br>        <span class="hljs-keyword">else</span><br>        &#123; <span class="hljs-comment">//当前有运行进程则输出信息</span><br>            cout &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">8</span>) &lt;&lt; current_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; run_process.name<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.arrive_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.wait_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.service_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.remain_time<br>                 &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">14</span>) &lt;&lt; run_process.time_slice<br>                 &lt;&lt; endl;<br>            current_time++;            <span class="hljs-comment">//当前时间加1</span><br>            run_process.remain_time--; <span class="hljs-comment">//进程剩余运行时间减1</span><br>            run_process.time_slice--;  <span class="hljs-comment">//进程时间片时间减1</span><br><br>            <span class="hljs-keyword">if</span> (run_process.remain_time == <span class="hljs-number">0</span>) <span class="hljs-comment">//当进程剩余运行时间为0</span><br>            &#123;<br>                p[t++] = run_process;<br>                <span class="hljs-built_in">nextprocess</span>(); <span class="hljs-comment">//取下一个进程</span><br>                <span class="hljs-keyword">continue</span>;<br>            &#125;<br>            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (run_process.time_slice == <span class="hljs-number">0</span>) <span class="hljs-comment">//当进程时间片为0时</span><br>            &#123;<br>                run_process.time_slice = q;             <span class="hljs-comment">//恢复时间片</span><br>                run_process.arrive_time = current_time; <span class="hljs-comment">//更新到达时间</span><br>                ready_queue.<span class="hljs-built_in">push</span>(run_process);          <span class="hljs-comment">//再次入队</span><br><br>                <span class="hljs-built_in">nextprocess</span>(); <span class="hljs-comment">//取下一个进程</span><br>                <span class="hljs-keyword">continue</span>;<br>            &#125;<br>            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-built_in">block</span>()) <span class="hljs-comment">//当进程有运行时间和时间片时，可能发生阻塞</span><br>            &#123;<br>                cout &lt;&lt; <span class="hljs-string">&quot;-----------------进程阻塞，切换进程----------------&quot;</span> &lt;&lt; endl;<br>                run_process.arrive_time = current_time; <span class="hljs-comment">//若发生阻塞，修改当前进程到达时间</span><br>                block_queue.<span class="hljs-built_in">push</span>(run_process);          <span class="hljs-comment">//并加入阻塞队列中</span><br>                <span class="hljs-built_in">nextprocess</span>();<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">print_process_information</span><span class="hljs-params">()</span> <span class="hljs-comment">//输出进程信息</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">float</span> sumwait = <span class="hljs-number">0</span>;<br>    cout &lt;&lt; <span class="hljs-string">&quot;进程名字  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;服务时间  &quot;</span><br>         &lt;&lt; <span class="hljs-string">&quot;等待时间  &quot;</span><br>         &lt;&lt; endl;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++)<br>    &#123;<br>        cout &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">8</span>) &lt;&lt; p[i].name<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; p[i].service_time<br>             &lt;&lt; <span class="hljs-built_in">setw</span>(<span class="hljs-number">10</span>) &lt;&lt; p[i].wait_time<br>             &lt;&lt; endl;<br>        sumwait += p[i].wait_time;<br>    &#125;<br>    cout &lt;&lt; <span class="hljs-string">&quot;平均等待时间为：&quot;</span> &lt;&lt; <span class="hljs-built_in">setprecision</span>(<span class="hljs-number">2</span>) &lt;&lt; <span class="hljs-built_in">setiosflags</span>(ios::fixed) &lt;&lt; <span class="hljs-built_in"><span class="hljs-keyword">float</span></span>(sumwait / n) &lt;&lt; endl;<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">process_init</span>();<br>    <span class="hljs-built_in">process_schedule</span>();<br>    <span class="hljs-built_in">print_process_information</span>();<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
 <h4 id="程序初值和运行结果-2"><a class="markdownIt-Anchor" href="#程序初值和运行结果-2"></a> 程序初值和运行结果</h4>
 <p><strong>不考虑阻塞：</strong></p>
 <p>初值（小时间片）：</p>
-<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">3
-2
-ghh 3 6
-ga 4 8
-hr 8 4<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">3</span><br><span class="hljs-attribute">2</span><br><span class="hljs-attribute">ghh</span> <span class="hljs-number">3</span> <span class="hljs-number">6</span><br><span class="hljs-attribute">ga</span> <span class="hljs-number">4</span> <span class="hljs-number">8</span><br><span class="hljs-attribute">hr</span> <span class="hljs-number">8</span> <span class="hljs-number">4</span><br></code></pre></td></tr></table></figure>
 <p>运行结果：</p>
 <p><img src="/posts/3f961b4f/image-20211112213852527.png" srcset="/img/loading.gif" lazyload alt="image-20211112213852527"></p>
 <p><strong>考虑阻塞：</strong></p>
 <p>初值（小时间片）：</p>
-<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">3
-2
-ghh 3 6
-ga 4 8
-hr 8 4<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">3</span><br><span class="hljs-attribute">2</span><br><span class="hljs-attribute">ghh</span> <span class="hljs-number">3</span> <span class="hljs-number">6</span><br><span class="hljs-attribute">ga</span> <span class="hljs-number">4</span> <span class="hljs-number">8</span><br><span class="hljs-attribute">hr</span> <span class="hljs-number">8</span> <span class="hljs-number">4</span><br></code></pre></td></tr></table></figure>
 <p>运行结果：</p>
 <p><img src="/posts/3f961b4f/image-20211112213737120.png" srcset="/img/loading.gif" lazyload alt="image-20211112213737120"></p>
 <p><strong>时间片很大（等同于FCFS）</strong></p>
 <p>初值：</p>
-<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">3
-60
-ghh 3 6
-ga 4 8
-hr 8 4<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">3</span><br><span class="hljs-attribute">60</span><br><span class="hljs-attribute">ghh</span> <span class="hljs-number">3</span> <span class="hljs-number">6</span><br><span class="hljs-attribute">ga</span> <span class="hljs-number">4</span> <span class="hljs-number">8</span><br><span class="hljs-attribute">hr</span> <span class="hljs-number">8</span> <span class="hljs-number">4</span><br></code></pre></td></tr></table></figure>
 <p>运行结果：</p>
 <p><img src="/posts/3f961b4f/image-20211112213941550.png" srcset="/img/loading.gif" lazyload alt="image-20211112213941550"></p>
 <h3 id="思考题"><a class="markdownIt-Anchor" href="#思考题"></a> 思考题</h3>
