@@ -30,7 +30,17 @@
     
     
       
-      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+      
+        
+          
+          
+          
+        
+        <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/themes/prism-okaidia.min.css" />
+      
+      
+        <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.min.css" />
+      
     
   
 
@@ -283,7 +293,7 @@
 <h2 id="fwrite"><a class="markdownIt-Anchor" href="#fwrite"></a> fwrite()</h2>
 <h4 id="声明"><a class="markdownIt-Anchor" href="#声明"></a> 声明</h4>
 <p>下面是 fwrite() 函数的声明。</p>
-<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-function"><span class="hljs-keyword">size_t</span> <span class="hljs-title">fwrite</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">void</span> *ptr, <span class="hljs-keyword">size_t</span> size, <span class="hljs-keyword">size_t</span> nmemb, FILE *stream)</span></span><br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
 <h4 id="参数"><a class="markdownIt-Anchor" href="#参数"></a> 参数</h4>
 <ul>
 <li><strong>ptr</strong> – 这是指向要被写入的元素数组的指针。</li>
@@ -296,7 +306,7 @@
 <h2 id="fopen"><a class="markdownIt-Anchor" href="#fopen"></a> fopen()</h2>
 <h4 id="声明-2"><a class="markdownIt-Anchor" href="#声明-2"></a> 声明</h4>
 <p>下面是 fopen() 函数的声明。</p>
-<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stata"><span class="hljs-keyword">FILE</span> *fopen(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *filename, <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *mode)<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">FILE *fopen(const char *filename, const char *mode)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
 <h4 id="参数-2"><a class="markdownIt-Anchor" href="#参数-2"></a> 参数</h4>
 <ul>
 <li><strong>filename</strong> – 这是 C 字符串，包含了要打开的文件名称。</li>
@@ -345,14 +355,14 @@
 <p>执行成功则返回0, 失败返回-1, 错误代码存于errno.</p>
 <h2 id="socket"><a class="markdownIt-Anchor" href="#socket"></a> socket()</h2>
 <h4 id="原型"><a class="markdownIt-Anchor" href="#原型"></a> 原型</h4>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">socket</span><span class="hljs-params">(<span class="hljs-keyword">int</span> domain, <span class="hljs-keyword">int</span> type, <span class="hljs-keyword">int</span> protocol)</span></span>;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">socket</span><span class="token punctuation">(</span><span class="token keyword">int</span> domain<span class="token punctuation">,</span> <span class="token keyword">int</span> type<span class="token punctuation">,</span> <span class="token keyword">int</span> protocol<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
 <p>这个函数建立一个协议族为domain、协议类型为type、协议编号为protocol的套接字文件描述符。如果函数调用成功，会返回一个标识这个套接字的文件描述符，失败的时候返回-1。</p>
 <p>domain:AF_INET=2,IPv4 Internet协议</p>
 <p>type:SOCK_STREAM=1,Tcp连接，提供序列化的、可靠的、双向连接的字节流。支持带外数据传输</p>
 <p>protocol:ipv4只有一个协议则为0</p>
 <h2 id="sendfile"><a class="markdownIt-Anchor" href="#sendfile"></a> sendfile()</h2>
 <h4 id="声明-3"><a class="markdownIt-Anchor" href="#声明-3"></a> 声明</h4>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">ssize_t</span> <span class="hljs-title">sendfile</span><span class="hljs-params">(<span class="hljs-keyword">int</span> out_fd , <span class="hljs-keyword">int</span> in_fd , <span class="hljs-keyword">off_t</span> * offset , <span class="hljs-keyword">size_t</span> count )</span></span>;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">ssize_t sendfile(int out_fd , int in_fd , off_t * offset , size_t count );<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
 <h4 id="描述"><a class="markdownIt-Anchor" href="#描述"></a> 描述</h4>
 <p>sendfile () 在一个文件描述符和另一个文件描述符之间复制数据。</p>
 <p>因为这个复制是在内核内部完成的，所以sendfile () 是比read(2)和write(2)的组合更有效，<br>
@@ -577,6 +587,8 @@ offset不为NULL，则sendfile ()不修改文件in_fd 的偏移量；否则调�
 
 
 
+  
+    
   
 
 

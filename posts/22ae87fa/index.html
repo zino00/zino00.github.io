@@ -30,7 +30,17 @@
     
     
       
-      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+      
+        
+          
+          
+          
+        
+        <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/themes/prism-okaidia.min.css" />
+      
+      
+        <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.min.css" />
+      
     
   
 
@@ -185,7 +195,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.4k 字
+      1.6k 字
     </span>
   
 
@@ -195,7 +205,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      19
+      22
        分钟
     </span>
   
@@ -248,7 +258,8 @@
 <p>这部分采用<a target="_blank" rel="noopener" href="https://github.com/antonio-morales/Fuzzing101/tree/main/Exercise%201">fuzzing101</a>提供的练习进行快速熟悉AFL的基本操作</p>
 <h2 id="获取fuzz目标"><a class="markdownIt-Anchor" href="#获取fuzz目标"></a> 获取fuzz目标</h2>
 <p>创建一个文件夹用来存放fuzz目标（xpdf)</p>
-<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs stata"><span class="hljs-keyword">cd</span> <span class="hljs-variable">$HOME</span><br><span class="hljs-keyword">mkdir</span> fuzzing_xpdf &amp;&amp; <span class="hljs-keyword">cd</span> fuzzing_xpdf/<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">cd $HOME
+mkdir fuzzing_xpdf &amp;&amp; cd fuzzing_xpdf&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div>
 <p>安装开发必要的软件包，build-essential包含gcc、g++等开发必要的包</p>
 <blockquote>
 <p>具体包括</p>
@@ -256,30 +267,46 @@
 libalgorithm-diff-xs-perl libalgorithm-merge-perl<br>
 libdpkg-perl libstdc++6-4.6-dev libtimedate-perl</p>
 </blockquote>
-<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cmake">sudo apt <span class="hljs-keyword">install</span> build-essential<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">sudo apt install build-essential<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
 <p>下载Xpdf 3.02:</p>
-<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">wget</span> https://dl.xpdfreader.com/old/xpdf-<span class="hljs-number">3</span>.<span class="hljs-number">02</span>.tar.gz<br><span class="hljs-attribute">tar</span> -xvzf xpdf-<span class="hljs-number">3</span>.<span class="hljs-number">02</span>.tar.gz<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">wget https:&#x2F;&#x2F;dl.xpdfreader.com&#x2F;old&#x2F;xpdf-3.02.tar.gz
+tar -xvzf xpdf-3.02.tar.gz<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div>
 <p>Build Xpdf:</p>
-<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs vim"><span class="hljs-keyword">cd</span> xpdf-<span class="hljs-number">3.02</span><br>sudo apt <span class="hljs-keyword">update</span> &amp;&amp; sudo apt install -<span class="hljs-keyword">y</span> build-essential gcc<br>./configure --prefix=<span class="hljs-string">&quot;$HOME/fuzzing_xpdf/install/&quot;</span><br><span class="hljs-keyword">make</span><br><span class="hljs-keyword">make</span> install<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">cd xpdf-3.02
+sudo apt update &amp;&amp; sudo apt install -y build-essential gcc
+.&#x2F;configure --prefix&#x3D;&quot;$HOME&#x2F;fuzzing_xpdf&#x2F;install&#x2F;&quot;
+make
+make install<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
 <blockquote>
 <p>./configure make make install <a href>具体解释可见</a></p>
 </blockquote>
 <p>为了测试，先下载测试样例</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs awk">cd <span class="hljs-variable">$HOME</span>/fuzzing_xpdf<br>mkdir pdf_examples &amp;&amp; cd pdf_examples<br>wget https:<span class="hljs-regexp">//gi</span>thub.com<span class="hljs-regexp">/mozilla/</span>pdf.js-sample-files<span class="hljs-regexp">/raw/m</span>aster/helloworld.pdf<br>wget http:<span class="hljs-regexp">//</span>www.africau.edu<span class="hljs-regexp">/images/</span>default/sample.pdf<br>wget https:<span class="hljs-regexp">//</span>www.melbpc.org.au<span class="hljs-regexp">/wp-content/u</span>ploads<span class="hljs-regexp">/2017/</span><span class="hljs-number">10</span>/small-example-pdf-file.pdf<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">cd $HOME&#x2F;fuzzing_xpdf
+mkdir pdf_examples &amp;&amp; cd pdf_examples
+wget https:&#x2F;&#x2F;github.com&#x2F;mozilla&#x2F;pdf.js-sample-files&#x2F;raw&#x2F;master&#x2F;helloworld.pdf
+wget http:&#x2F;&#x2F;www.africau.edu&#x2F;images&#x2F;default&#x2F;sample.pdf
+wget https:&#x2F;&#x2F;www.melbpc.org.au&#x2F;wp-content&#x2F;uploads&#x2F;2017&#x2F;10&#x2F;small-example-pdf-file.pdf<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
 <p>测试pdfinfo二进制文件</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-variable">$HOME</span><span class="hljs-regexp">/fuzzing_xpdf/i</span>nstall<span class="hljs-regexp">/bin/</span>pdfinfo -box -meta <span class="hljs-variable">$HOME</span><span class="hljs-regexp">/fuzzing_xpdf/</span>pdf_examples/helloworld.pdf<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">$HOME&#x2F;fuzzing_xpdf&#x2F;install&#x2F;bin&#x2F;pdfinfo -box -meta $HOME&#x2F;fuzzing_xpdf&#x2F;pdf_examples&#x2F;helloworld.pdf<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
 <p>You should see something like this:</p>
 <h2 id="安装afl"><a class="markdownIt-Anchor" href="#安装afl"></a> 安装AFL++</h2>
 <p>安装必要的依赖</p>
-<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">sudo apt-get update<br>sudo apt-get install -y build-essential python3-dev automake git flex bison libglib2.<span class="hljs-number">0</span>-dev libpixman-<span class="hljs-number">1</span>-dev python3-setuptools<br>sudo apt-get install -y lld-<span class="hljs-number">11</span> llvm-<span class="hljs-number">11</span> llvm-<span class="hljs-number">11</span>-dev clang-<span class="hljs-number">11</span><span class="hljs-operator"> || </span>sudo apt-get install -y lld llvm llvm-dev clang <br>sudo apt-get install -y gcc-<span class="hljs-constructor">$(<span class="hljs-params">gcc</span> --<span class="hljs-params">version</span>|<span class="hljs-params">head</span> -<span class="hljs-params">n1</span>|<span class="hljs-params">sed</span> &#x27;<span class="hljs-params">s</span><span class="hljs-operator">/</span>.<span class="hljs-operator">*</span> <span class="hljs-operator">/</span><span class="hljs-operator">/</span>&#x27;|<span class="hljs-params">sed</span> &#x27;<span class="hljs-params">s</span><span class="hljs-operator">/</span>\..<span class="hljs-operator">*</span><span class="hljs-operator">/</span><span class="hljs-operator">/</span>&#x27;)</span>-plugin-dev libstdc++-<span class="hljs-constructor">$(<span class="hljs-params">gcc</span> --<span class="hljs-params">version</span>|<span class="hljs-params">head</span> -<span class="hljs-params">n1</span>|<span class="hljs-params">sed</span> &#x27;<span class="hljs-params">s</span><span class="hljs-operator">/</span>.<span class="hljs-operator">*</span> <span class="hljs-operator">/</span><span class="hljs-operator">/</span>&#x27;|<span class="hljs-params">sed</span> &#x27;<span class="hljs-params">s</span><span class="hljs-operator">/</span>\..<span class="hljs-operator">*</span><span class="hljs-operator">/</span><span class="hljs-operator">/</span>&#x27;)</span>-dev<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">sudo apt-get update
+sudo apt-get install -y build-essential python3-dev automake git flex bison libglib2.0-dev libpixman-1-dev python3-setuptools
+sudo apt-get install -y lld-11 llvm-11 llvm-11-dev clang-11 || sudo apt-get install -y lld llvm llvm-dev clang 
+sudo apt-get install -y gcc-$(gcc --version|head -n1|sed &#39;s&#x2F;.* &#x2F;&#x2F;&#39;|sed &#39;s&#x2F;\..*&#x2F;&#x2F;&#39;)-plugin-dev libstdc++-$(gcc --version|head -n1|sed &#39;s&#x2F;.* &#x2F;&#x2F;&#39;|sed &#39;s&#x2F;\..*&#x2F;&#x2F;&#39;)-dev<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div>
 <p>获取和构建AFL++</p>
-<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs vim"><span class="hljs-keyword">cd</span> $HOME<br>git clone http<span class="hljs-variable">s:</span>//github.<span class="hljs-keyword">com</span>/AFLplusplus/AFLplusplus &amp;&amp; <span class="hljs-keyword">cd</span> AFLplusplus<br>export LLVM_CONFIG=<span class="hljs-string">&quot;llvm-config-11&quot;</span><br><span class="hljs-keyword">make</span> distrib-<br>sudo <span class="hljs-keyword">make</span> install<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">cd $HOME
+git clone https:&#x2F;&#x2F;github.com&#x2F;AFLplusplus&#x2F;AFLplusplus &amp;&amp; cd AFLplusplus
+export LLVM_CONFIG&#x3D;&quot;llvm-config-11&quot;
+make distrib-
+sudo make install<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
 <p>通过输入下面的命令可以查看afl-fuzz的具体命令参数</p>
-<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">afl-fuzz</span><br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">afl-fuzz<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
 <p>可以看到</p>
 <p><img src="/posts/22ae87fa/image-20211201204851442.png" srcset="/img/loading.gif" lazyload alt="image-20211201204851442"></p>
 <h3 id="afl-fuzz命令格式"><a class="markdownIt-Anchor" href="#afl-fuzz命令格式"></a> <strong>afl-fuzz命令格式</strong></h3>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">afl-fuzz -i testcase_dir -o findings_dir -- <span class="hljs-regexp">/path/</span>to<span class="hljs-regexp">/tested/</span>program [...program<span class="hljs-string">&#x27;s cmdline...]</span><br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">afl-fuzz -i testcase_dir -o findings_dir -- &#x2F;path&#x2F;to&#x2F;tested&#x2F;program [...program&#39;s cmdline...]<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
 <p>用@@会自动替换为输入文件名</p>
 <h3 id="afl-fuzz-基本参数说明"><a class="markdownIt-Anchor" href="#afl-fuzz-基本参数说明"></a> <strong>afl-fuzz 基本参数说明：</strong></h3>
 <ul>
@@ -312,17 +339,24 @@ libdpkg-perl libstdc++6-4.6-dev libtimedate-perl</p>
 <h2 id="开始fuzzing"><a class="markdownIt-Anchor" href="#开始fuzzing"></a> 开始fuzzing</h2>
 <p>前面说到，AFL从源码编译程序时进行插桩，以记录代码覆盖率。这个工作需要使用其提供的两种编译器的wrapper编译目标程序，和普通的编译过程没有太大区别</p>
 <p>首先，我们清理所有以前编译的目标文件和可执行文件：</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs awk">rm -r <span class="hljs-variable">$HOME</span><span class="hljs-regexp">/fuzzing_xpdf/i</span>nstall<br>cd <span class="hljs-variable">$HOME</span><span class="hljs-regexp">/fuzzing_xpdf/</span>xpdf-<span class="hljs-number">3.02</span>/<br>make clean<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">rm -r $HOME&#x2F;fuzzing_xpdf&#x2F;install
+cd $HOME&#x2F;fuzzing_xpdf&#x2F;xpdf-3.02&#x2F;
+make clean<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div>
 <p>现在我们开始用<strong>afl-clang-fast</strong> 用编译xpdf:</p>
-<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-builtin-name">export</span> <span class="hljs-attribute">LLVM_CONFIG</span>=<span class="hljs-string">&quot;llvm-config-11&quot;</span><br><span class="hljs-attribute">CC</span>=<span class="hljs-variable">$HOME</span>/AFLplusplus/afl-clang-fast <span class="hljs-attribute">CXX</span>=<span class="hljs-variable">$HOME</span>/AFLplusplus/afl-clang-fast++ ./configure <span class="hljs-attribute">--prefix</span>=<span class="hljs-string">&quot;<span class="hljs-variable">$HOME</span>/fuzzing_xpdf/install/&quot;</span><br>make<br>make install<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">export LLVM_CONFIG&#x3D;&quot;llvm-config-11&quot;
+CC&#x3D;$HOME&#x2F;AFLplusplus&#x2F;afl-clang-fast CXX&#x3D;$HOME&#x2F;AFLplusplus&#x2F;afl-clang-fast++ .&#x2F;configure --prefix&#x3D;&quot;$HOME&#x2F;fuzzing_xpdf&#x2F;install&#x2F;&quot;
+make
+make install<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div>
 <p>现在我们可以就可以用下面的命令开始fuzzing了</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">afl-fuzz -i <span class="hljs-variable">$HOME</span><span class="hljs-regexp">/fuzzing_xpdf/</span>pdf_examples<span class="hljs-regexp">/ -o $HOME/</span>fuzzing_xpdf<span class="hljs-regexp">/out/</span> -s <span class="hljs-number">123</span> -- <span class="hljs-variable">$HOME</span><span class="hljs-regexp">/fuzzing_xpdf/i</span>nstall<span class="hljs-regexp">/bin/</span>pdftotext @@ <span class="hljs-variable">$HOME</span><span class="hljs-regexp">/fuzzing_xpdf/</span>output<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">afl-fuzz -i $HOME&#x2F;fuzzing_xpdf&#x2F;pdf_examples&#x2F; -o $HOME&#x2F;fuzzing_xpdf&#x2F;out&#x2F; -s 123 -- $HOME&#x2F;fuzzing_xpdf&#x2F;install&#x2F;bin&#x2F;pdftotext @@ $HOME&#x2F;fuzzing_xpdf&#x2F;output<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
 <p>对于每个输入文件，the fuzzer都会执行下面的命令</p>
 <p><code>$HOME/fuzzing_xpdf/install/bin/pdftotext &lt;input-file-name&gt; $HOME/fuzzing_xpdf/output</code></p>
 <blockquote>
 <p>如果遇到错误 <strong><em>“Hmm, your system is configured to send core dump notifications to an external utility…”</em>,</strong></p>
 <p>这是因为在执行<code>afl-fuzz</code>前，如果系统配置为将核心转储文件（core）通知发送到外部程序。 将导致将崩溃信息发送到Fuzzer之间的延迟增大，进而可能将崩溃被误报为超时，所以我们得临时修改<code>core_pattern</code>文件，如下所示：</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs awk">sudo su<br>echo core &gt;<span class="hljs-regexp">/proc/</span>sys<span class="hljs-regexp">/kernel/</span>core_pattern<br><span class="hljs-keyword">exit</span><br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">sudo su
+echo core &gt;&#x2F;proc&#x2F;sys&#x2F;kernel&#x2F;core_pattern
+exit<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div>
 </blockquote>
 <p>成功开始fuzzing后我们可以看到下面的界面</p>
 <p><img src="/posts/22ae87fa/image-20211201154932423.png" srcset="/img/loading.gif" lazyload alt="image-20211201154932423"></p>
@@ -332,14 +366,19 @@ libdpkg-perl libstdc++6-4.6-dev libtimedate-perl</p>
 <p>在$HOME/fuzzing_xpdf/out/文件夹下我们可以我们的crash</p>
 <p><img src="/posts/22ae87fa/image-20211201201841167.png" srcset="/img/loading.gif" lazyload alt="image-20211201201841167"></p>
 <p>用这个crash作为input来进行复现</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs terminal">/home/zino/fuzzing_xpdf/install/bin/pdftotext &#x27;/home/zino/fuzzing_xpdf/out/default/crashes/id:000000,sig:11,src:001820,time:12475087,op:havoc,rep:8&#x27; /home/zino/fuzzing_xpdf/output<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-terminal" data-language="terminal"><code class="language-terminal">&#x2F;home&#x2F;zino&#x2F;fuzzing_xpdf&#x2F;install&#x2F;bin&#x2F;pdftotext &#39;&#x2F;home&#x2F;zino&#x2F;fuzzing_xpdf&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000000,sig:11,src:001820,time:12475087,op:havoc,rep:8&#39; &#x2F;home&#x2F;zino&#x2F;fuzzing_xpdf&#x2F;output<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
 <p><img src="/posts/22ae87fa/image-20211201202149422.png" srcset="/img/loading.gif" lazyload alt="image-20211201202149422"></p>
 <p>可以看到，这个crash会导致段错误并导致程序崩溃。</p>
 <p>我们用gdb来调试一下，看一下原因</p>
 <p>首先需要清除原先的二进制文件，重新构建xpdf以加入调试信息</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs terminal">rm -r $HOME/fuzzing_xpdf/install<br>cd $HOME/fuzzing_xpdf/xpdf-3.02/<br>make clean<br>CFLAGS=&quot;-g -O0&quot; CXXFLAGS=&quot;-g -O0&quot; ./configure --prefix=&quot;$HOME/fuzzing_xpdf/install/&quot;<br>make<br>make install<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-terminal" data-language="terminal"><code class="language-terminal">rm -r $HOME&#x2F;fuzzing_xpdf&#x2F;install
+cd $HOME&#x2F;fuzzing_xpdf&#x2F;xpdf-3.02&#x2F;
+make clean
+CFLAGS&#x3D;&quot;-g -O0&quot; CXXFLAGS&#x3D;&quot;-g -O0&quot; .&#x2F;configure --prefix&#x3D;&quot;$HOME&#x2F;fuzzing_xpdf&#x2F;install&#x2F;&quot;
+make
+make install<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
 <p>然后就可以用GDB调试了</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">gdb --args <span class="hljs-regexp">/home/</span>zino<span class="hljs-regexp">/fuzzing_xpdf/i</span>nstall<span class="hljs-regexp">/bin/</span>pdftotext <span class="hljs-string">&#x27;/home/zino/fuzzing_xpdf/out/default/crashes/id:000000,sig:11,src:001820,time:12475087,op:havoc,rep:8&#x27;</span> <span class="hljs-regexp">/home/</span>zino<span class="hljs-regexp">/fuzzing_xpdf/</span>output<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">gdb --args &#x2F;home&#x2F;zino&#x2F;fuzzing_xpdf&#x2F;install&#x2F;bin&#x2F;pdftotext &#39;&#x2F;home&#x2F;zino&#x2F;fuzzing_xpdf&#x2F;out&#x2F;default&#x2F;crashes&#x2F;id:000000,sig:11,src:001820,time:12475087,op:havoc,rep:8&#39; &#x2F;home&#x2F;zino&#x2F;fuzzing_xpdf&#x2F;output<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
 <p>首先r</p>
 <p>然后卡住后我们用bt(backtrace)回溯</p>
 <p>可以看到getObj函数被反复递归调用，这个漏洞被记录为<a target="_blank" rel="noopener" href="https://www.cvedetails.com/cve/CVE-2019-13288/">CVE-2019-13288</a></p>
@@ -560,6 +599,8 @@ libdpkg-perl libstdc++6-4.6-dev libtimedate-perl</p>
 
 
 
+  
+    
   
 
 

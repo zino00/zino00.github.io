@@ -30,7 +30,17 @@
     
     
       
-      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+      
+        
+          
+          
+          
+        
+        <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/themes/prism-okaidia.min.css" />
+      
+      
+        <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.min.css" />
+      
     
   
 
@@ -252,7 +262,10 @@
 <p>int access(const char* pathname, int mode);</p>
 <p>pathname 是文件的路径名+文件名</p>
 <p>mode：指定access的作用，取值如下</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs undefined">F_OK 值为0，判断文件是否存在<br>X_OK 值为1，判断对文件是可执行权限<br>W_OK 值为2，判断对文件是否有写权限<br>R_OK 值为4，判断对文件是否有读权限<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-undefined" data-language="undefined"><code class="language-undefined">F_OK 值为0，判断文件是否存在
+X_OK 值为1，判断对文件是可执行权限
+W_OK 值为2，判断对文件是否有写权限
+R_OK 值为4，判断对文件是否有读权限<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div>
 <p>返回值：成功0，失败-1</p>
 </li>
 </ul>
@@ -317,9 +330,40 @@
 </ul>
 <h2 id="main函数"><a class="markdownIt-Anchor" href="#main函数"></a> main函数</h2>
 <p>看到这里，我们就知道afl-gcc就是找到as所在的位置，将其加入搜索路径，然后设置必要的gcc参数和一些宏，然后调用gcc进行实际的编译，仅仅只是一层wrapper</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/* Main entry point */</span><br><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">int</span> argc, <span class="hljs-keyword">char</span> **argv)</span> </span>&#123;<br><br>    <span class="hljs-keyword">if</span> (isatty(<span class="hljs-number">2</span>) &amp;&amp; !getenv(<span class="hljs-string">&quot;AFL_QUIET&quot;</span>)) &#123;<br><br>        SAYF(cCYA <span class="hljs-string">&quot;afl-cc &quot;</span> cBRI VERSION cRST <span class="hljs-string">&quot; by &lt;lcamtuf@google.com&gt;\n&quot;</span>);<br><br>    &#125; <span class="hljs-keyword">else</span> be_quiet = <span class="hljs-number">1</span>;<br><br>    <span class="hljs-keyword">if</span> (argc &lt; <span class="hljs-number">2</span>) &#123;<br>        ...<br>        <span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>    &#125;<br>    <span class="hljs-comment">//查找fake GNU assembler</span><br>    find_as(argv[<span class="hljs-number">0</span>]);<br>    <span class="hljs-comment">// 设置CC的参数</span><br>    edit_params(argc, argv);<br>    <span class="hljs-comment">// 调用execvp来执行CC</span><br>    <br>    <span class="hljs-comment">// 这里我们在CC之前打印一下参数看看。</span><br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-keyword">sizeof</span>(cc_params); i++) &#123;<br>      <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\targ%d: %s &quot;</span>,i,cc_params[i]);<br>    &#125;<br><br>    execvp(cc_params[<span class="hljs-number">0</span>], (<span class="hljs-keyword">char</span> **) cc_params);<br><br>    FATAL(<span class="hljs-string">&quot;Oops, failed to execute &#x27;%s&#x27; - check your PATH&quot;</span>, cc_params[<span class="hljs-number">0</span>]);<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">/* Main entry point */</span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span> <span class="token keyword">char</span> <span class="token operator">*</span><span class="token operator">*</span>argv<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isatty</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span><span class="token function">getenv</span><span class="token punctuation">(</span><span class="token string">"AFL_QUIET"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+
+        <span class="token function">SAYF</span><span class="token punctuation">(</span>cCYA <span class="token string">"afl-cc "</span> cBRI VERSION cRST <span class="token string">" by &lt;lcamtuf@google.com>\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> be_quiet <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>argc <span class="token operator">&lt;</span> <span class="token number">2</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+        <span class="token function">exit</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token comment">//查找fake GNU assembler</span>
+    <span class="token function">find_as</span><span class="token punctuation">(</span>argv<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// 设置CC的参数</span>
+    <span class="token function">edit_params</span><span class="token punctuation">(</span>argc<span class="token punctuation">,</span> argv<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// 调用execvp来执行CC</span>
+    
+    <span class="token comment">// 这里我们在CC之前打印一下参数看看。</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>cc_params<span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"\targ%d: %s "</span><span class="token punctuation">,</span>i<span class="token punctuation">,</span>cc_params<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token function">execvp</span><span class="token punctuation">(</span>cc_params<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token keyword">char</span> <span class="token operator">*</span><span class="token operator">*</span><span class="token punctuation">)</span> cc_params<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token function">FATAL</span><span class="token punctuation">(</span><span class="token string">"Oops, failed to execute '%s' - check your PATH"</span><span class="token punctuation">,</span> cc_params<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
 <p>通过在执行execvp之前打印命令行参数得到</p>
-<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">gcc</span> /tmp/hello.c -B /root/src/afl-<span class="hljs-number">2</span>.<span class="hljs-number">52</span>b -g -O<span class="hljs-number">3</span> -funroll-loops -D__AFL_COMPILER=<span class="hljs-number">1</span> -DFUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION=<span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">gcc &#x2F;tmp&#x2F;hello.c -B &#x2F;root&#x2F;src&#x2F;afl-2.52b -g -O3 -funroll-loops -D__AFL_COMPILER&#x3D;1 -DFUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION&#x3D;1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
 <p>可以看到，<code>afl-gcc</code>最终调用<code>gcc</code>，并定义了一些宏，设置了一些参数。其中最关键的就是<code>-B /root/src/afl-2.52b</code>这条。根据<code>gcc --help</code>可知，<code>-B</code>选项用于设置编译器的搜索路径，这里便是设置成<code>/root/src/afl-2.52b</code>(是我设置的环境变量<code>AFL_PATH</code>的值，即AFL目录，因为我没有make install)。</p>
 <p>如果了解编译过程，那么就知道把源代码编译成二进制，主要是经过”源代码”-&gt;”汇编代码”-&gt;”二进制”这样的过程。而将汇编代码编译成为二进制的工具，即为汇编器assembler。Linux系统下的常用汇编器是<code>as</code>。不过，编译完成AFL后，在其目录下也会存在一个<code>as</code>文件，并作为符号链接指向<code>afl-as</code>。所以，如果通过<code>-B</code>选项为gcc设置了搜索路径，那么<code>afl-as</code>便会作为汇编器，执行实际的汇编操作。</p>
 <p>所以，AFL的代码插桩，就是在将源文件编译为汇编代码后，通过<code>afl-as</code>完成。</p>
@@ -535,6 +579,8 @@
 
 
 
+  
+    
   
 
 

@@ -30,7 +30,17 @@
     
     
       
-      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+      
+        
+          
+          
+          
+        
+        <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/themes/prism-okaidia.min.css" />
+      
+      
+        <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.min.css" />
+      
     
   
 
@@ -185,7 +195,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      5.4k 字
+      5.8k 字
     </span>
   
 
@@ -195,7 +205,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      72
+      79
        分钟
     </span>
   
@@ -315,7 +325,7 @@
 <p>与信号量一样，在Linux中也提供了一组函数接口用于使用共享内存，而且使用共享共存的接口还与信号量的非常相似，而且比使用信号量的接口来得简单。它们声明在头文件 sys/shm.h 中。</p>
 <h5 id="1-shmget函数"><a class="markdownIt-Anchor" href="#1-shmget函数"></a> 1、shmget()函数</h5>
 <p>该函数用来创建共享内存，它的原型为：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">shmget</span><span class="hljs-params">(<span class="hljs-keyword">key_t</span> key, <span class="hljs-keyword">size_t</span> size, <span class="hljs-keyword">int</span> shmflg)</span></span>;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">shmget</span><span class="token punctuation">(</span><span class="token class-name">key_t</span> key<span class="token punctuation">,</span> <span class="token class-name">size_t</span> size<span class="token punctuation">,</span> <span class="token keyword">int</span> shmflg<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
 <ul>
 <li>
 <p>第一个参数，与信号量的semget函数一样，程序需要提供一个参数key（非0整数），它有效地为共享内存段命名，shmget()函数成功时返回一个与key相关的共享内存标识符（非负整数），用于后续的共享内存函数。调用失败返回-1.</p>
@@ -331,7 +341,7 @@
 <h5 id="2-shmat函数"><a class="markdownIt-Anchor" href="#2-shmat函数"></a> 2、shmat()函数</h5>
 <p>– at：attach</p>
 <p>第一次创建完共享内存时，它还不能被任何进程访问，shmat()函数的作用就是用来启动对该共享内存的访问，并把共享内存连接到当前进程的地址空间。它的原型如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">void</span> *<span class="hljs-title">shmat</span><span class="hljs-params">(<span class="hljs-keyword">int</span> shm_id, <span class="hljs-keyword">const</span> <span class="hljs-keyword">void</span> *shm_addr, <span class="hljs-keyword">int</span> shmflg)</span></span>;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">void</span> <span class="token operator">*</span><span class="token function">shmat</span><span class="token punctuation">(</span><span class="token keyword">int</span> shm_id<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span>shm_addr<span class="token punctuation">,</span> <span class="token keyword">int</span> shmflg<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
 <ul>
 <li>
 <p>第一个参数，shm_id是由shmget()函数返回的共享内存标识。</p>
@@ -347,12 +357,12 @@
 <h5 id="3-shmdt函数"><a class="markdownIt-Anchor" href="#3-shmdt函数"></a> 3、shmdt()函数</h5>
 <p>– dt：detach</p>
 <p>该函数用于将共享内存从当前进程中分离。注意，将共享内存分离并不是删除它，只是使该共享内存对当前进程不再可用。它的原型如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">shmdt</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">void</span> *shmaddr)</span></span>;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">shmdt</span><span class="token punctuation">(</span><span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span>shmaddr<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
 <p>参数shmaddr是shmat()函数返回的地址指针，调用成功时返回0，失败时返回-1.</p>
 <h5 id="4-shmctl函数"><a class="markdownIt-Anchor" href="#4-shmctl函数"></a> 4、shmctl()函数</h5>
 <p>– ctl：control</p>
 <p>与信号量的semctl()函数一样，用来控制共享内存，它的原型如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">shmctl</span><span class="hljs-params">(<span class="hljs-keyword">int</span> shm_id, <span class="hljs-keyword">int</span> command, struct shmid_ds *buf)</span></span>;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">shmctl</span><span class="token punctuation">(</span><span class="token keyword">int</span> shm_id<span class="token punctuation">,</span> <span class="token keyword">int</span> command<span class="token punctuation">,</span> <span class="token keyword">struct</span> <span class="token class-name">shmid_ds</span> <span class="token operator">*</span>buf<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
 <ul>
 <li>
 <p>第一个参数，shm_id是shmget()函数返回的共享内存标识符。</p>
@@ -368,14 +378,329 @@
 <li>
 <p>第三个参数，buf是一个结构指针，它指向共享内存模式和访问权限的结构。</p>
 <p>shmid_ds结构 至少包括以下成员：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">shmid_ds</span></span><br><span class="hljs-class">&#123;</span><br>    <span class="hljs-keyword">uid_t</span> shm_perm.uid;<br>    <span class="hljs-keyword">uid_t</span> shm_perm.gid;<br>    <span class="hljs-keyword">mode_t</span> shm_perm.mode;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">struct</span> <span class="token class-name">shmid_ds</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token class-name">uid_t</span> shm_perm<span class="token punctuation">.</span>uid<span class="token punctuation">;</span>
+    <span class="token class-name">uid_t</span> shm_perm<span class="token punctuation">.</span>gid<span class="token punctuation">;</span>
+    <span class="token class-name">mode_t</span> shm_perm<span class="token punctuation">.</span>mode<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
 </li>
 </ul>
 <h4 id="数据结构和符号说明"><a class="markdownIt-Anchor" href="#数据结构和符号说明"></a> <strong>数据结构</strong>和符号说明</h4>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">//信号集合内的每个信号量的索引,</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> SEM_FULL 0</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> SEM_EMPTY 1</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> MUTEX 2</span><br><span class="hljs-comment">//缓冲区结构</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">my_buffer</span></span><br><span class="hljs-class">&#123;</span><br>	<span class="hljs-keyword">int</span> out;<br>	<span class="hljs-keyword">int</span> in;<br>	<span class="hljs-keyword">char</span> str[MAX_BUFFER_SIZE];<br>	<span class="hljs-keyword">int</span> num; <span class="hljs-comment">//缓冲区里字母数量</span><br>	<span class="hljs-keyword">int</span> is_empty;<br>&#125;;<br><br><span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> N_CONSUMER = <span class="hljs-number">2</span>;  <span class="hljs-comment">//消费者数量</span><br><span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> N_PRODUCER = <span class="hljs-number">2</span>;  <span class="hljs-comment">//生产者数量</span><br><span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> N_BUFFER = <span class="hljs-number">10</span>;   <span class="hljs-comment">//缓冲区容量</span><br><span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> N_WORKTIME = <span class="hljs-number">10</span>; <span class="hljs-comment">//工作次数</span><br><br><span class="hljs-keyword">int</span> shm_id = <span class="hljs-number">-1</span>;<span class="hljs-comment">//信号量id</span><br><br><span class="hljs-keyword">int</span> sem_id = <span class="hljs-number">-1</span>;<span class="hljs-comment">//共享内存id</span><br><span class="hljs-comment">//子进程的id</span><br><span class="hljs-keyword">pid_t</span> consumer_id;<br><span class="hljs-keyword">pid_t</span> producer_id;<br><span class="hljs-comment">//得到10以内的一个随机数</span><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">get_random</span><span class="hljs-params">()</span></span><br><span class="hljs-function">    </span><br><span class="hljs-function"><span class="hljs-comment">//sem_id 表示信号量集合的 id</span></span><br><span class="hljs-function"><span class="hljs-comment">//sem_num 表示要处理的信号量在信号量集合中的索引</span></span><br><span class="hljs-function"><span class="hljs-comment">//P操作</span></span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">waitSem</span><span class="hljs-params">(<span class="hljs-keyword">int</span> sem_id, <span class="hljs-keyword">int</span> sem_num)</span></span><br><span class="hljs-function"><span class="hljs-comment">//V操作</span></span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">signalSem</span><span class="hljs-params">(<span class="hljs-keyword">int</span> sem_id, <span class="hljs-keyword">int</span> sem_num)</span></span><br><span class="hljs-function"><span class="hljs-comment">//打印进程运行时间</span></span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">printTime</span><span class="hljs-params">()</span></span><br><span class="hljs-function"><span class="hljs-comment">//消费者进程的消费和信息打印</span></span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">consume_print</span><span class="hljs-params">(<span class="hljs-keyword">int</span> i, struct my_buffer *shmptr)</span></span><br><span class="hljs-function"><span class="hljs-comment">//消费者进程的消费和信息打印</span></span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">consume_print</span><span class="hljs-params">(<span class="hljs-keyword">int</span> i, struct my_buffer *shmptr)</span></span><br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">&#x2F;&#x2F;信号集合内的每个信号量的索引,
+#define SEM_FULL 0
+#define SEM_EMPTY 1
+#define MUTEX 2
+&#x2F;&#x2F;缓冲区结构
+struct my_buffer
+&#123;
+	int out;
+	int in;
+	char str[MAX_BUFFER_SIZE];
+	int num; &#x2F;&#x2F;缓冲区里字母数量
+	int is_empty;
+&#125;;
+
+const int N_CONSUMER &#x3D; 2;  &#x2F;&#x2F;消费者数量
+const int N_PRODUCER &#x3D; 2;  &#x2F;&#x2F;生产者数量
+const int N_BUFFER &#x3D; 10;   &#x2F;&#x2F;缓冲区容量
+const int N_WORKTIME &#x3D; 10; &#x2F;&#x2F;工作次数
+
+int shm_id &#x3D; -1;&#x2F;&#x2F;信号量id
+
+int sem_id &#x3D; -1;&#x2F;&#x2F;共享内存id
+&#x2F;&#x2F;子进程的id
+pid_t consumer_id;
+pid_t producer_id;
+&#x2F;&#x2F;得到10以内的一个随机数
+int get_random()
+    
+&#x2F;&#x2F;sem_id 表示信号量集合的 id
+&#x2F;&#x2F;sem_num 表示要处理的信号量在信号量集合中的索引
+&#x2F;&#x2F;P操作
+void waitSem(int sem_id, int sem_num)
+&#x2F;&#x2F;V操作
+void signalSem(int sem_id, int sem_num)
+&#x2F;&#x2F;打印进程运行时间
+void printTime()
+&#x2F;&#x2F;消费者进程的消费和信息打印
+void consume_print(int i, struct my_buffer *shmptr)
+&#x2F;&#x2F;消费者进程的消费和信息打印
+void consume_print(int i, struct my_buffer *shmptr)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
 <h4 id="源代码"><a class="markdownIt-Anchor" href="#源代码"></a> 源代码</h4>
 <p>在main函数中，首先初始化信号量（mutex表示缓冲区的互斥访问，设为1；SEM_FULL表示缓冲区满的数量，设为0；SEM_EMPTY表示缓冲区空的数量，设为10），分配共享内存，初始化缓冲区，创建生产者与消费者，释放内存再退出。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;time.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;sys/ipc.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;sys/shm.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;sys/sem.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;sys/types.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;sys/wait.h&gt;</span></span><br><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> MAX_BUFFER_SIZE 10</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> SHM_MODE 0600</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> SEM_MODE 0600</span><br><span class="hljs-comment">//信号集合内的每个信号量的索引,</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> SEM_FULL 0</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> SEM_EMPTY 1</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> MUTEX 2</span><br><span class="hljs-comment">//缓冲区结构</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">my_buffer</span></span><br><span class="hljs-class">&#123;</span><br>	<span class="hljs-keyword">int</span> out;<br>	<span class="hljs-keyword">int</span> in;<br>	<span class="hljs-keyword">char</span> str[MAX_BUFFER_SIZE];<br>	<span class="hljs-keyword">int</span> num; <span class="hljs-comment">//缓冲区里字母数量</span><br>	<span class="hljs-keyword">int</span> is_empty;<br>&#125;;<br><br><span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> N_CONSUMER = <span class="hljs-number">2</span>;  <span class="hljs-comment">//消费者数量</span><br><span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> N_PRODUCER = <span class="hljs-number">2</span>;  <span class="hljs-comment">//生产者数量</span><br><span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> N_BUFFER = <span class="hljs-number">10</span>;   <span class="hljs-comment">//缓冲区容量</span><br><span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> N_WORKTIME = <span class="hljs-number">10</span>; <span class="hljs-comment">//工作次数</span><br><span class="hljs-comment">//信号量id</span><br><span class="hljs-keyword">int</span> shm_id = <span class="hljs-number">-1</span>;<br><span class="hljs-comment">//共享内存id</span><br><span class="hljs-keyword">int</span> sem_id = <span class="hljs-number">-1</span>;<br><span class="hljs-comment">//子进程的id</span><br><span class="hljs-keyword">pid_t</span> consumer_id;<br><span class="hljs-keyword">pid_t</span> producer_id;<br><span class="hljs-comment">//得到10以内的一个随机数</span><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">get_random</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-keyword">int</span> digit;<br>	digit = <span class="hljs-built_in">rand</span>() % <span class="hljs-number">3</span>;<br>	<span class="hljs-keyword">return</span> digit;<br>&#125;<br><br><span class="hljs-comment">//得到A～Z的一个随机字母</span><br><span class="hljs-function"><span class="hljs-keyword">char</span> <span class="hljs-title">getRandChar</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-keyword">char</span> letter;<br>	letter = (<span class="hljs-keyword">char</span>)((<span class="hljs-built_in">rand</span>() % <span class="hljs-number">26</span>) + <span class="hljs-string">&#x27;A&#x27;</span>);<br>	<span class="hljs-keyword">return</span> letter;<br>&#125;<br><br><span class="hljs-comment">//sem_id 表示信号量集合的 id</span><br><span class="hljs-comment">//sem_num 表示要处理的信号量在信号量集合中的索引</span><br><span class="hljs-comment">//P操作</span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">waitSem</span><span class="hljs-params">(<span class="hljs-keyword">int</span> sem_id, <span class="hljs-keyword">int</span> sem_num)</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">sembuf</span> <span class="hljs-title">sb</span>;</span><br>	sb.sem_num = sem_num;<br>	sb.sem_op = <span class="hljs-number">-1</span>; <span class="hljs-comment">//表示要把信号量减一</span><br>	sb.sem_flg = <span class="hljs-number">0</span>; <span class="hljs-comment">//</span><br>	<span class="hljs-comment">//第二个参数是 sembuf [] 类型的，表示数组</span><br>	<span class="hljs-comment">//第三个参数表示 第二个参数代表的数组的大小</span><br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">semop</span>(sem_id, &amp;sb, <span class="hljs-number">1</span>) &lt; <span class="hljs-number">0</span>)<br>	&#123;<br>		<span class="hljs-built_in">perror</span>(<span class="hljs-string">&quot;waitSem failed&quot;</span>);<br>		<span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>	&#125;<br>&#125;<br><br><span class="hljs-comment">//V操作</span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">signalSem</span><span class="hljs-params">(<span class="hljs-keyword">int</span> sem_id, <span class="hljs-keyword">int</span> sem_num)</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">sembuf</span> <span class="hljs-title">sb</span>;</span><br>	sb.sem_num = sem_num;<br>	sb.sem_op = <span class="hljs-number">1</span>;<br>	sb.sem_flg = <span class="hljs-number">0</span>;<br>	<span class="hljs-comment">//第二个参数是 sembuf [] 类型的，表示数组</span><br>	<span class="hljs-comment">//第三个参数表示 第二个参数代表的数组的大小</span><br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">semop</span>(sem_id, &amp;sb, <span class="hljs-number">1</span>) &lt; <span class="hljs-number">0</span>)<br>	&#123;<br>		<span class="hljs-built_in">perror</span>(<span class="hljs-string">&quot;signalSem failed&quot;</span>);<br>		<span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>	&#125;<br>&#125;<br><br><span class="hljs-comment">//打印进程运行时间</span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">printTime</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-comment">//打印时间</span><br>	<span class="hljs-keyword">time_t</span> now;<br>	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">tm</span> *<span class="hljs-title">timenow</span>;</span> <span class="hljs-comment">//实例化tm结构指针</span><br>	<span class="hljs-built_in">time</span>(&amp;now);<br>	timenow = <span class="hljs-built_in">localtime</span>(&amp;now);<br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;|   %02d:%02d:%02d   |  &quot;</span>, timenow-&gt;tm_hour, timenow-&gt;tm_min, timenow-&gt;tm_sec);<br>&#125;<br><span class="hljs-comment">//生产者进程的生产和信息打印</span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">produce_print</span><span class="hljs-params">(<span class="hljs-keyword">int</span> i, struct my_buffer *shmptr)</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-comment">//sleep(get_random()); //随机睡眠一段时间，相当于人为扩大进程执行操作时间</span><br>	<span class="hljs-built_in">printTime</span>(); <span class="hljs-comment">//程序运行时间</span><br>	<span class="hljs-comment">//生产产品</span><br>	<span class="hljs-keyword">char</span> c = <span class="hljs-built_in">getRandChar</span>(); <span class="hljs-comment">//随机获取字母</span><br>	shmptr-&gt;str[shmptr-&gt;in] = c;<br>	shmptr-&gt;in = (shmptr-&gt;in + <span class="hljs-number">1</span>) % MAX_BUFFER_SIZE;<br>	shmptr-&gt;is_empty = <span class="hljs-number">0</span>; <span class="hljs-comment">//写入新产品</span><br>	shmptr-&gt;num++;<br>	<span class="hljs-comment">//打印缓冲区</span><br>	<span class="hljs-keyword">int</span> p = (shmptr-&gt;in - <span class="hljs-number">1</span> &gt;= shmptr-&gt;out) ? (shmptr-&gt;in - <span class="hljs-number">1</span>) : (shmptr-&gt;in - <span class="hljs-number">1</span> + MAX_BUFFER_SIZE);<br>	<span class="hljs-keyword">for</span> (p; !(shmptr-&gt;is_empty) &amp;&amp; p &gt;= shmptr-&gt;out; p--)<br>	&#123;<br>		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%c&quot;</span>, shmptr-&gt;str[p % MAX_BUFFER_SIZE]);<br>	&#125;<br>	<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; <span class="hljs-number">10</span> - shmptr-&gt;num; j++)<br>	&#123;<br>		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%c&quot;</span>, <span class="hljs-string">&#x27;-&#x27;</span>);<br>	&#125;<br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;   |   &quot;</span>);					  <span class="hljs-comment">//控制输出格式</span><br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;producer_%d   |    &quot;</span>, i + <span class="hljs-number">1</span>); <span class="hljs-comment">//进程id信息</span><br><br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;+ %c    |\n&quot;</span>, c); <span class="hljs-comment">//进程操作</span><br>	<span class="hljs-built_in">fflush</span>(stdout);<br>&#125;<br><span class="hljs-comment">//消费者进程的消费和信息打印</span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">consume_print</span><span class="hljs-params">(<span class="hljs-keyword">int</span> i, struct my_buffer *shmptr)</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-comment">//sleep(get_random());</span><br>	<span class="hljs-built_in">printTime</span>(); <span class="hljs-comment">//程序运行时间</span><br>	<span class="hljs-comment">/*生产产品*/</span><br>	<span class="hljs-keyword">char</span> lt = shmptr-&gt;str[shmptr-&gt;out];<br>	shmptr-&gt;out = (shmptr-&gt;out + <span class="hljs-number">1</span>) % MAX_BUFFER_SIZE;<br>	shmptr-&gt;is_empty = (shmptr-&gt;out == shmptr-&gt;in); <span class="hljs-comment">//</span><br>	shmptr-&gt;num--;<br>	<span class="hljs-comment">//打印缓冲区</span><br>	<span class="hljs-keyword">int</span> p = (shmptr-&gt;in - <span class="hljs-number">1</span> &gt;= shmptr-&gt;out) ? (shmptr-&gt;in - <span class="hljs-number">1</span>) : (shmptr-&gt;in - <span class="hljs-number">1</span> + MAX_BUFFER_SIZE);<br>	<span class="hljs-keyword">for</span> (p; !(shmptr-&gt;is_empty) &amp;&amp; p &gt;= shmptr-&gt;out; p--)<br>	&#123;<br>		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%c&quot;</span>, shmptr-&gt;str[p % MAX_BUFFER_SIZE]);<br>	&#125;<br>	<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; <span class="hljs-number">10</span> - shmptr-&gt;num; j++)<br>	&#123;<br>		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%c&quot;</span>, <span class="hljs-string">&#x27;-&#x27;</span>);<br>	&#125;<br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;   |   &quot;</span>);					  <span class="hljs-comment">//控制输出格式</span><br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;consumer_%d   |    &quot;</span>, i + <span class="hljs-number">1</span>); <span class="hljs-comment">//进程id信息</span><br><br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;- %c    |\n&quot;</span>, lt); <span class="hljs-comment">//进程操作</span><br>	<span class="hljs-built_in">fflush</span>(stdout);<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">int</span> argc, <span class="hljs-keyword">char</span> **argv)</span></span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-built_in">srand</span>((<span class="hljs-keyword">unsigned</span>)(<span class="hljs-built_in">getpid</span>() + <span class="hljs-built_in">time</span>(<span class="hljs-literal">NULL</span>)));<br>	shm_id = <span class="hljs-built_in">shmget</span>(IPC_PRIVATE, MAX_BUFFER_SIZE, SHM_MODE); <span class="hljs-comment">//申请共享内存</span><br>	<span class="hljs-keyword">if</span> (shm_id &lt; <span class="hljs-number">0</span>)<br>	&#123;<br>		<span class="hljs-built_in">perror</span>(<span class="hljs-string">&quot;create shared memory failed&quot;</span>);<br>		<span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>	&#125;<br><br>	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">my_buffer</span> *<span class="hljs-title">shmptr</span>;</span><br>	shmptr = <span class="hljs-built_in">shmat</span>(shm_id, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>); <span class="hljs-comment">//将申请的共享内存附加到申请通信的进程空间</span><br>	<span class="hljs-keyword">if</span> (shmptr == (<span class="hljs-keyword">void</span> *)<span class="hljs-number">-1</span>)<br>	&#123;<br>		<span class="hljs-built_in">perror</span>(<span class="hljs-string">&quot;add buffer to using process space failed！\n&quot;</span>);<br>		<span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>	&#125;<br><br>	<span class="hljs-keyword">if</span> ((sem_id = <span class="hljs-built_in">semget</span>(IPC_PRIVATE, <span class="hljs-number">3</span>, SEM_MODE)) &lt; <span class="hljs-number">0</span>)<br>	&#123; <span class="hljs-comment">//创建三个信号量，SEM_EMPTY,SEM_FULL和MUTEX</span><br>		<span class="hljs-built_in">perror</span>(<span class="hljs-string">&quot;create semaphore failed! \n&quot;</span>);<br>		<span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>	&#125;<br><br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">semctl</span>(sem_id, SEM_FULL, SETVAL, <span class="hljs-number">0</span>) == <span class="hljs-number">-1</span>)<br>	&#123; <span class="hljs-comment">//将索引为0的信号量设置为0--&gt;SEM_FULL</span><br>		<span class="hljs-built_in">perror</span>(<span class="hljs-string">&quot;sem set value error! \n&quot;</span>);<br>		<span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>	&#125;<br><br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">semctl</span>(sem_id, SEM_EMPTY, SETVAL, <span class="hljs-number">10</span>) == <span class="hljs-number">-1</span>)<br>	&#123; <span class="hljs-comment">//将索引为1的信号量设置为10--&gt;SEM_EMPTY</span><br>		<span class="hljs-built_in">perror</span>(<span class="hljs-string">&quot;sem set value error! \n&quot;</span>);<br>		<span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>	&#125;<br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">semctl</span>(sem_id, MUTEX, SETVAL, <span class="hljs-number">1</span>) == <span class="hljs-number">-1</span>)<br>	&#123; <span class="hljs-comment">//将索引为3的信号量设置为1--&gt;MUTEX</span><br>		<span class="hljs-built_in">perror</span>(<span class="hljs-string">&quot;sem set value error! \n&quot;</span>);<br>		<span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>	&#125;<br>	<span class="hljs-comment">//初始化缓冲区</span><br>	shmptr-&gt;out = <span class="hljs-number">0</span>;<br>	shmptr-&gt;in = <span class="hljs-number">0</span>;<br>	shmptr-&gt;is_empty = <span class="hljs-number">1</span>;<br>	shmptr-&gt;num = <span class="hljs-number">0</span>;<br><br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;---------------------Process Execution Table-----------------\n&quot;</span>);<br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;-------------------------------------------------------------\n&quot;</span>);<br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;|     time     |  buffer data  |current  process| operation |\n&quot;</span>);<br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;-------------------------------------------------------------\n&quot;</span>);<br>	<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; N_PRODUCER; i++)<br>	&#123;<br>		<span class="hljs-built_in">sleep</span>(<span class="hljs-built_in">get_random</span>());<br>		producer_id = fork();<br><br>		<span class="hljs-keyword">if</span> (producer_id &lt; <span class="hljs-number">0</span>)<br>		&#123;<br>			<span class="hljs-built_in">perror</span>(<span class="hljs-string">&quot;the fork failed&quot;</span>);<br>			<span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>		&#125;<br>		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (producer_id == <span class="hljs-number">0</span>) <span class="hljs-comment">//是子进程则执行生产操作</span><br>		&#123;<br><br>			<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; N_WORKTIME; j++)<br>			&#123;<br>				<span class="hljs-built_in">sleep</span>(<span class="hljs-built_in">get_random</span>());<br><br>				<span class="hljs-built_in">waitSem</span>(sem_id, SEM_EMPTY);<br>				<span class="hljs-built_in">waitSem</span>(sem_id, MUTEX);<br><br>				<span class="hljs-built_in">produce_print</span>(i, shmptr);<br><br>				<span class="hljs-built_in">signalSem</span>(sem_id, MUTEX);<br>				<span class="hljs-built_in">signalSem</span>(sem_id, SEM_FULL);<br>			&#125;<br>			<span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>		&#125;<br>	&#125;<br><br>	<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; N_CONSUMER; i++)<span class="hljs-comment">//</span><br>	&#123;<br>		<span class="hljs-built_in">sleep</span>(<span class="hljs-built_in">get_random</span>());<br>		consumer_id = fork();<br><br>		<span class="hljs-keyword">if</span> (consumer_id &lt; <span class="hljs-number">0</span>) <span class="hljs-comment">//调用fork失败</span><br>		&#123;<br>			<span class="hljs-built_in">perror</span>(<span class="hljs-string">&quot;the fork failed&quot;</span>);<br>			<span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>		&#125;<br>		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (consumer_id == <span class="hljs-number">0</span>) <span class="hljs-comment">//是子进程则执行消费操作</span><br>		&#123;<br>			<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; N_WORKTIME; j++)<br>			&#123;<br>				<span class="hljs-built_in">sleep</span>(<span class="hljs-built_in">get_random</span>());<br><br>				<span class="hljs-built_in">waitSem</span>(sem_id, SEM_FULL);<br>				<span class="hljs-built_in">waitSem</span>(sem_id, MUTEX);<br><br>				<span class="hljs-built_in">consume_print</span>(i, shmptr);<br><br>				<span class="hljs-built_in">signalSem</span>(sem_id, MUTEX);<br>				<span class="hljs-built_in">signalSem</span>(sem_id, SEM_EMPTY);<br>			&#125;<br>			<span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>		&#125;<br>	&#125;<br><br>	<span class="hljs-comment">//主进程最后退出</span><br>	<span class="hljs-keyword">while</span> (<span class="hljs-built_in">wait</span>(<span class="hljs-number">0</span>) != <span class="hljs-number">-1</span>)<br>		;<br>	<span class="hljs-comment">//将共享段与进程之间解除连接</span><br>	<span class="hljs-built_in">shmdt</span>(shmptr);<br>	<span class="hljs-comment">//对共享内存区执行控制操作</span><br>	<span class="hljs-built_in">shmctl</span>(shm_id, IPC_RMID, <span class="hljs-number">0</span>); <span class="hljs-comment">//当cmd为IPC_RMID时，删除该共享段</span><br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;-------------------------------------------------------------\n&quot;</span>);<br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;主进程运行结束！\n&quot;</span>);<br><br>	<span class="hljs-built_in">fflush</span>(stdout);<br>	<span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;time.h&gt;
+#include &lt;sys&#x2F;ipc.h&gt;
+#include &lt;sys&#x2F;shm.h&gt;
+#include &lt;sys&#x2F;sem.h&gt;
+#include &lt;sys&#x2F;types.h&gt;
+#include &lt;sys&#x2F;wait.h&gt;
+
+#define MAX_BUFFER_SIZE 10
+#define SHM_MODE 0600
+#define SEM_MODE 0600
+&#x2F;&#x2F;信号集合内的每个信号量的索引,
+#define SEM_FULL 0
+#define SEM_EMPTY 1
+#define MUTEX 2
+&#x2F;&#x2F;缓冲区结构
+struct my_buffer
+&#123;
+	int out;
+	int in;
+	char str[MAX_BUFFER_SIZE];
+	int num; &#x2F;&#x2F;缓冲区里字母数量
+	int is_empty;
+&#125;;
+
+const int N_CONSUMER &#x3D; 2;  &#x2F;&#x2F;消费者数量
+const int N_PRODUCER &#x3D; 2;  &#x2F;&#x2F;生产者数量
+const int N_BUFFER &#x3D; 10;   &#x2F;&#x2F;缓冲区容量
+const int N_WORKTIME &#x3D; 10; &#x2F;&#x2F;工作次数
+&#x2F;&#x2F;信号量id
+int shm_id &#x3D; -1;
+&#x2F;&#x2F;共享内存id
+int sem_id &#x3D; -1;
+&#x2F;&#x2F;子进程的id
+pid_t consumer_id;
+pid_t producer_id;
+&#x2F;&#x2F;得到10以内的一个随机数
+int get_random()
+&#123;
+	int digit;
+	digit &#x3D; rand() % 3;
+	return digit;
+&#125;
+
+&#x2F;&#x2F;得到A～Z的一个随机字母
+char getRandChar()
+&#123;
+	char letter;
+	letter &#x3D; (char)((rand() % 26) + &#39;A&#39;);
+	return letter;
+&#125;
+
+&#x2F;&#x2F;sem_id 表示信号量集合的 id
+&#x2F;&#x2F;sem_num 表示要处理的信号量在信号量集合中的索引
+&#x2F;&#x2F;P操作
+void waitSem(int sem_id, int sem_num)
+&#123;
+	struct sembuf sb;
+	sb.sem_num &#x3D; sem_num;
+	sb.sem_op &#x3D; -1; &#x2F;&#x2F;表示要把信号量减一
+	sb.sem_flg &#x3D; 0; &#x2F;&#x2F;
+	&#x2F;&#x2F;第二个参数是 sembuf [] 类型的，表示数组
+	&#x2F;&#x2F;第三个参数表示 第二个参数代表的数组的大小
+	if (semop(sem_id, &amp;sb, 1) &lt; 0)
+	&#123;
+		perror(&quot;waitSem failed&quot;);
+		exit(1);
+	&#125;
+&#125;
+
+&#x2F;&#x2F;V操作
+void signalSem(int sem_id, int sem_num)
+&#123;
+	struct sembuf sb;
+	sb.sem_num &#x3D; sem_num;
+	sb.sem_op &#x3D; 1;
+	sb.sem_flg &#x3D; 0;
+	&#x2F;&#x2F;第二个参数是 sembuf [] 类型的，表示数组
+	&#x2F;&#x2F;第三个参数表示 第二个参数代表的数组的大小
+	if (semop(sem_id, &amp;sb, 1) &lt; 0)
+	&#123;
+		perror(&quot;signalSem failed&quot;);
+		exit(1);
+	&#125;
+&#125;
+
+&#x2F;&#x2F;打印进程运行时间
+void printTime()
+&#123;
+	&#x2F;&#x2F;打印时间
+	time_t now;
+	struct tm *timenow; &#x2F;&#x2F;实例化tm结构指针
+	time(&amp;now);
+	timenow &#x3D; localtime(&amp;now);
+	printf(&quot;|   %02d:%02d:%02d   |  &quot;, timenow-&gt;tm_hour, timenow-&gt;tm_min, timenow-&gt;tm_sec);
+&#125;
+&#x2F;&#x2F;生产者进程的生产和信息打印
+void produce_print(int i, struct my_buffer *shmptr)
+&#123;
+	&#x2F;&#x2F;sleep(get_random()); &#x2F;&#x2F;随机睡眠一段时间，相当于人为扩大进程执行操作时间
+	printTime(); &#x2F;&#x2F;程序运行时间
+	&#x2F;&#x2F;生产产品
+	char c &#x3D; getRandChar(); &#x2F;&#x2F;随机获取字母
+	shmptr-&gt;str[shmptr-&gt;in] &#x3D; c;
+	shmptr-&gt;in &#x3D; (shmptr-&gt;in + 1) % MAX_BUFFER_SIZE;
+	shmptr-&gt;is_empty &#x3D; 0; &#x2F;&#x2F;写入新产品
+	shmptr-&gt;num++;
+	&#x2F;&#x2F;打印缓冲区
+	int p &#x3D; (shmptr-&gt;in - 1 &gt;&#x3D; shmptr-&gt;out) ? (shmptr-&gt;in - 1) : (shmptr-&gt;in - 1 + MAX_BUFFER_SIZE);
+	for (p; !(shmptr-&gt;is_empty) &amp;&amp; p &gt;&#x3D; shmptr-&gt;out; p--)
+	&#123;
+		printf(&quot;%c&quot;, shmptr-&gt;str[p % MAX_BUFFER_SIZE]);
+	&#125;
+	for (int j &#x3D; 0; j &lt; 10 - shmptr-&gt;num; j++)
+	&#123;
+		printf(&quot;%c&quot;, &#39;-&#39;);
+	&#125;
+	printf(&quot;   |   &quot;);					  &#x2F;&#x2F;控制输出格式
+	printf(&quot;producer_%d   |    &quot;, i + 1); &#x2F;&#x2F;进程id信息
+
+	printf(&quot;+ %c    |\n&quot;, c); &#x2F;&#x2F;进程操作
+	fflush(stdout);
+&#125;
+&#x2F;&#x2F;消费者进程的消费和信息打印
+void consume_print(int i, struct my_buffer *shmptr)
+&#123;
+	&#x2F;&#x2F;sleep(get_random());
+	printTime(); &#x2F;&#x2F;程序运行时间
+	&#x2F;*生产产品*&#x2F;
+	char lt &#x3D; shmptr-&gt;str[shmptr-&gt;out];
+	shmptr-&gt;out &#x3D; (shmptr-&gt;out + 1) % MAX_BUFFER_SIZE;
+	shmptr-&gt;is_empty &#x3D; (shmptr-&gt;out &#x3D;&#x3D; shmptr-&gt;in); &#x2F;&#x2F;
+	shmptr-&gt;num--;
+	&#x2F;&#x2F;打印缓冲区
+	int p &#x3D; (shmptr-&gt;in - 1 &gt;&#x3D; shmptr-&gt;out) ? (shmptr-&gt;in - 1) : (shmptr-&gt;in - 1 + MAX_BUFFER_SIZE);
+	for (p; !(shmptr-&gt;is_empty) &amp;&amp; p &gt;&#x3D; shmptr-&gt;out; p--)
+	&#123;
+		printf(&quot;%c&quot;, shmptr-&gt;str[p % MAX_BUFFER_SIZE]);
+	&#125;
+	for (int j &#x3D; 0; j &lt; 10 - shmptr-&gt;num; j++)
+	&#123;
+		printf(&quot;%c&quot;, &#39;-&#39;);
+	&#125;
+	printf(&quot;   |   &quot;);					  &#x2F;&#x2F;控制输出格式
+	printf(&quot;consumer_%d   |    &quot;, i + 1); &#x2F;&#x2F;进程id信息
+
+	printf(&quot;- %c    |\n&quot;, lt); &#x2F;&#x2F;进程操作
+	fflush(stdout);
+&#125;
+int main(int argc, char **argv)
+&#123;
+	srand((unsigned)(getpid() + time(NULL)));
+	shm_id &#x3D; shmget(IPC_PRIVATE, MAX_BUFFER_SIZE, SHM_MODE); &#x2F;&#x2F;申请共享内存
+	if (shm_id &lt; 0)
+	&#123;
+		perror(&quot;create shared memory failed&quot;);
+		exit(1);
+	&#125;
+
+	struct my_buffer *shmptr;
+	shmptr &#x3D; shmat(shm_id, 0, 0); &#x2F;&#x2F;将申请的共享内存附加到申请通信的进程空间
+	if (shmptr &#x3D;&#x3D; (void *)-1)
+	&#123;
+		perror(&quot;add buffer to using process space failed！\n&quot;);
+		exit(1);
+	&#125;
+
+	if ((sem_id &#x3D; semget(IPC_PRIVATE, 3, SEM_MODE)) &lt; 0)
+	&#123; &#x2F;&#x2F;创建三个信号量，SEM_EMPTY,SEM_FULL和MUTEX
+		perror(&quot;create semaphore failed! \n&quot;);
+		exit(1);
+	&#125;
+
+	if (semctl(sem_id, SEM_FULL, SETVAL, 0) &#x3D;&#x3D; -1)
+	&#123; &#x2F;&#x2F;将索引为0的信号量设置为0--&gt;SEM_FULL
+		perror(&quot;sem set value error! \n&quot;);
+		exit(1);
+	&#125;
+
+	if (semctl(sem_id, SEM_EMPTY, SETVAL, 10) &#x3D;&#x3D; -1)
+	&#123; &#x2F;&#x2F;将索引为1的信号量设置为10--&gt;SEM_EMPTY
+		perror(&quot;sem set value error! \n&quot;);
+		exit(1);
+	&#125;
+	if (semctl(sem_id, MUTEX, SETVAL, 1) &#x3D;&#x3D; -1)
+	&#123; &#x2F;&#x2F;将索引为3的信号量设置为1--&gt;MUTEX
+		perror(&quot;sem set value error! \n&quot;);
+		exit(1);
+	&#125;
+	&#x2F;&#x2F;初始化缓冲区
+	shmptr-&gt;out &#x3D; 0;
+	shmptr-&gt;in &#x3D; 0;
+	shmptr-&gt;is_empty &#x3D; 1;
+	shmptr-&gt;num &#x3D; 0;
+
+	printf(&quot;---------------------Process Execution Table-----------------\n&quot;);
+	printf(&quot;-------------------------------------------------------------\n&quot;);
+	printf(&quot;|     time     |  buffer data  |current  process| operation |\n&quot;);
+	printf(&quot;-------------------------------------------------------------\n&quot;);
+	for (int i &#x3D; 0; i &lt; N_PRODUCER; i++)
+	&#123;
+		sleep(get_random());
+		producer_id &#x3D; fork();
+
+		if (producer_id &lt; 0)
+		&#123;
+			perror(&quot;the fork failed&quot;);
+			exit(1);
+		&#125;
+		else if (producer_id &#x3D;&#x3D; 0) &#x2F;&#x2F;是子进程则执行生产操作
+		&#123;
+
+			for (int j &#x3D; 0; j &lt; N_WORKTIME; j++)
+			&#123;
+				sleep(get_random());
+
+				waitSem(sem_id, SEM_EMPTY);
+				waitSem(sem_id, MUTEX);
+
+				produce_print(i, shmptr);
+
+				signalSem(sem_id, MUTEX);
+				signalSem(sem_id, SEM_FULL);
+			&#125;
+			exit(0);
+		&#125;
+	&#125;
+
+	for (int i &#x3D; 0; i &lt; N_CONSUMER; i++)&#x2F;&#x2F;
+	&#123;
+		sleep(get_random());
+		consumer_id &#x3D; fork();
+
+		if (consumer_id &lt; 0) &#x2F;&#x2F;调用fork失败
+		&#123;
+			perror(&quot;the fork failed&quot;);
+			exit(1);
+		&#125;
+		else if (consumer_id &#x3D;&#x3D; 0) &#x2F;&#x2F;是子进程则执行消费操作
+		&#123;
+			for (int j &#x3D; 0; j &lt; N_WORKTIME; j++)
+			&#123;
+				sleep(get_random());
+
+				waitSem(sem_id, SEM_FULL);
+				waitSem(sem_id, MUTEX);
+
+				consume_print(i, shmptr);
+
+				signalSem(sem_id, MUTEX);
+				signalSem(sem_id, SEM_EMPTY);
+			&#125;
+			exit(0);
+		&#125;
+	&#125;
+
+	&#x2F;&#x2F;主进程最后退出
+	while (wait(0) !&#x3D; -1)
+		;
+	&#x2F;&#x2F;将共享段与进程之间解除连接
+	shmdt(shmptr);
+	&#x2F;&#x2F;对共享内存区执行控制操作
+	shmctl(shm_id, IPC_RMID, 0); &#x2F;&#x2F;当cmd为IPC_RMID时，删除该共享段
+	printf(&quot;-------------------------------------------------------------\n&quot;);
+	printf(&quot;主进程运行结束！\n&quot;);
+
+	fflush(stdout);
+	exit(0);
+	return 0;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
 <h4 id="程序初值和运行结果"><a class="markdownIt-Anchor" href="#程序初值和运行结果"></a> 程序初值和运行结果</h4>
 <p>进程</p>
 <p><img src="/posts/3994810f/image-20211130090602101.png" srcset="/img/loading.gif" lazyload alt="image-20211130090602101"></p>
@@ -385,9 +710,10 @@
 <h5 id="pthread_create"><a class="markdownIt-Anchor" href="#pthread_create"></a> pthread_create</h5>
 <p>pthread_create是UNIX环境创建线程函数</p>
 <p><strong>头文件：</strong></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;pthread.h&gt;</span></span><br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">&lt;pthread.h></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
 <p><strong>函数声明：</strong></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">pthread_create</span><span class="hljs-params">(<span class="hljs-keyword">pthread_t</span> *<span class="hljs-keyword">restrict</span> tidp,<span class="hljs-keyword">const</span> <span class="hljs-keyword">pthread_attr_t</span> *restrict_attr,<span class="hljs-keyword">void</span>*（*start_rtn)</span><span class="hljs-params">(<span class="hljs-keyword">void</span>*)</span>,<span class="hljs-keyword">void</span> *<span class="hljs-keyword">restrict</span> arg)</span>;<br>参数：<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">pthread_create</span><span class="token punctuation">(</span><span class="token class-name">pthread_t</span> <span class="token operator">*</span>restrict tidp<span class="token punctuation">,</span><span class="token keyword">const</span> <span class="token class-name">pthread_attr_t</span> <span class="token operator">*</span>restrict_attr<span class="token punctuation">,</span><span class="token keyword">void</span><span class="token operator">*</span>（<span class="token operator">*</span>start_rtn<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token keyword">void</span> <span class="token operator">*</span>restrict arg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+参数：<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div>
 <ul>
 <li>第一个参数为指向线程标识符的指针，可用如下方式定义 pthread_t thread1;</li>
 <li>第二个参数用来设置线程属性。</li>
@@ -403,9 +729,9 @@
 <p>函数pthread_join用来等待一个线程的结束。pthread_join()函数，以阻塞的方式等待thread指定的线程结束。当函数返回时，被等待线程的资源被收回。如果线程已经结束，那么该函数会立即返回。并且thread指定的线程必须是joinable的。<br>
 　　<br>
 <strong>头文件：</strong></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;pthread.h&gt;</span></span><br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">&lt;pthread.h></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
 <p><strong>函数声明：</strong></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">pthread_join</span><span class="hljs-params">(<span class="hljs-keyword">pthread_t</span> thread, <span class="hljs-keyword">void</span> **retval)</span></span>;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">pthread_join</span><span class="token punctuation">(</span><span class="token class-name">pthread_t</span> thread<span class="token punctuation">,</span> <span class="token keyword">void</span> <span class="token operator">*</span><span class="token operator">*</span>retval<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
 <p><strong>参数：</strong></p>
 <ul>
 <li>
@@ -418,9 +744,249 @@
 <p><strong>返回值：</strong></p>
 <p>如果执行成功，将返回0，如果失败则返回一个错误号。</p>
 <h4 id="数据结构和符号说明-2"><a class="markdownIt-Anchor" href="#数据结构和符号说明-2"></a> <strong>数据结构</strong>和符号说明</h4>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> N_WORKTIME = <span class="hljs-number">10</span>; <span class="hljs-comment">//工作次数</span><br><span class="hljs-comment">//三个信号量</span><br><span class="hljs-keyword">pthread_mutex_t</span> mutex = PTHREAD_MUTEX_INITIALIZER; <span class="hljs-comment">//线程间互斥</span><br><span class="hljs-keyword">sem_t</span> full;                                        <span class="hljs-comment">//填充的个数</span><br><span class="hljs-keyword">sem_t</span> empty;                                       <span class="hljs-comment">//空槽的个数</span><br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">my_buffer</span></span><br><span class="hljs-class">&#123;</span><br>    <span class="hljs-keyword">int</span> out;<br>    <span class="hljs-keyword">int</span> in;<br>    <span class="hljs-keyword">char</span> str[MAX_BUFFER_SIZE];<br>    <span class="hljs-keyword">int</span> num; <span class="hljs-comment">//缓冲区里字母数量</span><br>    <span class="hljs-keyword">int</span> is_empty;<br>&#125; buffer; <span class="hljs-comment">//缓冲区结构体</span><br><span class="hljs-comment">//struct my_buffer *buffer</span><br><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">get_random</span><span class="hljs-params">()</span><span class="hljs-comment">//得到3以内的一个随机数</span></span><br><span class="hljs-function"></span><br><span class="hljs-function"><span class="hljs-keyword">char</span> <span class="hljs-title">getRandChar</span><span class="hljs-params">()</span><span class="hljs-comment">//得到A～Z的一个随机字母</span></span><br><span class="hljs-function">    </span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">printTime</span><span class="hljs-params">()</span> <span class="hljs-comment">//打印时间</span></span><br><span class="hljs-function"></span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">produce_print</span><span class="hljs-params">(<span class="hljs-keyword">int</span> *x)</span><span class="hljs-comment">//生产者进程的生产和信息打印</span></span><br><span class="hljs-function"></span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">consume_print</span><span class="hljs-params">(<span class="hljs-keyword">int</span> *x)</span><span class="hljs-comment">//消费者进程的生消费和信息打印</span></span><br><span class="hljs-function">    </span><br><span class="hljs-function"><span class="hljs-keyword">void</span> *<span class="hljs-title">produce</span><span class="hljs-params">(<span class="hljs-keyword">void</span> *arg)</span><span class="hljs-comment">//生产者线程</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">int</span> i;<br>    <span class="hljs-keyword">int</span> *x = (<span class="hljs-keyword">int</span> *)arg;<br>    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; N_WORKTIME; i++)<br>    &#123;<br>        <span class="hljs-built_in">sleep</span>(<span class="hljs-built_in">get_random</span>());<br><br>        <span class="hljs-built_in">sem_wait</span>(&amp;empty); <span class="hljs-comment">//若空槽个数低于0阻塞</span><br>        <span class="hljs-built_in">pthread_mutex_lock</span>(&amp;mutex);<br><br>        <span class="hljs-built_in">produce_print</span>(x);<br><br>        <span class="hljs-built_in">pthread_mutex_unlock</span>(&amp;mutex);<br>        <span class="hljs-built_in">sem_post</span>(&amp;full);<br>    &#125;<br>    <span class="hljs-keyword">return</span> (<span class="hljs-keyword">void</span> *)<span class="hljs-number">1</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">void</span> *<span class="hljs-title">consume</span><span class="hljs-params">(<span class="hljs-keyword">void</span> *arg)</span><span class="hljs-comment">//消费者线程</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">int</span> i;<br>    <span class="hljs-keyword">int</span> *x = (<span class="hljs-keyword">int</span> *)arg;<br>    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; N_WORKTIME; i++)<br>    &#123;<br>        <span class="hljs-built_in">sleep</span>(<span class="hljs-built_in">get_random</span>());<br><br>        <span class="hljs-built_in">sem_wait</span>(&amp;full); <span class="hljs-comment">//若填充个数低于0阻塞</span><br>        <span class="hljs-built_in">pthread_mutex_lock</span>(&amp;mutex);<br><br>        <span class="hljs-built_in">consume_print</span>(x);<br><br>        <span class="hljs-built_in">pthread_mutex_unlock</span>(&amp;mutex);<br>        <span class="hljs-built_in">sem_post</span>(&amp;empty);<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> (<span class="hljs-keyword">void</span> *)<span class="hljs-number">2</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">const int N_WORKTIME &#x3D; 10; &#x2F;&#x2F;工作次数
+&#x2F;&#x2F;三个信号量
+pthread_mutex_t mutex &#x3D; PTHREAD_MUTEX_INITIALIZER; &#x2F;&#x2F;线程间互斥
+sem_t full;                                        &#x2F;&#x2F;填充的个数
+sem_t empty;                                       &#x2F;&#x2F;空槽的个数
+
+struct my_buffer
+&#123;
+    int out;
+    int in;
+    char str[MAX_BUFFER_SIZE];
+    int num; &#x2F;&#x2F;缓冲区里字母数量
+    int is_empty;
+&#125; buffer; &#x2F;&#x2F;缓冲区结构体
+&#x2F;&#x2F;struct my_buffer *buffer
+
+int get_random()&#x2F;&#x2F;得到3以内的一个随机数
+
+char getRandChar()&#x2F;&#x2F;得到A～Z的一个随机字母
+    
+void printTime() &#x2F;&#x2F;打印时间
+
+void produce_print(int *x)&#x2F;&#x2F;生产者进程的生产和信息打印
+
+void consume_print(int *x)&#x2F;&#x2F;消费者进程的生消费和信息打印
+    
+void *produce(void *arg)&#x2F;&#x2F;生产者线程
+&#123;
+    int i;
+    int *x &#x3D; (int *)arg;
+    for (i &#x3D; 0; i &lt; N_WORKTIME; i++)
+    &#123;
+        sleep(get_random());
+
+        sem_wait(&amp;empty); &#x2F;&#x2F;若空槽个数低于0阻塞
+        pthread_mutex_lock(&amp;mutex);
+
+        produce_print(x);
+
+        pthread_mutex_unlock(&amp;mutex);
+        sem_post(&amp;full);
+    &#125;
+    return (void *)1;
+&#125;
+
+void *consume(void *arg)&#x2F;&#x2F;消费者线程
+&#123;
+    int i;
+    int *x &#x3D; (int *)arg;
+    for (i &#x3D; 0; i &lt; N_WORKTIME; i++)
+    &#123;
+        sleep(get_random());
+
+        sem_wait(&amp;full); &#x2F;&#x2F;若填充个数低于0阻塞
+        pthread_mutex_lock(&amp;mutex);
+
+        consume_print(x);
+
+        pthread_mutex_unlock(&amp;mutex);
+        sem_post(&amp;empty);
+    &#125;
+
+    return (void *)2;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
 <h4 id="源代码-2"><a class="markdownIt-Anchor" href="#源代码-2"></a> 源代码</h4>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;pthread.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;time.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;semaphore.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span><br><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> MAX_BUFFER_SIZE 10</span><br><span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> N_WORKTIME = <span class="hljs-number">10</span>; <span class="hljs-comment">//工作次数</span><br><span class="hljs-comment">//三个信号量</span><br><span class="hljs-keyword">pthread_mutex_t</span> mutex = PTHREAD_MUTEX_INITIALIZER; <span class="hljs-comment">//线程间互斥</span><br><span class="hljs-keyword">sem_t</span> full;                                        <span class="hljs-comment">//填充的个数</span><br><span class="hljs-keyword">sem_t</span> empty;                                       <span class="hljs-comment">//空槽的个数</span><br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">my_buffer</span></span><br><span class="hljs-class">&#123;</span><br>    <span class="hljs-keyword">int</span> out;<br>    <span class="hljs-keyword">int</span> in;<br>    <span class="hljs-keyword">char</span> str[MAX_BUFFER_SIZE];<br>    <span class="hljs-keyword">int</span> num; <span class="hljs-comment">//缓冲区里字母数量</span><br>    <span class="hljs-keyword">int</span> is_empty;<br>&#125; buffer; <span class="hljs-comment">//缓冲区结构体</span><br><span class="hljs-comment">//struct my_buffer *buffer;</span><br><span class="hljs-comment">//得到3以内的一个随机数</span><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">get_random</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">int</span> digit;<br>    digit = <span class="hljs-built_in">rand</span>() % <span class="hljs-number">3</span>;<br>    <span class="hljs-keyword">return</span> digit;<br>&#125;<br><br><span class="hljs-comment">//得到A～Z的一个随机字母</span><br><span class="hljs-function"><span class="hljs-keyword">char</span> <span class="hljs-title">getRandChar</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">char</span> letter;<br>    letter = (<span class="hljs-keyword">char</span>)((<span class="hljs-built_in">rand</span>() % <span class="hljs-number">26</span>) + <span class="hljs-string">&#x27;A&#x27;</span>);<br>    <span class="hljs-keyword">return</span> letter;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">printTime</span><span class="hljs-params">()</span> <span class="hljs-comment">//打印时间</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">time_t</span> now;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">tm</span> *<span class="hljs-title">timenow</span>;</span> <span class="hljs-comment">//实例化tm结构指针</span><br>    <span class="hljs-built_in">time</span>(&amp;now);<br>    timenow = <span class="hljs-built_in">localtime</span>(&amp;now);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;|   %02d:%02d:%02d   |  &quot;</span>, timenow-&gt;tm_hour, timenow-&gt;tm_min, timenow-&gt;tm_sec);<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">produce_print</span><span class="hljs-params">(<span class="hljs-keyword">int</span> *x)</span><span class="hljs-comment">//生产者进程的生产和信息打印</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-comment">//sleep(get_random());</span><br>    <span class="hljs-built_in">printTime</span>(); <span class="hljs-comment">//程序运行时间</span><br>    <span class="hljs-comment">/*生产产品*/</span><br>    <span class="hljs-keyword">char</span> c = <span class="hljs-built_in">getRandChar</span>(); <span class="hljs-comment">//随机获取字母</span><br>    buffer.str[buffer.in] = c;<br>    buffer.in = (buffer.in + <span class="hljs-number">1</span>) % MAX_BUFFER_SIZE;<br>    buffer.is_empty = <span class="hljs-number">0</span>; <span class="hljs-comment">//写入新产品</span><br>    buffer.num++;<br>    <span class="hljs-comment">//打印缓冲区</span><br>    <span class="hljs-keyword">int</span> p = (buffer.in - <span class="hljs-number">1</span> &gt;= buffer.out) ? (buffer.in - <span class="hljs-number">1</span>) : (buffer.in - <span class="hljs-number">1</span> + MAX_BUFFER_SIZE);<br>    <span class="hljs-keyword">for</span> (p; !(buffer.is_empty) &amp;&amp; p &gt;= buffer.out; p--)<br>    &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%c&quot;</span>, buffer.str[p % MAX_BUFFER_SIZE]);<br>    &#125;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; <span class="hljs-number">10</span> - buffer.num; j++)<br>    &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%c&quot;</span>, <span class="hljs-string">&#x27;-&#x27;</span>);<br>    &#125;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;   |   &quot;</span>);                 <span class="hljs-comment">//控制输出格式</span><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;producer_%d   |    &quot;</span>, *x); <span class="hljs-comment">//进程id信息</span><br><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;+ %c    |\n&quot;</span>, c); <span class="hljs-comment">//进程操作</span><br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">consume_print</span><span class="hljs-params">(<span class="hljs-keyword">int</span> *x)</span><span class="hljs-comment">//消费者进程的生消费和信息打印</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-comment">//sleep(get_random());</span><br>    <span class="hljs-built_in">printTime</span>(); <span class="hljs-comment">//程序运行时间</span><br>    <span class="hljs-comment">/*生产产品*/</span><br>    <span class="hljs-keyword">char</span> c = buffer.str[buffer.out];<br>    buffer.out = (buffer.out + <span class="hljs-number">1</span>) % MAX_BUFFER_SIZE;<br>    buffer.is_empty = (buffer.out == buffer.in); <span class="hljs-comment">//</span><br>    buffer.num--;<br>    <span class="hljs-comment">//打印缓冲区</span><br>    <span class="hljs-keyword">int</span> p = (buffer.in - <span class="hljs-number">1</span> &gt;= buffer.out) ? (buffer.in - <span class="hljs-number">1</span>) : (buffer.in - <span class="hljs-number">1</span> + MAX_BUFFER_SIZE);<br>    <span class="hljs-keyword">for</span> (p; !(buffer.is_empty) &amp;&amp; p &gt;= buffer.out; p--)<br>    &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%c&quot;</span>, buffer.str[p % MAX_BUFFER_SIZE]);<br>    &#125;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; <span class="hljs-number">10</span> - buffer.num; j++)<br>    &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%c&quot;</span>, <span class="hljs-string">&#x27;-&#x27;</span>);<br>    &#125;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;   |   &quot;</span>);                 <span class="hljs-comment">//控制输出格式</span><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;consumer_%d   |    &quot;</span>, *x); <span class="hljs-comment">//进程id信息</span><br><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;- %c    |\n&quot;</span>, c); <span class="hljs-comment">//进程操作</span><br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">void</span> *<span class="hljs-title">produce</span><span class="hljs-params">(<span class="hljs-keyword">void</span> *arg)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">int</span> i;<br>    <span class="hljs-keyword">int</span> *x = (<span class="hljs-keyword">int</span> *)arg;<br>    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; N_WORKTIME; i++)<br>    &#123;<br>        <span class="hljs-built_in">sleep</span>(<span class="hljs-built_in">get_random</span>());<br><br>        <span class="hljs-built_in">sem_wait</span>(&amp;empty); <span class="hljs-comment">//若空槽个数低于0阻塞</span><br>        <span class="hljs-built_in">pthread_mutex_lock</span>(&amp;mutex);<br><br>        <span class="hljs-built_in">produce_print</span>(x);<br><br>        <span class="hljs-built_in">pthread_mutex_unlock</span>(&amp;mutex);<br>        <span class="hljs-built_in">sem_post</span>(&amp;full);<br>    &#125;<br>    <span class="hljs-keyword">return</span> (<span class="hljs-keyword">void</span> *)<span class="hljs-number">1</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">void</span> *<span class="hljs-title">consume</span><span class="hljs-params">(<span class="hljs-keyword">void</span> *arg)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">int</span> i;<br>    <span class="hljs-keyword">int</span> *x = (<span class="hljs-keyword">int</span> *)arg;<br>    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; N_WORKTIME; i++)<br>    &#123;<br>        <span class="hljs-built_in">sleep</span>(<span class="hljs-built_in">get_random</span>());<br><br>        <span class="hljs-built_in">sem_wait</span>(&amp;full); <span class="hljs-comment">//若填充个数低于0阻塞</span><br>        <span class="hljs-built_in">pthread_mutex_lock</span>(&amp;mutex);<br><br>        <span class="hljs-built_in">consume_print</span>(x);<br><br>        <span class="hljs-built_in">pthread_mutex_unlock</span>(&amp;mutex);<br>        <span class="hljs-built_in">sem_post</span>(&amp;empty);<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> (<span class="hljs-keyword">void</span> *)<span class="hljs-number">2</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">int</span> argc, <span class="hljs-keyword">char</span> *argv[])</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">srand</span>(<span class="hljs-built_in">time</span>(<span class="hljs-literal">NULL</span>)); <span class="hljs-comment">//随机化时间种子</span><br><br>    <span class="hljs-keyword">pthread_t</span> thid1;<br>    <span class="hljs-keyword">pthread_t</span> thid2;<br>    <span class="hljs-keyword">pthread_t</span> thid3;<br>    <span class="hljs-keyword">pthread_t</span> thid4;<br><br>    <span class="hljs-keyword">int</span> ret1;<br>    <span class="hljs-keyword">int</span> ret2;<br>    <span class="hljs-keyword">int</span> ret3;<br>    <span class="hljs-keyword">int</span> ret4;<br>    <span class="hljs-comment">//初始化信号量</span><br>    <span class="hljs-built_in">sem_init</span>(&amp;full, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br>    <span class="hljs-built_in">sem_init</span>(&amp;empty, <span class="hljs-number">0</span>, <span class="hljs-number">10</span>);<br>    <span class="hljs-comment">//线程id</span><br>    <span class="hljs-keyword">int</span> t1 = <span class="hljs-number">1</span>;<br>    <span class="hljs-keyword">int</span> t2 = <span class="hljs-number">2</span>;<br>    <span class="hljs-comment">//初始化缓冲区</span><br>    buffer.out = <span class="hljs-number">0</span>;<br>    buffer.in = <span class="hljs-number">0</span>;<br>    buffer.is_empty = <span class="hljs-number">1</span>;<br>    buffer.num = <span class="hljs-number">0</span>;<br><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;---------------------Thread Execution Table------------------\n&quot;</span>);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;-------------------------------------------------------------\n&quot;</span>);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;|     time     |  buffer data  | current thread | operation |\n&quot;</span>);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;-------------------------------------------------------------\n&quot;</span>);<br>    <span class="hljs-comment">//创建线程</span><br>    <span class="hljs-built_in">pthread_create</span>(&amp;thid1, <span class="hljs-literal">NULL</span>, produce, (<span class="hljs-keyword">void</span> *)&amp;t1);<br>    <span class="hljs-built_in">pthread_create</span>(&amp;thid2, <span class="hljs-literal">NULL</span>, consume, (<span class="hljs-keyword">void</span> *)&amp;t1);<br>    <span class="hljs-built_in">pthread_create</span>(&amp;thid3, <span class="hljs-literal">NULL</span>, produce, (<span class="hljs-keyword">void</span> *)&amp;t2);<br>    <span class="hljs-built_in">pthread_create</span>(&amp;thid4, <span class="hljs-literal">NULL</span>, consume, (<span class="hljs-keyword">void</span> *)&amp;t2);<br>    <span class="hljs-comment">//阻塞直到该线程结束</span><br>    <span class="hljs-built_in">pthread_join</span>(thid1, (<span class="hljs-keyword">void</span> **)&amp;ret1);<br>    <span class="hljs-built_in">pthread_join</span>(thid2, (<span class="hljs-keyword">void</span> **)&amp;ret2);<br>    <span class="hljs-built_in">pthread_join</span>(thid3, (<span class="hljs-keyword">void</span> **)&amp;ret3);<br>    <span class="hljs-built_in">pthread_join</span>(thid4, (<span class="hljs-keyword">void</span> **)&amp;ret4);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;-------------------------------------------------------------\n&quot;</span>);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;线程全部执行完毕,主进程运行结束！\n&quot;</span>);<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<div class="code-wrapper"><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;stdio.h&gt;
+#include &lt;pthread.h&gt;
+#include &lt;time.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;semaphore.h&gt;
+#include &lt;stdlib.h&gt;
+
+#define MAX_BUFFER_SIZE 10
+const int N_WORKTIME &#x3D; 10; &#x2F;&#x2F;工作次数
+&#x2F;&#x2F;三个信号量
+pthread_mutex_t mutex &#x3D; PTHREAD_MUTEX_INITIALIZER; &#x2F;&#x2F;线程间互斥
+sem_t full;                                        &#x2F;&#x2F;填充的个数
+sem_t empty;                                       &#x2F;&#x2F;空槽的个数
+
+struct my_buffer
+&#123;
+    int out;
+    int in;
+    char str[MAX_BUFFER_SIZE];
+    int num; &#x2F;&#x2F;缓冲区里字母数量
+    int is_empty;
+&#125; buffer; &#x2F;&#x2F;缓冲区结构体
+&#x2F;&#x2F;struct my_buffer *buffer;
+&#x2F;&#x2F;得到3以内的一个随机数
+int get_random()
+&#123;
+    int digit;
+    digit &#x3D; rand() % 3;
+    return digit;
+&#125;
+
+&#x2F;&#x2F;得到A～Z的一个随机字母
+char getRandChar()
+&#123;
+    char letter;
+    letter &#x3D; (char)((rand() % 26) + &#39;A&#39;);
+    return letter;
+&#125;
+
+void printTime() &#x2F;&#x2F;打印时间
+&#123;
+    time_t now;
+    struct tm *timenow; &#x2F;&#x2F;实例化tm结构指针
+    time(&amp;now);
+    timenow &#x3D; localtime(&amp;now);
+    printf(&quot;|   %02d:%02d:%02d   |  &quot;, timenow-&gt;tm_hour, timenow-&gt;tm_min, timenow-&gt;tm_sec);
+&#125;
+void produce_print(int *x)&#x2F;&#x2F;生产者进程的生产和信息打印
+&#123;
+    &#x2F;&#x2F;sleep(get_random());
+    printTime(); &#x2F;&#x2F;程序运行时间
+    &#x2F;*生产产品*&#x2F;
+    char c &#x3D; getRandChar(); &#x2F;&#x2F;随机获取字母
+    buffer.str[buffer.in] &#x3D; c;
+    buffer.in &#x3D; (buffer.in + 1) % MAX_BUFFER_SIZE;
+    buffer.is_empty &#x3D; 0; &#x2F;&#x2F;写入新产品
+    buffer.num++;
+    &#x2F;&#x2F;打印缓冲区
+    int p &#x3D; (buffer.in - 1 &gt;&#x3D; buffer.out) ? (buffer.in - 1) : (buffer.in - 1 + MAX_BUFFER_SIZE);
+    for (p; !(buffer.is_empty) &amp;&amp; p &gt;&#x3D; buffer.out; p--)
+    &#123;
+        printf(&quot;%c&quot;, buffer.str[p % MAX_BUFFER_SIZE]);
+    &#125;
+    for (int j &#x3D; 0; j &lt; 10 - buffer.num; j++)
+    &#123;
+        printf(&quot;%c&quot;, &#39;-&#39;);
+    &#125;
+    printf(&quot;   |   &quot;);                 &#x2F;&#x2F;控制输出格式
+    printf(&quot;producer_%d   |    &quot;, *x); &#x2F;&#x2F;进程id信息
+
+    printf(&quot;+ %c    |\n&quot;, c); &#x2F;&#x2F;进程操作
+&#125;
+void consume_print(int *x)&#x2F;&#x2F;消费者进程的生消费和信息打印
+&#123;
+    &#x2F;&#x2F;sleep(get_random());
+    printTime(); &#x2F;&#x2F;程序运行时间
+    &#x2F;*生产产品*&#x2F;
+    char c &#x3D; buffer.str[buffer.out];
+    buffer.out &#x3D; (buffer.out + 1) % MAX_BUFFER_SIZE;
+    buffer.is_empty &#x3D; (buffer.out &#x3D;&#x3D; buffer.in); &#x2F;&#x2F;
+    buffer.num--;
+    &#x2F;&#x2F;打印缓冲区
+    int p &#x3D; (buffer.in - 1 &gt;&#x3D; buffer.out) ? (buffer.in - 1) : (buffer.in - 1 + MAX_BUFFER_SIZE);
+    for (p; !(buffer.is_empty) &amp;&amp; p &gt;&#x3D; buffer.out; p--)
+    &#123;
+        printf(&quot;%c&quot;, buffer.str[p % MAX_BUFFER_SIZE]);
+    &#125;
+    for (int j &#x3D; 0; j &lt; 10 - buffer.num; j++)
+    &#123;
+        printf(&quot;%c&quot;, &#39;-&#39;);
+    &#125;
+    printf(&quot;   |   &quot;);                 &#x2F;&#x2F;控制输出格式
+    printf(&quot;consumer_%d   |    &quot;, *x); &#x2F;&#x2F;进程id信息
+
+    printf(&quot;- %c    |\n&quot;, c); &#x2F;&#x2F;进程操作
+&#125;
+void *produce(void *arg)
+&#123;
+    int i;
+    int *x &#x3D; (int *)arg;
+    for (i &#x3D; 0; i &lt; N_WORKTIME; i++)
+    &#123;
+        sleep(get_random());
+
+        sem_wait(&amp;empty); &#x2F;&#x2F;若空槽个数低于0阻塞
+        pthread_mutex_lock(&amp;mutex);
+
+        produce_print(x);
+
+        pthread_mutex_unlock(&amp;mutex);
+        sem_post(&amp;full);
+    &#125;
+    return (void *)1;
+&#125;
+
+void *consume(void *arg)
+&#123;
+    int i;
+    int *x &#x3D; (int *)arg;
+    for (i &#x3D; 0; i &lt; N_WORKTIME; i++)
+    &#123;
+        sleep(get_random());
+
+        sem_wait(&amp;full); &#x2F;&#x2F;若填充个数低于0阻塞
+        pthread_mutex_lock(&amp;mutex);
+
+        consume_print(x);
+
+        pthread_mutex_unlock(&amp;mutex);
+        sem_post(&amp;empty);
+    &#125;
+
+    return (void *)2;
+&#125;
+
+int main(int argc, char *argv[])
+&#123;
+    srand(time(NULL)); &#x2F;&#x2F;随机化时间种子
+
+    pthread_t thid1;
+    pthread_t thid2;
+    pthread_t thid3;
+    pthread_t thid4;
+
+    int ret1;
+    int ret2;
+    int ret3;
+    int ret4;
+    &#x2F;&#x2F;初始化信号量
+    sem_init(&amp;full, 0, 0);
+    sem_init(&amp;empty, 0, 10);
+    &#x2F;&#x2F;线程id
+    int t1 &#x3D; 1;
+    int t2 &#x3D; 2;
+    &#x2F;&#x2F;初始化缓冲区
+    buffer.out &#x3D; 0;
+    buffer.in &#x3D; 0;
+    buffer.is_empty &#x3D; 1;
+    buffer.num &#x3D; 0;
+
+    printf(&quot;---------------------Thread Execution Table------------------\n&quot;);
+    printf(&quot;-------------------------------------------------------------\n&quot;);
+    printf(&quot;|     time     |  buffer data  | current thread | operation |\n&quot;);
+    printf(&quot;-------------------------------------------------------------\n&quot;);
+    &#x2F;&#x2F;创建线程
+    pthread_create(&amp;thid1, NULL, produce, (void *)&amp;t1);
+    pthread_create(&amp;thid2, NULL, consume, (void *)&amp;t1);
+    pthread_create(&amp;thid3, NULL, produce, (void *)&amp;t2);
+    pthread_create(&amp;thid4, NULL, consume, (void *)&amp;t2);
+    &#x2F;&#x2F;阻塞直到该线程结束
+    pthread_join(thid1, (void **)&amp;ret1);
+    pthread_join(thid2, (void **)&amp;ret2);
+    pthread_join(thid3, (void **)&amp;ret3);
+    pthread_join(thid4, (void **)&amp;ret4);
+    printf(&quot;-------------------------------------------------------------\n&quot;);
+    printf(&quot;线程全部执行完毕,主进程运行结束！\n&quot;);
+    return 0;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
 <h4 id="程序初值和运行结果-2"><a class="markdownIt-Anchor" href="#程序初值和运行结果-2"></a> 程序初值和运行结果</h4>
 <p>线程</p>
 <p><img src="/posts/3994810f/image-20211130090518453.png" srcset="/img/loading.gif" lazyload alt="image-20211130090518453"></p>
@@ -640,6 +1206,8 @@
 
 
 
+  
+    
   
 
 
