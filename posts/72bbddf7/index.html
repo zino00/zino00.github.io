@@ -14,11 +14,11 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="安装使用hexo-abbrlink来生成惟一的不带中文的博客链接及解决与hexo-asset-image不适配的问题">
+  <meta name="description" content="cmake教程的学习记录">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-  <title>使用hexo-abbrlink及解决与hexo-asset-image不适配的问题 - Zino&#39;s Blog</title>
+  <title>cmake学习 - Zino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
@@ -163,7 +163,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="使用hexo-abbrlink及解决与hexo-asset-image不适配的问题">
+            <span class="h2" id="subtitle" title="cmake学习">
               
             </span>
 
@@ -173,8 +173,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2022-01-03 12:00" pubdate>
-        2022年1月3日 中午
+      <time datetime="2022-02-01 19:48" pubdate>
+        2022年2月1日 晚上
       </time>
     </span>
   
@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      315 字
+      335 字
     </span>
   
 
@@ -233,33 +233,32 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">使用hexo-abbrlink及解决与hexo-asset-image不适配的问题</h1>
+            <h1 style="display: none">cmake学习</h1>
             
             <div class="markdown-body">
-              <p>插件功能：</p>
-<p>全自动生成惟一的不带中文的博客链接</p>
-<p>原理：</p>
-<p>对<code>标题</code>+<code>时间</code>进行<code>md5</code>而后再转<code>base64</code>，保存在<code>front-matter</code>中。</p>
-<p>安装：</p>
-<figure class="highlight ada"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs ada">npm install hexo-abbrlink <span class="hljs-comment">--save</span><br></code></pre></div></td></tr></table></figure>
-<p>配置博客站点配置文件_config.yml：</p>
-<figure class="highlight dts"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs dts"><span class="hljs-symbol">permalink:</span> posts/:abbrlink/<br><span class="hljs-meta"># abbrlink config</span><br><span class="hljs-symbol">abbrlink:</span><br><span class="hljs-symbol">  alg:</span> crc32  <span class="hljs-meta">#support crc16(default) and crc32</span><br><span class="hljs-symbol">  rep:</span> hex    <span class="hljs-meta">#support dec(default) and hex</span><br></code></pre></div></td></tr></table></figure>
-<p>测试：</p>
-<figure class="highlight ebnf"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs ebnf"><span class="hljs-attribute">hexo clean</span><br><span class="hljs-attribute">hexo g</span><br><span class="hljs-attribute">hexo s</span><br></code></pre></div></td></tr></table></figure>
-<p>问题：</p>
-<p>链接是修改了，但是图片不能成功显示</p>
-<p>后来发现是与hexo-asset-image不能适配的问题，hexo-abbrlink使用后导致图片路径变化，所以不能成功识别图片，所以需要修改下面的文件</p>
-<p>\node_modules\hexo-asset-image\index.js<br>
-1、在源码的12行附近<code>var link = data.permalink;</code>这一行的下面，<strong>添加</strong> 一行<code>var abbrlink = data.abbrlink</code><br>
-（意思是定义一个变量abbrlink）<br>
-2、在44行附近，源码的<code>$(this).attr('src', config.root + link + src);</code>这一行，<strong>修改</strong> 为下面一行：<br>
-<code>$(this).attr('src', config.root + 'posts/' + abbrlink + '/' + src); //适配abbrlink</code><br>
-（意思是生成的图片链接中，拼接abbrlink）</p>
-<p>然后重新hexo clean 和 hexo g，即可生效。<br>
-_posts文件夹下的文章，按照自己喜欢的方式整理，生成的链接是正常的，在typora中可以正常显示。</p>
-<p>参考链接：</p>
-<p><a target="_blank" rel="noopener" href="https://github.com/rozbo/hexo-abbrlink/issues/19">https://github.com/rozbo/hexo-abbrlink/issues/19</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.shangmayuan.com/a/8863defeb3264ffd84335151.html">https://www.shangmayuan.com/a/8863defeb3264ffd84335151.html</a></p>
+              <h1 id="第1步基本起点"><a class="markdownIt-Anchor" href="#第1步基本起点"></a> 第1步：基本起点</h1>
+<p>对于简单的项目，只需要一个三行<code>CMakeLists.txt</code>文件。这将是我们教程的起点。在目录中创建一个 <code>CMakeLists.txt</code>文件：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.10</span>)<br><br><span class="hljs-comment"># set the project name</span><br><span class="hljs-keyword">project</span>(Tutorial)<br><br><span class="hljs-comment"># add the executable</span><br><span class="hljs-keyword">add_executable</span>(Tutorial tutorial.cxx)<br></code></pre></div></td></tr></table></figure>
+<p>然后再创建一个待编译的源文件<strong>tutorial.cxx</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs c++"><span class="hljs-comment">// A simple program that computes the square root of a number</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;cmath&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;cstdlib&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;iostream&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;string&gt;</span></span><br><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">int</span> argc, <span class="hljs-keyword">char</span>* argv[])</span></span><br><span class="hljs-function"></span>&#123;<br>  <span class="hljs-keyword">if</span> (argc &lt; <span class="hljs-number">2</span>) &#123;<br>    std::cout &lt;&lt; <span class="hljs-string">&quot;Usage: &quot;</span> &lt;&lt; argv[<span class="hljs-number">0</span>] &lt;&lt; <span class="hljs-string">&quot; number&quot;</span> &lt;&lt; std::endl;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>  &#125;<br><br>  <span class="hljs-comment">// convert input to double</span><br>  <span class="hljs-keyword">const</span> <span class="hljs-keyword">double</span> inputValue = <span class="hljs-built_in">atof</span>(argv[<span class="hljs-number">1</span>]);<br><br>  <span class="hljs-comment">// calculate square root</span><br>  <span class="hljs-keyword">const</span> <span class="hljs-keyword">double</span> outputValue = <span class="hljs-built_in">sqrt</span>(inputValue);<br>  std::cout &lt;&lt; <span class="hljs-string">&quot;The square root of &quot;</span> &lt;&lt; inputValue &lt;&lt; <span class="hljs-string">&quot; is &quot;</span> &lt;&lt; outputValue<br>            &lt;&lt; std::endl;<br>  <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br></code></pre></div></td></tr></table></figure>
+<h2 id="构建并运行"><a class="markdownIt-Anchor" href="#构建并运行"></a> 构建并运行</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs terminal">mkdir Step1_build<br></code></pre></div></td></tr></table></figure>
+<h2 id="添加版本号和配置的头文件"><a class="markdownIt-Anchor" href="#添加版本号和配置的头文件"></a> 添加版本号和配置的头文件</h2>
+<h2 id="指定c标准"><a class="markdownIt-Anchor" href="#指定c标准"></a> 指定C++标准</h2>
+<h2 id="重建"><a class="markdownIt-Anchor" href="#重建"></a> 重建</h2>
+<h1 id="第2步添加库"><a class="markdownIt-Anchor" href="#第2步添加库"></a> 第2步：添加库</h1>
+<h1 id="第3步为库添加使用要求"><a class="markdownIt-Anchor" href="#第3步为库添加使用要求"></a> 第3步：为库添加使用要求</h1>
+<h1 id="第4步安装和测试"><a class="markdownIt-Anchor" href="#第4步安装和测试"></a> 第4步：安装和测试</h1>
+<h2 id="安装规则"><a class="markdownIt-Anchor" href="#安装规则"></a> 安装规则</h2>
+<h3 id="测试支持"><a class="markdownIt-Anchor" href="#测试支持"></a> 测试支持</h3>
+<h1 id="第5步添加系统自省"><a class="markdownIt-Anchor" href="#第5步添加系统自省"></a> 第5步：添加系统自省</h1>
+<h1 id="第6步添加自定义命令和生成的文件"><a class="markdownIt-Anchor" href="#第6步添加自定义命令和生成的文件"></a> 第6步：添加自定义命令和生成的文件</h1>
+<h1 id="第7步打包安装程序"><a class="markdownIt-Anchor" href="#第7步打包安装程序"></a> 第7步：打包安装程序</h1>
+<h1 id="第8步添加对测试仪表板的支持"><a class="markdownIt-Anchor" href="#第8步添加对测试仪表板的支持"></a> 第8步：添加对测试仪表板的支持</h1>
+<h1 id="第9步选择静态或共享库"><a class="markdownIt-Anchor" href="#第9步选择静态或共享库"></a> 第9步：选择静态或共享库</h1>
+<h1 id="第10步添加生成器表达式"><a class="markdownIt-Anchor" href="#第10步添加生成器表达式"></a> 第10步：添加生成器表达式</h1>
+<h1 id="第11步添加导出配置"><a class="markdownIt-Anchor" href="#第11步添加导出配置"></a> 第11步：添加导出配置</h1>
+<h1 id="第12步打包调试和发布"><a class="markdownIt-Anchor" href="#第12步打包调试和发布"></a> 第12步：打包调试和发布</h1>
 
             </div>
             <hr>
@@ -269,7 +268,7 @@ _posts文件夹下的文章，按照自己喜欢的方式整理，生成的链�
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/hexo/">hexo</a>
+                      <a class="hover-with-bg" href="/categories/linux%E5%9F%BA%E7%A1%80/">linux基础</a>
                     
                   </div>
                 
@@ -277,7 +276,9 @@ _posts文件夹下的文章，按照自己喜欢的方式整理，生成的链�
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/hexo/">hexo</a>
+                      <a class="hover-with-bg" href="/tags/gdb/">gdb</a>
+                    
+                      <a class="hover-with-bg" href="/tags/linux/">linux</a>
                     
                   </div>
                 
@@ -289,29 +290,6 @@ _posts文件夹下的文章，按照自己喜欢的方式整理，生成的链�
                   
                 </p>
               
-              
-                <div class="post-prevnext">
-                  <article class="post-prev col-6">
-                    
-                    
-                      <a href="/posts/8ce3e425/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">操作系统笔记</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
-                  </article>
-                  <article class="post-next col-6">
-                    
-                    
-                      <a href="/posts/cf547d62/">
-                        <span class="hidden-mobile">利用OpenSSL进行SSL通信的python实现</span>
-                        <span class="visible-mobile">下一篇</span>
-                        <i class="iconfont icon-arrowright"></i>
-                      </a>
-                    
-                  </article>
-                </div>
               
             </div>
 
@@ -327,8 +305,8 @@ _posts文件夹下的文章，按照自己喜欢的方式整理，生成的链�
     
       <script type="text/javascript">
         var disqus_config = function() {
-          this.page.url = 'https://zino00.github.io/posts/7e71e806/';
-          this.page.identifier = '/posts/7e71e806/';
+          this.page.url = 'https://zino00.github.io/posts/72bbddf7/';
+          this.page.identifier = '/posts/72bbddf7/';
         };
         Fluid.utils.loadComments('#disqus_thread', function() {
           var d = document, s = d.createElement('script');
