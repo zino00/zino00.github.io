@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      4k 字
+      3.7k 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      61
+      57
        分钟
     </span>
   
@@ -236,8 +236,7 @@
             <h1 style="display: none">SpringBoot+Vue前后端分离项目之后端SpringBoot部分</h1>
             
             <div class="markdown-body">
-              <h1 id="springbootvue前后端分离项目之后端springboot部分"><a class="markdownIt-Anchor" href="#springbootvue前后端分离项目之后端springboot部分"></a> SpringBoot+Vue前后端分离项目之后端SpringBoot部分</h1>
-<blockquote>
+              <blockquote>
 <p>本文章对SpringBoot开发后端项目结构做了简单介绍，并实现了用SpringBoot+MySQL实现操作数据库增删改查的后端功能，与本博客的另一篇文章 <a target="_blank" rel="noopener" href="https://www.makerhu.com/posts/78e35d03/">SpringBoot+Vue前后端分离项目之前端vue部分</a>共同组成了前后端分离项目的整体。</p>
 </blockquote>
 <h2 id="一-环境准备"><a class="markdownIt-Anchor" href="#一-环境准备"></a> 一、环境准备</h2>
@@ -251,21 +250,21 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs mysql">create table person(<br>    username varchar(10) not null,<br>    name varchar(20) not null,<br>    age int,<br>    teleno char(11),<br>    primary key ( name )<br>);<br>create table users(<br>    username varchar(10) not null,<br>    pass varchar(8) not null,<br>    primary key ( username )<br>);<br></code></pre></div></td></tr></table></figure>
 <p>在idea项目新建项目中选择spring initializr</p>
 <p>按下图选择</p>
-<p>![image-20220418113029086](spring boot项目入门(mysql数据库操作)/image-20220418113029086.png)</p>
+<p><img src="/posts/c43b2e6b/image-20220418113029086.png" srcset="/img/loading.gif" lazyload alt="image-20220418113029086"></p>
 <p>安装下面三个依赖:</p>
 <p>其中spring data JDBC依赖提供了JDCBtemplate的接口，可以让我们直接通过接口操作数据库</p>
 <p>点击完成就创建好了一个项目</p>
-<p>![image-20220418113151194](spring boot项目入门(mysql数据库操作)/image-20220418113151194.png)</p>
+<p><img src="/posts/c43b2e6b/image-20220418113151194.png" srcset="/img/loading.gif" lazyload alt="image-20220418113151194"></p>
 <p>初始项目结构如下</p>
 <p>其中Ex4springApplication就是我们的主文件，通过这个来启动整个文件</p>
-<p>![image-20220418113827792](spring boot项目入门(mysql数据库操作)/image-20220418113827792.png)</p>
+<p><img src="/posts/c43b2e6b/image-20220418113827792.png" srcset="/img/loading.gif" lazyload alt="image-20220418113827792"></p>
 <p>这样还不能成功启动，还需要配置一下数据库</p>
-<p>![image-20220418130249742](spring boot项目入门(mysql数据库操作)/image-20220418130249742.png)</p>
+<p><img src="/posts/c43b2e6b/image-20220418130249742.png" srcset="/img/loading.gif" lazyload alt="image-20220418130249742"></p>
 <p>然后点击构建就可以看到项目成功启动了</p>
-<p>![image-20220418130326779](spring boot项目入门(mysql数据库操作)/image-20220418130326779.png)</p>
+<p><img src="/posts/c43b2e6b/image-20220418130326779.png" srcset="/img/loading.gif" lazyload alt="image-20220418130326779"></p>
 <h2 id="三-项目结构"><a class="markdownIt-Anchor" href="#三-项目结构"></a> 三、项目结构</h2>
 <p>下面展示一下最终项目的结构</p>
-<p>![image-20220418124653232](spring boot项目入门(mysql数据库操作)/image-20220418124653232.png)</p>
+<p><img src="/posts/c43b2e6b/image-20220418124653232.png" srcset="/img/loading.gif" lazyload alt="image-20220418124653232"></p>
 <ul>
 <li>
 <p>数据持久层</p>
@@ -358,20 +357,20 @@
 <p>当然，在实际中我并没有直接一次性直接将一整个项目搭好，而是从一个接口开始，比如先将person/add这个接口调通，那就只要逐级实现person有关的文件就好了，先自底向上调通一个接口，这样整个项目的框架就有了，那之后的接口实现不过是重复造轮子罢了。</p>
 <h3 id="personadd测试"><a class="markdownIt-Anchor" href="#personadd测试"></a> /person/add测试</h3>
 <p>对于在控制器中用<code>@RequestBody</code>注解注入的参数，我们选择row,然后用json格式输入数据，成功后可以看到反馈</p>
-<p>![image-20220418133245835](spring boot项目入门(mysql数据库操作)/image-20220418133245835.png)</p>
-<p>![image-20220418133126294](spring boot项目入门(mysql数据库操作)/image-20220418133126294.png)</p>
+<p><img src="/posts/c43b2e6b/image-20220418133245835.png" srcset="/img/loading.gif" lazyload alt="image-20220418133245835"></p>
+<p><img src="/posts/c43b2e6b/image-20220418133126294.png" srcset="/img/loading.gif" lazyload alt="image-20220418133126294"></p>
 <h3 id="personlist测试"><a class="markdownIt-Anchor" href="#personlist测试"></a> /person/list测试</h3>
-<p>![image-20220418133515503](spring boot项目入门(mysql数据库操作)/image-20220418133515503.png)</p>
+<p><img src="/posts/c43b2e6b/image-20220418133515503.png" srcset="/img/loading.gif" lazyload alt="image-20220418133515503"></p>
 <h3 id="userdelete测试"><a class="markdownIt-Anchor" href="#userdelete测试"></a> /user/delete测试</h3>
 <p>对于用@RequestParam注解给定的参数，我们采用params形式来填写参数</p>
-<p>![image-20220418133556100](spring boot项目入门(mysql数据库操作)/image-20220418133556100.png)</p>
-<p>![image-20220418133538946](spring boot项目入门(mysql数据库操作)/image-20220418133538946.png)</p>
+<p><img src="/posts/c43b2e6b/image-20220418133556100.png" srcset="/img/loading.gif" lazyload alt="image-20220418133556100"></p>
+<p><img src="/posts/c43b2e6b/image-20220418133538946.png" srcset="/img/loading.gif" lazyload alt="image-20220418133538946"></p>
 <h3 id="userlist测试"><a class="markdownIt-Anchor" href="#userlist测试"></a> /user/list测试</h3>
-<p>![image-20220418133702228](spring boot项目入门(mysql数据库操作)/image-20220418133702228.png)</p>
+<p><img src="/posts/c43b2e6b/image-20220418133702228.png" srcset="/img/loading.gif" lazyload alt="image-20220418133702228"></p>
 <p>到这里，我们这个后端项目的所有的接口都完成了，接下来就是在前端调用这些接口来实现一个直观的页面了。</p>
 <p>前端项目预览：</p>
-<p>![image-20220418133834884](spring boot项目入门(mysql数据库操作)/image-20220418133834884.png)</p>
-<p>![image-20220418133858620](spring boot项目入门(mysql数据库操作)/image-20220418133858620.png)</p>
+<p><img src="/posts/c43b2e6b/image-20220418133834884.png" srcset="/img/loading.gif" lazyload alt="image-20220418133834884"></p>
+<p><img src="/posts/c43b2e6b/image-20220418133858620.png" srcset="/img/loading.gif" lazyload alt="image-20220418133858620"></p>
 <p>参考：</p>
 <p>主要参考了下面的第一篇文章学习了SpringBoot的基本架构，并以此为基础实现了自己的项目需求</p>
 <p><a target="_blank" rel="noopener" href="https://www.makerhu.com/posts/5b2ca0db/">快速上手SpringBoot项目（登录注册保姆级教程）</a></p>
@@ -387,7 +386,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/javeweb/">javeweb</a>
+                      <a class="hover-with-bg" href="/categories/JavaWeb/">JavaWeb</a>
                     
                   </div>
                 
@@ -414,12 +413,18 @@
                   <article class="post-prev col-6">
                     
                     
+                      <a href="/posts/3de7737d/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">SpringBoot+Vue前后端分离项目之前端vue部分</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/posts/3de7737d/">
-                        <span class="hidden-mobile">SpringBoot+Vue前后端分离项目之前端vue部分</span>
+                      <a href="/posts/ae72ca8e/">
+                        <span class="hidden-mobile">bcc安装及基本使用教程</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
