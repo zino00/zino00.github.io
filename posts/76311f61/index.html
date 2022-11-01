@@ -1,0 +1,790 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.jpg">
+  <link rel="icon" href="/img/favicon.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="计算机网络课程实验四">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+  <title>计算机网络Lab1-WiresharkLab:Ethernet-and-ARP-v7.0 - Zino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"zino00.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"f45dcd001d67e8f9d84f91248ea31abf","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Zino's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/post.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="计算机网络Lab1-WiresharkLab:Ethernet-and-ARP-v7.0">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-05-13 17:50" pubdate>
+        2022年5月13日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.4k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      45
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">计算机网络Lab1-WiresharkLab:Ethernet-and-ARP-v7.0</h1>
+            
+            <div class="markdown-body">
+              <h1 id="wireshark-lab-ethernet-and-arp-v70"><a class="markdownIt-Anchor" href="#wireshark-lab-ethernet-and-arp-v70"></a> Wireshark Lab: Ethernet and ARP   v7.0</h1>
+<h2 id="1-capturing-and-analyzing-ethernet-frames"><a class="markdownIt-Anchor" href="#1-capturing-and-analyzing-ethernet-frames"></a> 1. Capturing and analyzing Ethernet frames</h2>
+<h2 id="分析http-get的以太网帧"><a class="markdownIt-Anchor" href="#分析http-get的以太网帧"></a> 分析HTTP GET的以太网帧</h2>
+<p>下面采用了本机自己抓包的数据</p>
+<h3 id="1"><a class="markdownIt-Anchor" href="#1"></a> 1.</h3>
+<blockquote>
+<p>What is the 48-bit Ethernet address of your computer?<br>
+您的计算机的48位以太网地址是多少？</p>
+</blockquote>
+<p><img src="/posts/76311f61/image-20220512154013108.png" srcset="/img/loading.gif" lazyload alt="image-20220512154013108"></p>
+<p>如图所示，我的计算机48位以太网地址为d8:f2:ca:ce:19:ef</p>
+<h3 id="2"><a class="markdownIt-Anchor" href="#2"></a> 2.</h3>
+<blockquote>
+<p>What is the 48-bit destination address in the Ethernet frame? Is this the Ethernet address of <a target="_blank" rel="noopener" href="http://gaia.cs.umass.edu">gaia.cs.umass.edu</a>? (Hint: the answer is no). What device has this as its Ethernet address? [Note: this is an important question, and one that students sometimes get wrong. Re-read pages 468-469 in the text and make sure you understand the answer here.]<br>
+以太网帧中的48位目的地址是什么？这是gaia.cs.umass.edu的以太网地址吗？(提示：答案是否定的)。哪台设备的以太网地址为该地址？</p>
+</blockquote>
+<p><img src="/posts/76311f61/image-20220512154228837.png" srcset="/img/loading.gif" lazyload alt="image-20220512154228837"></p>
+<p>目的主机48位目的地址为b4:09:31:64:8d:02，这并不是gaia.cs.umass.edu的以太网地址，而是路由器的MAC地址。</p>
+<p>我们发出的报文会先到达我们的路由器，经过层层转发最终才会到达目的地址。</p>
+<h3 id="3"><a class="markdownIt-Anchor" href="#3"></a> 3.</h3>
+<blockquote>
+<p>Give the hexadecimal value for the two-byte Frame type field. What upper layer protocol does this correspond to?</p>
+<p>为两字节帧类型字段指定十六进制值。这对应于哪个上层协议？</p>
+</blockquote>
+<p><img src="/posts/76311f61/image-20220512154858090.png" srcset="/img/loading.gif" lazyload alt="image-20220512154858090"></p>
+<p>如图，帧类型字段的十六进制值为 0x0800。这对应于 IP 协议，代表<strong>IP协议帧</strong></p>
+<h3 id="4"><a class="markdownIt-Anchor" href="#4"></a> 4.</h3>
+<blockquote>
+<p>How many bytes from the very start of the Ethernet frame does the ASCII “G” in “GET” appear in the Ethernet frame?</p>
+<p>从以太网帧的开头算起，GET中的ASCII“G”会出现在以太网帧中多少个字节？</p>
+</blockquote>
+<p><img src="/posts/76311f61/image-20220512160229345.png" srcset="/img/loading.gif" lazyload alt="image-20220512160229345"></p>
+<p>如图所示,前三行每行16个字节，第四行有6个字节，所以我们可以看到get中的G出现在第55个字节处</p>
+<p>前54个字节分配依次是14个字节的以太网帧、20个字节的IP数据报头和20个字节的TCP报文头</p>
+<h2 id="分析http-ok-响应的以太网帧"><a class="markdownIt-Anchor" href="#分析http-ok-响应的以太网帧"></a> 分析HTTP OK 响应的以太网帧</h2>
+<h3 id="5"><a class="markdownIt-Anchor" href="#5"></a> 5.</h3>
+<blockquote>
+<p>What is the value of the Ethernet source address? Is this the address of your computer, or of <a target="_blank" rel="noopener" href="http://gaia.cs.umass.edu">gaia.cs.umass.edu</a> (Hint: the answer is no). What device has this as its Ethernet address?<br>
+以太网源地址的值是多少？这是您计算机的地址，还是gaia.cs.umass.edu的地址(提示：答案是否定的)。哪台设备的以太网地址为该地址？</p>
+</blockquote>
+<p><img src="/posts/76311f61/image-20220512161041726.png" srcset="/img/loading.gif" lazyload alt="image-20220512161041726"></p>
+<p>目的地址为b4:09:31:64:8d:02</p>
+<p>不是我的计算机的Mac地址也不是gaia.cs.umass.edu的地址</p>
+<p>这是路由器的MAC地址</p>
+<p>和上面的问题同理，经过层层转发，到达我的计算机时收到的报文的发送方实际是我当前网络的路由器。</p>
+<h3 id="6"><a class="markdownIt-Anchor" href="#6"></a> 6.</h3>
+<blockquote>
+<p>What is the destination address in the Ethernet frame? Is this the Ethernet address of your computer?</p>
+<p>以太网帧中的目的地址是什么？这是您计算机的以太网地址吗？</p>
+</blockquote>
+<p><img src="/posts/76311f61/image-20220512161141031.png" srcset="/img/loading.gif" lazyload alt="image-20220512161141031"></p>
+<p>目的地址为d8:f2:ca:ce:19:ef</p>
+<p>是的，这是我电脑的MAC地址</p>
+<h3 id="7"><a class="markdownIt-Anchor" href="#7"></a> 7.</h3>
+<blockquote>
+<p>Give the hexadecimal value for the two-byte Frame type field. What upper layer protocol does this correspond to?</p>
+<p>为两字节帧类型字段指定十六进制值。这对应于哪个上层协议？</p>
+</blockquote>
+<p><img src="/posts/76311f61/image-20220512161638928.png" srcset="/img/loading.gif" lazyload alt="image-20220512161638928"></p>
+<p>如图，帧类型字段的十六进制值为 0x0800。这对应于 IP 协议，具体来说，帧类型字段对应于以太网帧的有效负载将到达的层</p>
+<h3 id="8"><a class="markdownIt-Anchor" href="#8"></a> 8.</h3>
+<blockquote>
+<p>How many bytes from the very start of the Ethernet frame does the ASCII “O” in “OK” (i.e., the HTTP response code) appear in the Ethernet frame?</p>
+<p>从以太网帧的起始处算起，以太网帧中会出现“OK”中的ASCII“O”(即HTTP响应码)多少个字节？</p>
+</blockquote>
+<p><img src="/posts/76311f61/image-20220512202603844.png" srcset="/img/loading.gif" lazyload alt="image-20220512202603844"></p>
+<p>从第一个帧开始算起，我们可以发现到出现OK前共有54个字节，这54个字节分配依次是14个字节的以太网帧、20个字节的IP数据报头和20个字节的TCP报文头</p>
+<h2 id="2the-address-resolution-protocol"><a class="markdownIt-Anchor" href="#2the-address-resolution-protocol"></a> 2.The Address Resolution Protocol</h2>
+<h3 id="9"><a class="markdownIt-Anchor" href="#9"></a> 9.</h3>
+<blockquote>
+<p>Write down the contents of your computer’s ARP cache. What is the meaning of each column value?</p>
+<p>写下您计算机的ARP缓存的内容。每个列值的含义是什么？</p>
+</blockquote>
+<p><img src="/posts/76311f61/image-20220512162241820.png" srcset="/img/loading.gif" lazyload alt="image-20220512162241820"></p>
+<p>Internet Address列表示IP地址，Physical Address列表示MAC地址，type 表示协议类型分为动态和静态，动态类型会在一个老化时间后被刷新，静态条目则会一直存在（具体区别见<a href="#EX2">ex2</a>)</p>
+<p>不同的interface表示不同的网络接口的ARP表</p>
+<h3 id="10"><a class="markdownIt-Anchor" href="#10"></a> 10.</h3>
+<blockquote>
+<p>What are the hexadecimal values for the source and destination addresses in the Ethernet frame containing the ARP request message?</p>
+<p>包含ARP请求消息的以太网帧中源地址和目的地址的十六进制值是多少？</p>
+</blockquote>
+<p>这部分使用了实验提供的抓包结果</p>
+<p><img src="/posts/76311f61/image-20220512171645821.png" srcset="/img/loading.gif" lazyload alt="image-20220512171645821"></p>
+<p>其源mac地址为00:d0:59:a9:3d:68</p>
+<p>目的地址为ff:ff:ff:ff:ff:ff，这是广播地址</p>
+<h3 id="11"><a class="markdownIt-Anchor" href="#11"></a> 11.</h3>
+<blockquote>
+<p>Give the hexadecimal value for the two-byte Ethernet Frame type field. What upper layer protocol does this correspond to?</p>
+<p>为双字节以太网帧类型字段指定十六进制值。这对应于哪个上层协议？</p>
+</blockquote>
+<p><img src="/posts/76311f61/image-20220512171733144.png" srcset="/img/loading.gif" lazyload alt="image-20220512171733144"></p>
+<p>以太网帧类型字段的十六进制值为 0x0806，这用于ARP协议</p>
+<h3 id="12"><a class="markdownIt-Anchor" href="#12"></a> 12.</h3>
+<blockquote>
+<p>Download the ARP specification from <a href="ftp://ftp.rfc-editor.org/in-notes/std/std37.txt">ftp://ftp.rfc-editor.org/in-notes/std/std37.txt</a>. A readable, detailed discussion of ARP is also at <a target="_blank" rel="noopener" href="http://www.erg.abdn.ac.uk/users/gorry/course/inet-pages/arp.html">http://www.erg.abdn.ac.uk/users/gorry/course/inet-pages/arp.html</a>.</p>
+<ul>
+<li>a) How many bytes from the very beginning of the Ethernet frame does the ARP opcode field begin?</li>
+</ul>
+<p>从ftp://ftp.rfc-editor.org/in-notes/std/std37.txt.下载地址解析协议规范。有关地址解析协议的可读性详细讨论也可在http://www.erg.abdn.ac.uk/users/gorry/course/inet-pages/arp.html.上找到。</p>
+<ul>
+<li>a)ARP操作码字段从以太网帧的开头开始多少个字节？</li>
+</ul>
+</blockquote>
+<p><img src="/posts/76311f61/image-20220512171607838.png" srcset="/img/loading.gif" lazyload alt="image-20220512171607838"></p>
+<p>如图可以发现，</p>
+<p>从以太网帧最开始到ARP 操作码字段开始中间共有20 个字节。</p>
+<blockquote>
+<ul>
+<li>b) What is the value of the opcode field within the ARP-payload part of the Ethernet frame in which an ARP request is made?</li>
+<li>b)发出ARP请求的以太网帧的ARP有效负载部分的操作码字段的值是多少？</li>
+</ul>
+</blockquote>
+<p>同样从上图可以看出，请求的 ARP 有效负载的操作码字段的十六进制值为 0x0001.</p>
+<blockquote>
+<ul>
+<li>c) Does the ARP message contain the IP address of the sender?</li>
+<li>c)ARP消息是否包含发送方的IP地址？</li>
+</ul>
+</blockquote>
+<p><img src="/posts/76311f61/image-20220512171819649.png" srcset="/img/loading.gif" lazyload alt="image-20220512171819649"></p>
+<p>是的，会包含</p>
+<p>如图，该ARP请求包含的发送方IP地址为192.168.1.105</p>
+<blockquote>
+<ul>
+<li>
+<p>d) Where in the ARP request does the “question” appear – the Ethernet address of the machine whose corresponding IP address is being queried?</p>
+</li>
+<li>
+<p>d)在ARP请求中问题出现在哪里-正在查询其相应IP地址的机器的以太网地址？</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/posts/76311f61/image-20220512172016452.png" srcset="/img/loading.gif" lazyload alt="image-20220512172016452"></p>
+<p>&quot;target MAC address”字段设置为 00:00:00:00:00:00</p>
+<p>这表明它当前目的mac地址未知，它正在查询其对应 IP 地址（192.168.1.1)的机器的mac地址</p>
+<h3 id="13"><a class="markdownIt-Anchor" href="#13"></a> 13.</h3>
+<blockquote>
+<p>Now find the ARP reply that was sent in response to the ARP request.</p>
+<ul>
+<li>a) How many bytes from the very beginning of the Ethernet frame does the ARP opcode field begin?</li>
+<li>b) What is the value of the opcode field within the ARP-payload part of the Ethernet frame in which an ARP response is made?</li>
+<li>c) Where in the ARP message does the “answer” to the earlier ARP request appear – the IP address of the machine having the Ethernet address whose corresponding IP address is being queried?</li>
+</ul>
+<p>现在查找响应ARP请求而发送的ARP回复。</p>
+<ul>
+<li>a)ARP操作码字段从以太网帧的开头开始多少个字节？</li>
+</ul>
+</blockquote>
+<p><img src="/posts/76311f61/image-20220512172138145.png" srcset="/img/loading.gif" lazyload alt="image-20220512172138145"></p>
+<p>和上题一样</p>
+<p>ARP 操作码字段从以太网帧最开始的20 个字节后开始</p>
+<blockquote>
+<ul>
+<li>b)在进行ARP响应的以太网帧的ARP有效负载部分中，操作码字段的值是多少？</li>
+</ul>
+</blockquote>
+<p>如图，可以发现是0x0002，该字段用于表示回复</p>
+<blockquote>
+<ul>
+<li>c)在ARP消息中，对先前ARP请求的“回答”出现在哪里–具有正在查询其相应IP地址的以太网地址的机器的IP地址？</li>
+</ul>
+</blockquote>
+<p><img src="/posts/76311f61/image-20220512172410321.png" srcset="/img/loading.gif" lazyload alt="image-20220512172410321"></p>
+<p>之前的 ARP 请求的回答出现在“sender MAC address”字段中，其中包含 IP 地址为 192.168.1.1 的发送方的以太网地址 00:06:25:da:af:73</p>
+<h3 id="14"><a class="markdownIt-Anchor" href="#14"></a> 14.</h3>
+<blockquote>
+<p>What are the hexadecimal values for the source and destination addresses in the Ethernet frame containing the ARP reply message?</p>
+<p>包含ARP回复消息的以太网帧中源地址和目的地址的十六进制值是多少？</p>
+</blockquote>
+<p>源地址的十六进制值为 00:06:25:da:af:73 ，目标地址为 00:d0:59:a9:3d:68</p>
+<p><img src="/posts/76311f61/image-20220512172717516.png" srcset="/img/loading.gif" lazyload alt="image-20220512172717516"></p>
+<h3 id="15"><a class="markdownIt-Anchor" href="#15"></a> 15.</h3>
+<blockquote>
+<p>Open the ethernet-ethereal-trace-1 trace file in <a target="_blank" rel="noopener" href="http://gaia.cs.umass.edu/wireshark-labs/wireshark-traces.zip">http://gaia.cs.umass.edu/wireshark-labs/wireshark-traces.zip</a>. The first and second ARP packets in this trace correspond to an ARP request sent by the computer running Wireshark, and the ARP reply sent to the computer running Wireshark by the computer with the ARP-requested Ethernet address. But there is yet another computer on this network, as indicated by packet 6 – another ARP request. Why is there no ARP reply (sent in response to the ARP request in packet 6) in the packet trace?Figure 4.25 in the text shows the NAT translation table in the NAT router.Using your answers to 1-8 above, fill in the NAT translation table entries for HTTP connection considered in questions 1-8 above.</p>
+<p>在-1\f25 <a target="_blank" rel="noopener" href="http://gaia.cs.umass.edu/wireshark-labs/wireshark-traces.zip.-1%5Cf6%E4%B8%AD%E6%89%93%E5%BC%80-1%5Cf25">http://gaia.cs.umass.edu/wireshark-labs/wireshark-traces.zip.-1\f6中打开-1\f25</a> ETERNET-Etheral-TRACE-1\f6跟踪文件。</p>
+<p>此跟踪中的第一个和第二个ARP数据包对应于运行Wireshark的计算机发送的ARP请求，以及使用ARP请求的以太网地址的计算机向运行Wireshark的计算机发送的ARP回复。但此网络上还有另一台计算机，如数据包6所示-另一个ARP请求。</p>
+<p>为什么在信息包跟踪中没有ARP回复(响应信息包6中的ARP请求而发送)？正文中的图4.25显示了NAT路由器中的NAT转换表。使用您对上述1-8的答案，填写上述问题1-8中考虑的HTTP连接的NAT转换表项</p>
+</blockquote>
+<p>因为查询APR报文是在广播帧中发送的（子网中的所有电脑都能收到），而响应APR报文在一个标准帧中发送（只有发送请求的那台电脑能收到）。</p>
+<h2 id="extra-credit"><a class="markdownIt-Anchor" href="#extra-credit"></a> Extra Credit:</h2>
+<blockquote>
+<p>EX-1. The arp command:</p>
+<p>arp -s InetAddr EtherAddr</p>
+<p>allows you to manually add an entry to the ARP cache that resolves the IP address InetAddr to the physical address EtherAddr. What would happen if, when you manually added an entry, you entered the correct IP address, but the wrong Ethernet address for that remote interface?</p>
+<p>EX-2. What is the default amount of time that an entry remains in your ARP cache before being removed. You can determine this empirically (by monitoring the cache contents) or by looking this up in your operation system documentation.<br>
+Indicate how/where you determined this value.</p>
+<p>ex-1</p>
+<p>Arp命令：arp-s InetAddr EtherAddr允许您手动向ARP缓存添加条目，将IP地址InetAddr解析为物理地址EtherAddr。当您手动添加条目时，如果您为该远程接口输入了正确的IP地址，但输入了错误的以太网地址，会发生什么情况？</p>
+</blockquote>
+<h3 id="ex1"><a class="markdownIt-Anchor" href="#ex1"></a> EX1</h3>
+<p>会无法访问这个IP地址</p>
+<p>下面通过实验来佐证这一点结论</p>
+<p>通过网线连接另一台主机，并手动其IP地址为192.168.0.3，关闭防火墙</p>
+<p>并将自己主机的以太网IP地址设置为192.168.0.4</p>
+<p>首先实验前需要先清空arp缓存</p>
+<p>这时我们ping这个IP地址，可以发现，可以直接ping通</p>
+<p><img src="/posts/76311f61/image-20220512192410378.png" srcset="/img/loading.gif" lazyload alt="image-20220512192410378"></p>
+<p>查看此时的arp缓存：</p>
+<p><img src="/posts/76311f61/image-20220512192504380.png" srcset="/img/loading.gif" lazyload alt="image-20220512192504380"></p>
+<p>可以看到，如图192.168.0.4表示以太网接口下的ARP缓存表</p>
+<p>其中192.168.0.3此时的物理地址被缓存的正是对方的物理地址</p>
+<p><img src="/posts/76311f61/QO%5DJJS%5BA8V29X_Q2%60SB%7D@I.png" srcset="/img/loading.gif" lazyload alt="对方主机mac地址"></p>
+<p>此时我们尝试通过arp -s来手动添加一条arp缓存</p>
+<p><img src="/posts/76311f61/image-20220512192917906.png" srcset="/img/loading.gif" lazyload alt="image-20220512192917906"></p>
+<p>查看添加结果，可以发现，我们并没有将其添加至希望的以太网接口下，而是到了我的WLAN接口下，这使得这种情况下我们还是可以正常ping通对方，因为此时以太网接口下的ARP转发表中该IP地址的缓存仍是动态的，且mac地址正确。</p>
+<p>这个应该是arp -s命令的局限性</p>
+<p><img src="/posts/76311f61/image-20220512193009399.png" srcset="/img/loading.gif" lazyload alt="image-20220512193009399"></p>
+<p>但是我们可以尝试另一个命令来添加arp缓存到指定的网络接口</p>
+<p>首先我们通过如下命令来得到以太网接口的索引值</p>
+<p><img src="/posts/76311f61/image-20220512193214131.png" srcset="/img/loading.gif" lazyload alt="image-20220512193214131"></p>
+<p>然后通过下面的命令来指定以太网接口从而为其主动分配一个具有错误mac地址的arp缓存</p>
+<p><img src="/posts/76311f61/image-20220512193321733.png" srcset="/img/loading.gif" lazyload alt="image-20220512193321733"></p>
+<p>我们再次查看arp缓存</p>
+<p><img src="/posts/76311f61/image-20220512193356993.png" srcset="/img/loading.gif" lazyload alt="image-20220512193356993"></p>
+<p>可以看到，此时其物理地址已经变成了我们手动分配的一个错误的mac地址</p>
+<p>这时我们再次尝试ping这个地址，就发现无法ping通了</p>
+<p><img src="/posts/76311f61/image-20220512193525317.png" srcset="/img/loading.gif" lazyload alt="image-20220512193525317"></p>
+<p>清空arp缓存后再试一次，这时又可以了</p>
+<p><img src="/posts/76311f61/image-20220512193603582.png" srcset="/img/loading.gif" lazyload alt="image-20220512193603582"></p>
+<p>上述结果充分证明了，当我们为一个arp缓存分配一个错误的mac地址后，我们就会无法访问这个IP地址了，因为当我们缓存中有该IP地址时，我们的计算机就不会再发出arp请求去请求它的mac地址，而是直接通过缓存访问，如果是错误的，那自然无法访问了。</p>
+<h3 id="ex2"><a class="markdownIt-Anchor" href="#ex2"></a> EX2</h3>
+<blockquote>
+<p>ex-2</p>
+<p>条目在被删除之前在ARP缓存中保留的默认时间是多少。您可以通过经验(通过监视缓存内容)或通过在操作系统文档中查找来确定这一点。<br>
+指明您确定此值的方式/地点。</p>
+</blockquote>
+<p>通过查阅资料，我得到了如下信息：</p>
+<h4 id="arp动态条目的生命周期"><a class="markdownIt-Anchor" href="#arp动态条目的生命周期"></a> ARP动态条目的生命周期</h4>
+<p>保留时间也就是ARP表的老化时间</p>
+<ul>
+<li>不同系统的ARP表老化时间不同，Windows.2000/XP系统ARP表项的老化时间是2分钟，95/98以及NT系就是10分钟，大部分Cisco交换机是5分钟，华为的设备一般是20分种</li>
+<li>这些时间可以通过系统注册表或者设备的相关命令进行设置。</li>
+</ul>
+<p>我们可以也可以通过命令行来查看其动态条目的老化时间</p>
+<p>linux下：</p>
+<p>可以看到其时间是30000ms,即30s</p>
+<p><img src="/posts/76311f61/image-20220512201010141.png" srcset="/img/loading.gif" lazyload alt="image-20220512201010141"></p>
+<p>windows 10下：</p>
+<p>也是30s</p>
+<p><img src="/posts/76311f61/image-20220512201107933.png" srcset="/img/loading.gif" lazyload alt="image-20220512201107933"></p>
+<h4 id="arp静态条目的生命周期"><a class="markdownIt-Anchor" href="#arp静态条目的生命周期"></a> ARP静态条目的生命周期</h4>
+<p>静态条目一直保留在ARP缓存中，意思是永久生效。</p>
+<p>但不同的操作系统中，静态条目的保存方式是不同的。</p>
+<p>有些系统重启后仍会有效，如旧版windows但有些重启后就会失效，如linux</p>
+<p>尝试了目前的windows11和linux Ubuntu20.04 重启后静态条目均会消失。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Course-Study/">Course Study</a>
+                    
+                      <a class="hover-with-bg" href="/categories/Course-Study/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Lab/">Lab</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，著作权归作者所有，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/posts/9d1d146e/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">计算机网络学习笔记</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/3de7737d/">
+                        <span class="hidden-mobile">SpringBoot+Vue前后端分离项目之前端vue部分</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://zino00.github.io/posts/76311f61/';
+          this.page.identifier = '/posts/76311f61/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a  rel="nofollow noopener"><span>Copyrights © 2021</span></a> <i class="iconfont icon-love"></i> <a  target="_blank" rel="nofollow noopener"><span>Zino</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d1745c2e21adaa6ae90b93f4f4d22da9";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.10/dist/katex.min.css" />
+  
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?f45dcd001d67e8f9d84f91248ea31abf";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
