@@ -1,0 +1,598 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.jpg">
+  <link rel="icon" href="/img/favicon.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="作者提出了一个基于分层 Transformer 的预训练模型，称为 OSCAR，以更好地促进对程序的理解。 OSCAR 从**中间表示 (IR) 和从静态分析派生的编码**表示中学习，它们分别用于表示基本操作和近似环境转换。 OSCAR 凭经验展示了程序语义理解在许多实际软件工程任务上的出色能力。">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+  <title>论文笔记：《How could Neural Networks understand Programs》 - Zino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"zino00.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"f45dcd001d67e8f9d84f91248ea31abf","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Zino's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/post.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="论文笔记：《How could Neural Networks understand Programs》">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-09-22 22:07" pubdate>
+        2022年9月22日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      972 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      10
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">论文笔记：《How could Neural Networks understand Programs》</h1>
+            
+            <div class="markdown-body">
+              <h1 id="摘要"><a class="markdownIt-Anchor" href="#摘要"></a> 摘要</h1>
+<p>程序的语义理解是编程语言处理（PLP）的一个基本问题。最近基于 NLP 中的预训练技术学习代码表示的工作已经将前沿推向了这个方向。但是，PL 和 NL 的语义有本质的区别。这些被忽略，我们认为很难通过直接将现成的 NLP 预训练技术应用到源代码或通过启发式向模型添加特征来构建模型以更好地理解程序。</p>
+<p>事实上，程序的语义可以通过 PL 理论中的形式语义来严格定义。例如，操作语义将有效程序的含义描述为通过基本操作（例如内存 I/O 和条件分支）更新环境（即内存地址-值函数）。</p>
+<p>受此启发，我们提出了一种新颖的程序语义学习范式，该模型应该学习由以下组成的信息：</p>
+<p>（1）与操作语义中的基本操作非常吻合的表示，以及</p>
+<p>（2）环境转换的信息，即对程序理解必不可少。</p>
+<p>为了验证我们的提议，作者提出了一个基于分层 Transformer 的预训练模型，称为 OSCAR，以更好地促进对程序的理解。 OSCAR 从<strong>中间表示 (IR) 和从静态分析派生的编码</strong>表示中学习，它们分别用于表示基本操作和近似环境转换。 OSCAR 凭经验展示了程序语义理解在许多实际软件工程任务上的出色能力。</p>
+<h1 id="方法"><a class="markdownIt-Anchor" href="#方法"></a> 方法</h1>
+<p>OSCAR是从指令和环境转换信息这两个方面学习代码表示的层次模型。</p>
+<p><img src="/posts/31b1c8ee/Untitled.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
+<h2 id="1输入表示"><a class="markdownIt-Anchor" href="#1输入表示"></a> 1.输入表示</h2>
+<h3 id="ir"><a class="markdownIt-Anchor" href="#ir"></a> IR</h3>
+<p>收集了大量真实世界程序（附录 F.1 中的详细信息）并将它们转换为 LLVM IR 作为我们的预训练数据</p>
+<h3 id="抽象环境信息"><a class="markdownIt-Anchor" href="#抽象环境信息"></a> 抽象环境信息</h3>
+<p>从指令中提取了三种类型的环境关系约束：由静态单一分配（SSA）控制的、由内存读取控制的和由内存写入控制的。这些信息可以通过 LLVM 内置的分析功能轻松获得</p>
+<h2 id="2模型"><a class="markdownIt-Anchor" href="#2模型"></a> 2.模型</h2>
+<h3 id="结构"><a class="markdownIt-Anchor" href="#结构"></a> 结构</h3>
+<p>OSCAR 的模型架构是一个分层的多层 Transformer 编码器</p>
+<p>OSCAR 由两个级别的编码器组成。</p>
+<ul>
+<li>下层由两个令牌级编码器组成，分别用于处理来自 IR 和抽象环境信息的令牌。</li>
+<li>上层是指令级编码器，旨在根据下层的输出进一步提取特征。每一级编码器的实现与 BERT 相同（Devlin 等人，2019）。</li>
+<li>将这两个令牌级编码器称为 IR 和 Env编码器，指令级编码器为 Inst。</li>
+</ul>
+<h3 id="位置信息编码"><a class="markdownIt-Anchor" href="#位置信息编码"></a> 位置信息编码</h3>
+<ul>
+<li>通过位置编码将控制流信息编码到模型中。</li>
+<li>PCE 将三个可学习的嵌入向量分配给目标程序或代码片段中每条指令的位置，分别表示指令的当前位置，以及条件跳转后的目标位置，分别为真假。</li>
+</ul>
+<h3 id="预训练目标"><a class="markdownIt-Anchor" href="#预训练目标"></a> 预训练目标</h3>
+<ul>
+<li>
+<p>MLM   mask机制</p>
+</li>
+<li>
+<p>用优化技术进行对比性学习</p>
+<p>采用[CLS]中的对比学习与动量编码器的目标（He等人，2020）作为OSCAR的自我监督任务</p>
+</li>
+</ul>
+<h1 id="附录"><a class="markdownIt-Anchor" href="#附录"></a> 附录</h1>
+<h2 id="transformer模型2017年谷歌"><a class="markdownIt-Anchor" href="#transformer模型2017年谷歌"></a> Transformer模型（2017年谷歌）</h2>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/48508221">详解Transformer （Attention Is All You Need） - 知乎 (zhihu.com)</a></p>
+<p>Transformer中抛弃了传统的CNN和RNN，整个网络结构完全是由Attention机制组成。</p>
+<p>更准确地讲，Transformer由且仅由self-Attenion和Feed Forward Neural Network组成。一个基于Transformer的可训练的神经网络可以通过堆叠Transformer的形式进行搭建，作者的实验是通过搭建编码器和解码器各6层，总共12层的Encoder-Decoder</p>
+<p><img src="/posts/31b1c8ee/Untitled%201.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
+<p><img src="/posts/31b1c8ee/Untitled%202.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
+<h2 id="bert2018谷歌"><a class="markdownIt-Anchor" href="#bert2018谷歌"></a> BERT（2018谷歌）</h2>
+<p>双向Transformer</p>
+<p>MLM机制：随机mask一个token,用左右的token来预测他，实现双向预测</p>
+<p>12层encoder</p>
+<h2 id="gptopenai"><a class="markdownIt-Anchor" href="#gptopenai"></a> GPT(OpenAI)</h2>
+<p>单向Transformer</p>
+<p>decoder</p>
+<p>三种预训练模型区别</p>
+<p><img src="/posts/31b1c8ee/Untitled%203.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Paper-Note/">Paper Note</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/DeepLearning/">DeepLearning</a>
+                    
+                      <a class="hover-with-bg" href="/tags/IR/">IR</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，著作权归作者所有，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/posts/38fab66/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">retdec安装使用</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/469df0ac/">
+                        <span class="hidden-mobile">正则表达式学习</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://zino00.github.io/posts/31b1c8ee/';
+          this.page.identifier = '/posts/31b1c8ee/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a  rel="nofollow noopener"><span>Copyrights © 2021</span></a> <i class="iconfont icon-love"></i> <a  target="_blank" rel="nofollow noopener"><span>Zino</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d1745c2e21adaa6ae90b93f4f4d22da9";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.10/dist/katex.min.css" />
+  
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?f45dcd001d67e8f9d84f91248ea31abf";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
