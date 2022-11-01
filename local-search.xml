@@ -112,7 +112,7 @@
   
   
   <entry>
-    <title>操作系统笔记</title>
+    <title>操作系统概念学习笔记</title>
     <link href="/posts/8ce3e425/"/>
     <url>/posts/8ce3e425/</url>
     
@@ -131,6 +131,8 @@
     <tags>
       
       <tag>操作系统</tag>
+      
+      <tag>学习笔记</tag>
       
     </tags>
     
@@ -290,6 +292,8 @@
       
       <tag>操作系统</tag>
       
+      <tag>Lab</tag>
+      
     </tags>
     
   </entry>
@@ -297,7 +301,7 @@
   
   
   <entry>
-    <title>操作系统实验七-内存页面置换算法的设计和主存储器空间的分配和回收</title>
+    <title>Lab7-内存页面置换算法的设计和主存储器空间的分配和回收</title>
     <link href="/posts/6c024da0/"/>
     <url>/posts/6c024da0/</url>
     
@@ -316,6 +320,8 @@
     <tags>
       
       <tag>操作系统</tag>
+      
+      <tag>Lab</tag>
       
     </tags>
     
@@ -472,7 +478,7 @@
   
   
   <entry>
-    <title>操作系统实验六-生产者消费者问题</title>
+    <title>Lab6-生产者消费者问题</title>
     <link href="/posts/3994810f/"/>
     <url>/posts/3994810f/</url>
     
@@ -492,6 +498,8 @@
       
       <tag>操作系统</tag>
       
+      <tag>Lab</tag>
+      
     </tags>
     
   </entry>
@@ -499,7 +507,7 @@
   
   
   <entry>
-    <title>操作系统实验五-操作系统第五次实验银行家算法</title>
+    <title>Lab5-操作系统第五次实验银行家算法</title>
     <link href="/posts/ab6ecd69/"/>
     <url>/posts/ab6ecd69/</url>
     
@@ -518,6 +526,8 @@
     <tags>
       
       <tag>操作系统</tag>
+      
+      <tag>Lab</tag>
       
     </tags>
     
@@ -578,7 +588,7 @@
   
   
   <entry>
-    <title>操作系统实验四-调度算法</title>
+    <title>Lab4-调度算法</title>
     <link href="/posts/3f961b4f/"/>
     <url>/posts/3f961b4f/</url>
     
@@ -598,6 +608,8 @@
       
       <tag>操作系统</tag>
       
+      <tag>Lab</tag>
+      
     </tags>
     
   </entry>
@@ -605,7 +617,7 @@
   
   
   <entry>
-    <title>操作系统实验三-中断处理</title>
+    <title>Lab3-中断处理</title>
     <link href="/posts/8a95bb2a/"/>
     <url>/posts/8a95bb2a/</url>
     
@@ -624,6 +636,8 @@
     <tags>
       
       <tag>操作系统</tag>
+      
+      <tag>Lab</tag>
       
     </tags>
     
@@ -652,6 +666,8 @@
       
       <tag>操作系统</tag>
       
+      <tag>Lab</tag>
+      
     </tags>
     
   </entry>
@@ -659,7 +675,7 @@
   
   
   <entry>
-    <title>操作系统实验一</title>
+    <title>Lab1</title>
     <link href="/posts/e11b459a/"/>
     <url>/posts/e11b459a/</url>
     
@@ -678,6 +694,8 @@
     <tags>
       
       <tag>操作系统</tag>
+      
+      <tag>Lab</tag>
       
     </tags>
     
@@ -706,6 +724,8 @@
       
       <tag>软件安全</tag>
       
+      <tag>Lab</tag>
+      
     </tags>
     
   </entry>
@@ -733,6 +753,8 @@
       
       <tag>软件安全</tag>
       
+      <tag>Lab</tag>
+      
     </tags>
     
   </entry>
@@ -740,7 +762,7 @@
   
   
   <entry>
-    <title>计算机系统笔记</title>
+    <title>计算机系统学习笔记</title>
     <link href="/posts/e0eae192/"/>
     <url>/posts/e0eae192/</url>
     
@@ -759,6 +781,8 @@
     <tags>
       
       <tag>计算机系统</tag>
+      
+      <tag>学习笔记</tag>
       
     </tags>
     
@@ -787,6 +811,8 @@
       
       <tag>计算机系统</tag>
       
+      <tag>Lab</tag>
+      
     </tags>
     
   </entry>
@@ -814,6 +840,8 @@
       
       <tag>计算机系统</tag>
       
+      <tag>Lab</tag>
+      
     </tags>
     
   </entry>
@@ -840,6 +868,8 @@
     <tags>
       
       <tag>计算机系统</tag>
+      
+      <tag>Lab</tag>
       
     </tags>
     
