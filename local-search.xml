@@ -87,6 +87,33 @@
   
   
   <entry>
+    <title>QQ和TIM版无法修改个人文件夹位置的解决方法</title>
+    <link href="/posts/722e4585/"/>
+    <url>/posts/722e4585/</url>
+    
+    <content type="html"><![CDATA[<ol><li>打开轻聊版/TIM设置界面，找到个人文件夹设置的地方，点击“打开个人文件夹”按钮，会打开当前的个人文件夹，完全退出轻聊版/TIM。</li><li>到个人文件夹的上一层目录，把里面的QQ号码文件夹和All Users文件夹移动或复制到新的个人文件夹位置，比如D:\MyQQData目录下。</li><li>进入&quot;C:\Users\Public\Documents\Tencent\QQ&quot;目录（如果没有这个目录，请自行创建），在该目录下右键新建文本文件，并重命名为“UserDataInfo.ini”</li><li>双击打开“UserDataInfo.ini”文件，将下列内容复制粘贴进去，UserDataSavePath=D:\MyQQData 这里就是指定新的个人文件夹位置，保存并关闭。</li></ol><figure class="highlight c"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs c">[UserDataImportSet]<br>NeedImport=<span class="hljs-number">0</span><br>OldVersion=<br>OldVerDataPathType=<br>OldVerDataPath=<br>OldQQInstallPath=D:\program_files\Tencent\TIM<br>[UserDataSet]<br>UserDataSavePathType=<span class="hljs-number">2</span><br>UserDataSavePath=G:\AppData\Tencent Files<br>NewVersion=<br></code></pre></div></td></tr></table></figure><ol><li>重新启动轻聊版/TIM，打开配置界面，看到修改已经生效了。</li></ol><p>原文链接：<a href="https://blog.csdn.net/cuixiping/article/details/71601765">https://blog.csdn.net/cuixiping/article/details/71601765</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Memo</category>
+      
+      <category>Debug</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Debug</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>mcsema安装使用</title>
     <link href="/posts/6b606cfe/"/>
     <url>/posts/6b606cfe/</url>

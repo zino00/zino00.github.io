@@ -14,13 +14,29 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="">
+  <meta name="description" content="QQ和TIM版无法修改个人文件夹位置的解决方法">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-  <title>归档 - Zino&#39;s Blog</title>
+  <title>QQ和TIM版无法修改个人文件夹位置的解决方法 - Zino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
 
 
 
@@ -48,7 +64,7 @@
 
 
 <body>
-  <header style="height: 60vh;">
+  <header style="height: 70vh;">
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand"
@@ -142,14 +158,59 @@
 </nav>
 
     <div class="banner" id="banner" parallax=true
-         style="background: url('/img/archive.jpg') no-repeat center center;
+         style="background: url('/img/post.jpg') no-repeat center center;
            background-size: cover;">
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="归档">
+            <span class="h2" id="subtitle" title="QQ和TIM版无法修改个人文件夹位置的解决方法">
               
             </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-10-11 21:53" pubdate>
+        2022年10月11日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      241 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      2
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
 
             
           </div>
@@ -162,52 +223,135 @@
 
   <main>
     
-      <div class="container nopadding-x-md">
-        <div class="py-5" id="board"
-          >
-          
-          <div class="container">
-            <div class="row">
-              <div class="col-12 col-md-10 m-auto">
-                
-
-<div class="list-group">
-  <p class="h4">共计 47 篇文章</p>
-  <hr>
-  
-  
-    
       
-      <p class="h5">2022</p>
-    
-    <a href="/posts/8ce3e425/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">操作系统学习笔记</span>
-      <time style="float: right;">01-13</time>
-    </a>
-  
-    
-    <a href="/posts/7e71e806/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">使用hexo-abbrlink及解决与hexo-asset-image不适配的问题</span>
-      <time style="float: right;">01-03</time>
-    </a>
-  
-</div>
 
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">QQ和TIM版无法修改个人文件夹位置的解决方法</h1>
+            
+            <div class="markdown-body">
+              <ol>
+<li>打开轻聊版/TIM设置界面，找到个人文件夹设置的地方，点击“打开个人文件夹”按钮，会打开当前的个人文件夹，完全退出轻聊版/TIM。</li>
+<li>到个人文件夹的上一层目录，把里面的QQ号码文件夹和All Users文件夹移动或复制到新的个人文件夹位置，比如D:\MyQQData目录下。</li>
+<li>进入&quot;C:\Users\Public\Documents\Tencent\QQ&quot;目录（如果没有这个目录，请自行创建），在该目录下右键新建文本文件，并重命名为“UserDataInfo.ini”</li>
+<li>双击打开“UserDataInfo.ini”文件，将下列内容复制粘贴进去，UserDataSavePath=D:\MyQQData 这里就是指定新的个人文件夹位置，保存并关闭。</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs c">[UserDataImportSet]<br>NeedImport=<span class="hljs-number">0</span><br>OldVersion=<br>OldVerDataPathType=<br>OldVerDataPath=<br>OldQQInstallPath=D:\program_files\Tencent\TIM<br>[UserDataSet]<br>UserDataSavePathType=<span class="hljs-number">2</span><br>UserDataSavePath=G:\AppData\Tencent Files<br>NewVersion=<br></code></pre></div></td></tr></table></figure>
+<ol>
+<li>重新启动轻聊版/TIM，打开配置界面，看到修改已经生效了。</li>
+</ol>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/cuixiping/article/details/71601765">https://blog.csdn.net/cuixiping/article/details/71601765</a></p>
 
-  <nav aria-label="navigation">
-    <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/archives/2022/page/2/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/archives/2022/">1</a><a class="page-number" href="/archives/2022/page/2/#board">2</a><span class="page-number current">3</span>
-    </span>
-  </nav>
-
-
-
-
-              </div>
             </div>
-          </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Memo/">Memo</a>
+                    
+                      <a class="hover-with-bg" href="/categories/Memo/Debug/">Debug</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Debug/">Debug</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，著作权归作者所有，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/posts/2cce8e81/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">windows,linux,wsl1,wsl2下的命令行代理配置</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/6b606cfe/">
+                        <span class="hidden-mobile">mcsema安装使用</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://zino00.github.io/posts/722e4585/';
+          this.page.identifier = '/posts/722e4585/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+              </article>
+            
+          </article>
         </div>
       </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
     
 
     
@@ -321,9 +465,15 @@
 
 
 
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
 
 
 
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
 
 
 
@@ -354,6 +504,13 @@
 
 
 
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.10/dist/katex.min.css" />
+  
 
 
 
