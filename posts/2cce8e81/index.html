@@ -14,11 +14,11 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="McSema是一个可执行的提升器。它将可执行二进制文件从本机机器代码转换（“提升”）到LLVM位码">
+  <meta name="description" content="在日常的命令行使用中，我们有时候需要在命令行使用代理，但是有时又不需要，因此在命令行配置两个命令来控制代理就会显得比较方便。">
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-  <title>mcsema安装使用 - Zino&#39;s Blog</title>
+  <title>windows,linux,wsl1,wsl2下的命令行代理配置 - Zino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
@@ -163,7 +163,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="mcsema安装使用">
+            <span class="h2" id="subtitle" title="windows,linux,wsl1,wsl2下的命令行代理配置">
               
             </span>
 
@@ -173,8 +173,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2022-09-28 21:57" pubdate>
-        2022年9月28日 晚上
+      <time datetime="2022-10-11 21:58" pubdate>
+        2022年10月11日 晚上
       </time>
     </span>
   
@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      376 字
+      895 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      5
+      10
        分钟
     </span>
   
@@ -233,32 +233,65 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">mcsema安装使用</h1>
+            <h1 style="display: none">windows,linux,wsl1,wsl2下的命令行代理配置</h1>
             
             <div class="markdown-body">
-              <p>McSema是一个可执行的提升器。它将可执行二进制文件从本机机器代码转换（“提升”）到LLVM位码。LLVM 位码是程序的<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Intermediate_representation">中间表示</a><br>
-形式</p>
-<p>McSema 支持提升 Linux （ELF） 和 Windows （PE） 可执行文件，并理解大多数 x86 和 amd64 指令，包括整数、X87、MMX、SSE 和 AVX 操作。AARCH64 （ARMv8） 指令支持正在积极开发中。</p>
-<p>使用 McSema 的过程分为两个步骤：<strong>控制流恢复</strong>和<strong>指令转换</strong>。</p>
+              <p>在日常的命令行使用中，我们有时候需要在命令行使用代理，但是有时又不需要，因此在命令行配置两个命令来控制代理就会显得比较方便</p>
 <ul>
-<li>控制流恢复依靠 IDA Pro 来反汇编二进制文件并生成控制流图。</li>
-<li>然后使用remill库执行指令转换，该工具将控制流图转换为LLVM位码。</li>
+<li>spp：应用代理环境变量</li>
+<li>upp：取消代理环境变量</li>
 </ul>
-<ol>
-<li>创建<strong>virtualenv</strong></li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs bash">mkdir mcsema-ve<br>virtualenv mcsema-ve<br><span class="hljs-built_in">cd</span> mcsema-ve<br><span class="hljs-built_in">source</span> bin/activate<br></code></pre></div></td></tr></table></figure>
-<ol>
-<li>下载仓库</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/lifting-bits/remill.git<br><span class="hljs-built_in">pushd</span> .<br><span class="hljs-built_in">cd</span> remill<br><span class="hljs-comment"># For LLVM versions (&lt;=11)</span><br>git checkout -b all_llvm 9006baf7db<br><br><span class="hljs-built_in">popd</span><br></code></pre></div></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> --depth 1 --single-branch --branch master https://github.com/lifting-bits/mcsema.git<br><br><span class="hljs-comment"># Get a compatible anvill version</span><br>git <span class="hljs-built_in">clone</span> --branch master https://github.com/lifting-bits/anvill.git<br>( <span class="hljs-built_in">cd</span> anvill &amp;&amp; git checkout -b release_bc3183b bc3183b )<br><br><span class="hljs-built_in">export</span> CC=<span class="hljs-string">&quot;<span class="hljs-subst">$(which clang)</span>&quot;</span><span class="hljs-built_in">export</span> CXX=<span class="hljs-string">&quot;<span class="hljs-subst">$(which clang++)</span>&quot;</span><span class="hljs-comment"># Download cxx-common, build Remill.</span><br>./remill/scripts/build.sh --llvm-version 11 --download-dir ./<br><span class="hljs-built_in">pushd</span> remill-build<br>sudo cmake --build . --target install<br><span class="hljs-built_in">popd</span><br><br><span class="hljs-comment"># Build and install Anvill</span><br>mkdir anvill-build<br><span class="hljs-built_in">pushd</span> anvill-build<br><span class="hljs-comment"># Set VCPKG_ROOT to whatever directory the remill script downloaded</span><br><span class="hljs-comment">#自己加了-DCMAKE_CXX_COMPILER=clang++这个参数，指定了编译器，不然会遇到如下报错</span><br>cmake -DVCPKG_ROOT=$(<span class="hljs-built_in">pwd</span>)/../vcpkg_ubuntu-20.04_llvm-11_amd64  -DCMAKE_CXX_COMPILER=clang++ ../anvill<br>sudo cmake --build . --target install<br><span class="hljs-built_in">popd</span><br><br><span class="hljs-comment"># Build and install McSema</span><br>mkdir mcsema-build<br><span class="hljs-built_in">pushd</span> mcsema-build<br><span class="hljs-comment"># Set VCPKG_ROOT to whatever directory the remill script downloaded</span><br><span class="hljs-comment">#两个地方都加</span><br>cmake -DVCPKG_ROOT=$(<span class="hljs-built_in">pwd</span>)/../vcpkg_ubuntu-20.04_llvm-11_amd64 -DCMAKE_CXX_COMPILER=clang++ ../mcsema<br>sudo cmake --build . --target install<br></code></pre></div></td></tr></table></figure>
+<p>但是在各个环境下的代理配置又不尽相同，每次要用到的时候还需要去查，因此笔者整理了一下常用系统下命令行代理设置方式，方便查阅。</p>
+<h1 id="windows下powershell7命令行代理配置"><a class="markdownIt-Anchor" href="#windows下powershell7命令行代理配置"></a> Windows下powershell7命令行代理配置</h1>
+<h2 id="基本概念"><a class="markdownIt-Anchor" href="#基本概念"></a> 基本概念</h2>
+<p>Powershell中不像bash那样所有东西都是字符串，它支持对象，比如环境变量是存放在Env对象中的，添加和移除环境变量都是操作Env这个对象。</p>
+<p>操作对象的方式（以环境变量为例）：</p>
 <ul>
-<li>
-<p>报错</p>
-<p><img src="/posts/6b606cfe/Untitled.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
-</li>
+<li>添加/修改一个键值对：<code>Set-Item Env:http_proxy = &quot;http://127.0.0.1:1080&quot;</code></li>
+<li>移除一个键值对：<code>Remove-Item Env:http_proxy</code></li>
 </ul>
+<p>通过这个我们就可以来设置代理了</p>
+<h2 id="启动脚本位置"><a class="markdownIt-Anchor" href="#启动脚本位置"></a> 启动脚本位置</h2>
+<p>和linux下的.bashrc、.zshrc对应，windows下的powershell也有对应的启动脚本，我们可以在这个脚本中设置代理配置。</p>
+<p>按照微软官网的说法是脚本位置和权限是以下的对应关系</p>
+<p><img src="/posts/2cce8e81/image-20221101211009115.png" srcset="/img/loading.gif" lazyload alt="image-20221101211009115"></p>
+<h2 id="脚本代码"><a class="markdownIt-Anchor" href="#脚本代码"></a> 脚本代码</h2>
+<p>将下面的代码加进<code>Microsoft.PowerShell_profile.ps1</code> 中即可</p>
+<figure class="highlight powershell"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs powershell"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">set_proxy_variable</span></span> &#123;<br>	<span class="hljs-built_in">Set-Item</span> Env:http_proxy <span class="hljs-string">&quot;http://127.0.0.1:10809&quot;</span>  <span class="hljs-comment"># 代理地址</span><br>	<span class="hljs-built_in">Set-Item</span> Env:https_proxy <span class="hljs-string">&quot;http://127.0.0.1:10809&quot;</span> <span class="hljs-comment"># 代理地址</span><br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">unset_proxy_variable</span></span> &#123;<br>    <span class="hljs-built_in">Remove-Item</span> Env:http_proxy<br>    <span class="hljs-built_in">Remove-Item</span> Env:https_proxy<br>&#125;<br><br><span class="hljs-built_in">New-Alias</span> <span class="hljs-literal">-Name</span> spp <span class="hljs-literal">-Value</span> set_proxy_variable<br><span class="hljs-built_in">New-Alias</span> <span class="hljs-literal">-Name</span> upp <span class="hljs-literal">-Value</span> unset_proxy_variable<br></code></pre></div></td></tr></table></figure>
+<h2 id="测试"><a class="markdownIt-Anchor" href="#测试"></a> 测试</h2>
+<p>使用curl命令来测试（ping没用，因为它用的是icmp协议，http代理当然是在http层了），成功！</p>
+<p><img src="/posts/2cce8e81/Untitled.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
+<h1 id="windows下的cmd代理配置"><a class="markdownIt-Anchor" href="#windows下的cmd代理配置"></a> Windows下的cmd代理配置</h1>
+<p>可以在命令行中输入如下代码设置，因为一般都用powershell了，所以cmd下的命令配置就不去设置了，有需要可自行搜索。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs powershell"><span class="hljs-comment"># 设置代理</span><br>*<span class="hljs-built_in">set</span> http_proxy=http://<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">10809</span><br><span class="hljs-built_in">set</span> https_proxy=http://<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>:<span class="hljs-number">10809</span>*<br><br><span class="hljs-comment"># 设置代理</span><br>*<span class="hljs-built_in">set</span> http_proxy=<br><span class="hljs-built_in">set</span> https_proxy=*<br></code></pre></div></td></tr></table></figure>
+<h1 id="linux下代理配置"><a class="markdownIt-Anchor" href="#linux下代理配置"></a> Linux下代理配置</h1>
+<p>道理都和windows相同，找到启动脚本，设置代理命令，为代理命令设置别名</p>
+<h2 id="脚本代码-2"><a class="markdownIt-Anchor" href="#脚本代码-2"></a> 脚本代码</h2>
+<p>具体代码如下，将这段代码加入.bashrc或者.zshrc即可</p>
+<figure class="highlight powershell"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs powershell">alias spp=<span class="hljs-string">&#x27;export all_proxy=&quot;http://127.0.0.1:10809&quot;;&#x27;</span><br>alias upp=<span class="hljs-string">&#x27;unset all_proxy&#x27;</span><br></code></pre></div></td></tr></table></figure>
+<h2 id="测试-2"><a class="markdownIt-Anchor" href="#测试-2"></a> 测试</h2>
+<p><img src="/posts/2cce8e81/Untitled%201.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
+<h1 id="wsl1下的代理配置"><a class="markdownIt-Anchor" href="#wsl1下的代理配置"></a> wsl1下的代理配置</h1>
+<p>wsl1因为共用主机的网络设置，所以设置方法和linux下完全相同。</p>
+<h1 id="wsl2下的代理配置"><a class="markdownIt-Anchor" href="#wsl2下的代理配置"></a> wsl2下的代理配置</h1>
+<p>WSL2 基于 Hyper-V 运行，导致 Linux 子系统和 Windows 在网络上是两台各自独立的机器，从 Linux 子系统访问 Windows 首先需要找到 Windows 的 IP。</p>
+<p>因此我们在wsl2上的代理设置可以采用局域网代理共享的方式。</p>
+<p>两个关键步骤：</p>
+<ol>
+<li>WSL2 中配置的代理要指向 Windows 的 IP；</li>
+<li>Windows 上的代理客户端需要允许来自本地局域网的请求；</li>
+</ol>
+<h2 id="windows端设置"><a class="markdownIt-Anchor" href="#windows端设置"></a> windows端设置</h2>
+<p>v2rayN打开下面的的选项</p>
+<p><img src="/posts/2cce8e81/Untitled%202.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
+<p>然后再记录一下这里的端口号，后面会用到</p>
+<p><img src="/posts/2cce8e81/Untitled%203.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
+<h2 id="wsl端设置"><a class="markdownIt-Anchor" href="#wsl端设置"></a> wsl端设置</h2>
+<p>将下面的代码保存在<sub>/.zshrc（如果是bash，则是</sub>/.bashrc）中。如果 不想每次手动打开命令行的代理配置，将下面的alias部分去掉，直接export即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs bash"><span class="hljs-comment">## 获取主机 IP</span><br><span class="hljs-comment">## 主机 IP 保存在 /etc/resolv.conf 中</span><br><span class="hljs-built_in">export</span> hostip=$(cat /etc/resolv.conf |grep -oP <span class="hljs-string">&#x27;(?&lt;=nameserver\ ).*&#x27;</span>)<br><span class="hljs-built_in">alias</span> spp=<span class="hljs-string">&#x27;export all_proxy=&quot;http://$&#123;hostip&#125;:10809&quot;;&#x27;</span><br><span class="hljs-built_in">alias</span> upp=<span class="hljs-string">&#x27;unset all_proxy&#x27;</span><br></code></pre></div></td></tr></table></figure>
+<h2 id="测试-3"><a class="markdownIt-Anchor" href="#测试-3"></a> 测试</h2>
+<p>使用curl命令验证，设置成功！</p>
+<p><img src="/posts/2cce8e81/Untitled%204.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
 
             </div>
             <hr>
@@ -278,9 +311,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/install/">install</a>
-                    
-                      <a class="hover-with-bg" href="/tags/LLVM/">LLVM</a>
+                      <a class="hover-with-bg" href="/tags/Configue/">Configue</a>
                     
                   </div>
                 
@@ -297,9 +328,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/posts/2cce8e81/">
+                      <a href="/posts/e556431a/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">windows,linux,wsl1,wsl2下的命令行代理配置</span>
+                        <span class="hidden-mobile">论文笔记：软件恶意行为激活相关论文调研</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -307,8 +338,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/posts/38fab66/">
-                        <span class="hidden-mobile">retdec安装使用</span>
+                      <a href="/posts/6b606cfe/">
+                        <span class="hidden-mobile">mcsema安装使用</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -330,8 +361,8 @@
     
       <script type="text/javascript">
         var disqus_config = function() {
-          this.page.url = 'https://zino00.github.io/posts/6b606cfe/';
-          this.page.identifier = '/posts/6b606cfe/';
+          this.page.url = 'https://zino00.github.io/posts/2cce8e81/';
+          this.page.identifier = '/posts/2cce8e81/';
         };
         Fluid.utils.loadComments('#disqus_thread', function() {
           var d = document, s = d.createElement('script');
