@@ -257,7 +257,7 @@
   
   
   <entry>
-    <title>论文笔记:《Deep Learning based Vulnerability Detection:Are We There Yet?》</title>
+    <title>论文笔记：《Deep Learning based Vulnerability Detection:Are We There Yet?》</title>
     <link href="/posts/1ab84c1/"/>
     <url>/posts/1ab84c1/</url>
     
@@ -781,7 +781,7 @@
   
   
   <entry>
-    <title>论文笔记:《VulDeeLocator:A Deep Learning-based Fine-grained Vulnerability Detector》</title>
+    <title>论文笔记：《VulDeeLocator:A Deep Learning-based Fine-grained Vulnerability Detector》</title>
     <link href="/posts/33f70302/"/>
     <url>/posts/33f70302/</url>
     
@@ -1111,6 +1111,31 @@
       <tag>软件安全</tag>
       
       <tag>Lab</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>论文笔记：《Inferring program transformations from singular examples via big code》</title>
+    <link href="/posts/15c2857c/"/>
+    <url>/posts/15c2857c/</url>
+    
+    <content type="html"><![CDATA[<h1 id="第1章-论文研读"><a class="markdownIt-Anchor" href="#第1章-论文研读"></a> 第1章 论文研读</h1><h2 id="11-摘要"><a class="markdownIt-Anchor" href="#11-摘要"></a> <strong>1.1 摘要</strong></h2><p>从具体的程序更改推断程序转换有许多潜在的用途，例如应用系统程序编辑、重构和自动程序修复。现有的程序转换推断工作通常依赖于大量程序更改示例的统计信息。然而，在许多实际场景中，我们没有这么多程序更改示例集。</p><p>在本文中，我们解决了从一个例子推断程序转换的挑战。我们的核心观点是，“大代码”可以为将一个具体的更改泛化到一个程序的转换这一过程提供有效的指导，也就是说，出现在许多文件中的代码元素是通用的，不应该被抽象掉。我们首先提出了一个转换推理的框架，其中程序被表示为超图，以支持转换的细粒度泛化。然后，我们设计了一种转换推断方法，GenPat，它基于代码上下文和来自大型代码语料库的统计信息推断程序转换。</p><p>我们在系统编辑和程序修复两种不同的应用场景下对GenPat进行了评估。对系统编辑的评估表明，GenPat显著优于最先进的方法SYDIT，正确转换案例5.5倍于SYDIT。评价程序修复表明GenPat有潜力集成到先进的程序修复工具中。通过简单地应用从现有补丁推断出来的转换，GenPat成功地修复了Defects4J基准中的19个现实世界中的bug，其中4个bug从未被任何现有技术修复过。总的来说，评价结果表明，GenPat可以有效的进行转换推理，并可以用于许多不同的应用。</p><h2 id="12-genpat流程和方法概括"><a class="markdownIt-Anchor" href="#12-genpat流程和方法概括"></a> <strong>1.2 GenPat流程和方法概括</strong></h2><p><img src="/posts/15c2857c/image-20221102093916620.png" alt="image-20221102093916620"></p><h3 id="i-the-genpat-approach"><a class="markdownIt-Anchor" href="#i-the-genpat-approach"></a> <strong>I. THE GENPAT APPROACH</strong></h3><p>给定修改前后的两个代码段，基本方法如下：</p><p>分为两个阶段</p><p><strong>推断阶段</strong></p><p>(1) 从修改前的代码段中提取代码超图，</p><p>(2) 通过比较两个代码段提取修改序列，</p><p>(3) 通过从超图中选择元素和属性来推断转换，</p><p><strong>应用阶段</strong></p><p>(4) 匹配并应用给定的新代码段的转换。</p><h1 id="第二章-实验复现"><a class="markdownIt-Anchor" href="#第二章-实验复现"></a> <strong>第二章 实验复现</strong></h1><h2 id="21-环境搭建"><a class="markdownIt-Anchor" href="#21-环境搭建"></a> <strong>2.1 环境搭建</strong></h2><p>Ubuntu20.04(或者Ubuntu16.04)</p><h3 id="i-java环境搭建"><a class="markdownIt-Anchor" href="#i-java环境搭建"></a> <strong>I. java环境搭建</strong></h3><p>要求：jdk1.8</p><p>实验要求安装jdk1.8，否则会导致部分出现未知错误</p><p>Java环境配置具体参见了如下链接</p><p><a href="https://blog.csdn.net/weixin_46439193/article/details/104992522">https://blog.csdn.net/weixin_46439193/article/details/104992522</a></p><p><img src="/posts/15c2857c/image-20221102093937123.png" alt="image-20221102093937123"></p><p>最后的环境变量配置需要加到/etc/bash.bashrc，只是加到.bashrc会导致关闭终端后配置失效</p><p>关于java也可以直接用apt install</p><h3 id="ii-maven环境配置"><a class="markdownIt-Anchor" href="#ii-maven环境配置"></a> <strong>II. maven环境配置</strong></h3><p><img src="/posts/15c2857c/image-20221102093943748.png" alt="image-20221102093943748"></p><p>直接利用apt-get在命令行中安装</p><p>自行选择路径可参考如下链接</p><p><a href="https://www.cnblogs.com/fuzongle/p/12825048.html">https://www.cnblogs.com/fuzongle/p/12825048.html</a></p><h3 id="iii-defects4j数据集安装和配置"><a class="markdownIt-Anchor" href="#iii-defects4j数据集安装和配置"></a> <strong>III. Defects4J数据集安装和配置</strong></h3><p>结合博客链接和Defects4J官方github网站指导配置</p><p><a href="https://blog.csdn.net/weixin_46439193/article/details/104721218">https://blog.csdn.net/weixin_46439193/article/details/104721218</a></p><p>同样，更新环境变量到全局的配置文件。</p><p>sudo vi /etc/bash.bashrc</p><p>#文末插入下面的环境变量</p><p>export PATH=$PATH:/home/zino/defects4j/framework/bin</p><p>export DEFECTS4J_HOME=/zino/au/defects4j</p><p>#更新配置文件</p><p>source /etc/bash.bashrc</p><h3 id="iv-构建maven项目"><a class="markdownIt-Anchor" href="#iv-构建maven项目"></a> <strong>IV. 构建maven项目</strong></h3><p>首先从<a href>https://github.com/xgdsmileboy/GenPat</a> 上下载项目源码，然后直接在项目文件夹下打开终端输入命令mvn package</p><p>显示打包失败</p><p>修改命令为mvn clean package -Dmaven.test.skip=true，跳过单测，可以成功建包。</p><h2 id="22-实验测试"><a class="markdownIt-Anchor" href="#22-实验测试"></a> <strong>2.2 实验测试</strong></h2><h3 id="221-样例数据测试"><a class="markdownIt-Anchor" href="#221-样例数据测试"></a> <strong>2.2.1 样例数据测试</strong></h3><p>首先我们在replication文件夹里测试作者设定好的数据集SYDIT和C3</p><p>分析测试结果</p><p>Junit 1测试未发现在目标文件中未发现对应模式。</p><p><img src="/posts/15c2857c/image-20221102093952305.png" alt="image-20221102093952305"></p><p>观察下面的junit#5，我们可以发现其与步骤的对应关系</p><ol><li>从修改前的代码段中提取代码超图</li></ol><p>src_0.java为修改前的代码段，从其中提取出代码超图</p><ol><li>通过比较两个代码段提取修改序列</li></ol><p>通过比较src_0.java和tar_0.java来得到如下图所示的pattern对比，即修改模式</p><ol><li>通过从超图中选择元素和属性来推断转换</li></ol><p>然后在tar_1.java中提取超图，选择元素和属性来推断转换</p><ol><li>匹配并应用给定的新代码段的转换。</li></ol><p>匹配并应用，给出修改意见candidate，可以发现通过示例文件的模式成功发现了一个bug并给出修复意见</p><p><img src="/posts/15c2857c/image-20221102094001414.png" alt="image-20221102094001414"></p><p><img src="/posts/15c2857c/image-20221102094007777.png" alt="image-20221102094007777"></p><h3 id="222-genpat命令操作"><a class="markdownIt-Anchor" href="#222-genpat命令操作"></a> <strong>2.2.2 GenPat命令操作</strong></h3><h4 id="print"><a class="markdownIt-Anchor" href="#print"></a> <strong>print</strong></h4><p>打印出给定pattern文件的具体信息</p><p><img src="/posts/15c2857c/image-20221102094016100.png" alt="image-20221102094016100"></p><p>测试</p><p><img src="/posts/15c2857c/image-20221102094051067.png" alt="image-20221102094051067"></p><h4 id="filter"><a class="markdownIt-Anchor" href="#filter"></a> <strong>filter</strong></h4><p>通过给定参数过滤筛选模式文件</p><p><img src="/posts/15c2857c/image-20221102094058087.png" alt="image-20221102094058087"></p><p><img src="/posts/15c2857c/image-20221102094104097.png" alt="image-20221102094104097"></p><p>测试</p><p><img src="/posts/15c2857c/image-20221102094131869.png" alt="image-20221102094131869"></p><h4 id="repair"><a class="markdownIt-Anchor" href="#repair"></a> <strong>repair</strong></h4><p>尝试用给定的模式来修复一个bug文件或者defect4j数据集中的一个bug</p><p><img src="/posts/15c2857c/image-20221102094145672.png" alt="image-20221102094145672"></p><p>测试</p><p><img src="/posts/15c2857c/image-20221102094211732.png" alt="image-20221102094211732"></p><h4 id="cluster"><a class="markdownIt-Anchor" href="#cluster"></a> <strong>cluster</strong></h4><p>将相同的模式文件聚集在一起</p><p><img src="/posts/15c2857c/image-20221102094223656.png" alt="image-20221102094223656"></p><p>测试</p><p><img src="/posts/15c2857c/image-20221102094230121.png" alt="image-20221102094230121"></p><h1 id="参考文献"><a class="markdownIt-Anchor" href="#参考文献"></a> <strong>参考文献</strong></h1><p>[1] Jiang JJ, Ren LY, Xiong YF, Zhang LM. Inferring program transformations from singular examples via big code. In: Proc. of the 34th Int’l Conf. on Automated Software Engineering (ASE). IEEE, 2019. 255−266. [doi: 10.1109/ASE.2019.00033]</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Paper Note</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>论文笔记</tag>
       
     </tags>
     
