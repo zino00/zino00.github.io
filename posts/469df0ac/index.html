@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.7k 字
+      1.6k 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      20
+      19
        分钟
     </span>
   
@@ -238,60 +238,67 @@
             <div class="markdown-body">
               <h1 id="正则表达式学习"><a class="markdownIt-Anchor" href="#正则表达式学习"></a> 正则表达式学习</h1>
 <h2 id="常用模式"><a class="markdownIt-Anchor" href="#常用模式"></a> 常用模式</h2>
-<p><a target="_blank" rel="noopener" href="https://www.notion.so/dd264ff59535459ba4190e27eefb9e10">完整模式</a>见下</p>
 <ul>
 <li>
-<div class="hljs code-wrapper"><pre class="highlight"><code class>\\d
-<figure class="highlight autohotkey"><table><tr><td class="gutter hljs"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs autohotkey"><br>  可以匹配一个数字<br><br>  - `&#x27;<span class="hljs-number">00</span>\\d&#x27;`可以匹配`&#x27;<span class="hljs-number">007</span>&#x27;`，但无法匹配`&#x27;<span class="hljs-number">00</span>A&#x27;`；<br>  - `&#x27;\\d\\d\\d&#x27;`可以匹配`&#x27;<span class="hljs-number">010</span>&#x27;`；<br><br>- ```<br>  \\w<br></code></pre></div></td></tr></table></figure>
-
-可以匹配一个字母或数字
-
-- `'\\w\\w\\d'`可以匹配`'py3'`；
-
-</code></pre>
-</li>
-<li>
-<div class="hljs code-wrapper"><pre class="highlight"><code class>.
-<figure class="highlight autohotkey"><table><tr><td class="gutter hljs"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs autohotkey"><br>  可以匹配任意字符<br><br>  - `&#x27;py.&#x27;`可以匹配`&#x27;pyc&#x27;`、`&#x27;pyo&#x27;`、`&#x27;py!&#x27;`等等。<br><br>- `*`表示任意个字符（包括<span class="hljs-number">0</span>个）<br><br>- ```<br>  +<br></code></pre></div></td></tr></table></figure>
-
-表示至少一个字符
-
-- `\\s+`表示至少有一个空格，例如匹配`' '` ，`' '`等
-
-</code></pre>
-</li>
-<li>
-<p><code>?</code>表示0个或1个字符，表示非贪婪匹配</p>
-</li>
-<li>
-<div class="hljs code-wrapper"><pre class="highlight"><code class>&#123;n&#125;
-<figure class="highlight autohotkey"><table><tr><td class="gutter hljs"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs autohotkey"><br>  表示n个字符<br><br>  - `\\d&#123;<span class="hljs-number">3</span>&#125;`表示匹配<span class="hljs-number">3</span>个数字，例如`&#x27;<span class="hljs-number">010</span>&#x27;`<br><br>- `&#123;n,m&#125;`表示n-m个字符<br><br>- `\\s`可以匹配一个空格（也包括Tab等空白符）<br><br>- ```<br>  A|B<br></code></pre></div></td></tr></table></figure>
-
-可以匹配A或B
-
-- `(P|p)ython`可以匹配`'Python'`或者`'python'`
-
-</code></pre>
-</li>
-<li>
-<p><code>^</code>表示行的开头，<code>^\\d</code>表示必须以数字开头。</p>
-</li>
-<li>
-<p><code>$</code>表示行的结束，<code>\\d$</code>表示必须以数字结束。</p>
-</li>
-<li>
-<div class="hljs code-wrapper"><pre class="highlight"><code class>[]
-<figure class="highlight autohotkey"><table><tr><td class="gutter hljs"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs autohotkey"><br>  表示范围<br><br>  - `[<span class="hljs-number">0</span>-<span class="hljs-number">9</span>a-zA-Z\\_]`可以匹配一个数字、字母或者下划线；<br>  - `[<span class="hljs-number">0</span>-<span class="hljs-number">9</span>a-zA-Z\\_]+`可以匹配至少由一个数字、字母或者下划线组成的字符串，比如`&#x27;a100&#x27;`，`&#x27;<span class="hljs-number">0</span>_Z&#x27;`，`&#x27;Py3000&#x27;`等等；<br>  - `[a-zA-Z\\_][<span class="hljs-number">0</span>-<span class="hljs-number">9</span>a-zA-Z\\_]*`可以匹配由字母或下划线开头，后接任意个由一个数字、字母或者下划线组成的字符串，也就是Python合法的变量；<br>  - `[a-zA-Z\\_][<span class="hljs-number">0</span>-<span class="hljs-number">9</span>a-zA-Z\\_]&#123;<span class="hljs-number">0</span>, <span class="hljs-number">19</span>&#125;`更精确地限制了变量的长度是<span class="hljs-number">1</span>-<span class="hljs-number">20</span>个字符（前面<span class="hljs-number">1</span>个字符+后面最多<span class="hljs-number">19</span>个字符）。<br><br>- `()` 表示分组，可以用group()函数来提取分组<br><br>## python正则函数<br><br>### **re.match匹配函数**<br><br>re.match 尝试从字符串的起始位置匹配一个模式，如果不是起始位置匹配成功的话，match()就返回none。<br><br>**函数语法**：<br><br>```python<br>re.match(pattern, string, flags=<span class="hljs-number">0</span>)<br></code></pre></div></td></tr></table></figure>
-
-</code></pre>
-</li>
+<p><a href="#%E5%AE%8C%E6%95%B4%E6%A8%A1%E5%BC%8F">完整模式</a>见下</p>
+<ul>
+<li><code>\d</code>可以匹配一个数字
+<ul>
+<li><code>'00\d'</code>可以匹配<code>'007'</code>，但无法匹配<code>'00A'</code>；</li>
+<li><code>'\d\d\d'</code>可以匹配<code>'010'</code>；</li>
 </ul>
+</li>
+<li><code>\w</code>可以匹配一个字母或数字
+<ul>
+<li><code>'\w\w\d'</code>可以匹配<code>'py3'</code>；</li>
+</ul>
+</li>
+<li><code>.</code>可以匹配任意字符
+<ul>
+<li><code>'py.'</code>可以匹配<code>'pyc'</code>、<code>'pyo'</code>、<code>'py!'</code>等等。</li>
+</ul>
+</li>
+<li><code>*</code>表示任意个字符（包括0个）</li>
+<li><code>+</code>表示至少一个字符
+<ul>
+<li><code>\s+</code>表示至少有一个空格，例如匹配<code>' '</code> ，<code>' '</code>等</li>
+</ul>
+</li>
+<li><code>?</code>表示0个或1个字符，表示非贪婪匹配</li>
+<li><code>&#123;n&#125;</code>表示n个字符
+<ul>
+<li><code>\d&#123;3&#125;</code>表示匹配3个数字，例如<code>'010'</code></li>
+</ul>
+</li>
+<li><code>&#123;n,m&#125;</code>表示n-m个字符</li>
+<li><code>\s</code>可以匹配一个空格（也包括Tab等空白符）</li>
+<li><code>A|B</code>可以匹配A或B
+<ul>
+<li><code>(P|p)ython</code>可以匹配<code>'Python'</code>或者<code>'python'</code></li>
+</ul>
+</li>
+<li><code>^</code>表示行的开头，<code>^\d</code>表示必须以数字开头。</li>
+<li><code>$</code>表示行的结束，<code>\d$</code>表示必须以数字结束。</li>
+<li><code>[]</code>表示范围
+<ul>
+<li><code>[0-9a-zA-Z\_]</code>可以匹配一个数字、字母或者下划线；</li>
+<li><code>[0-9a-zA-Z\_]+</code>可以匹配至少由一个数字、字母或者下划线组成的字符串，比如<code>'a100'</code>，<code>'0_Z'</code>，<code>'Py3000'</code>等等；</li>
+<li><code>[a-zA-Z\_][0-9a-zA-Z\_]*</code>可以匹配由字母或下划线开头，后接任意个由一个数字、字母或者下划线组成的字符串，也就是Python合法的变量；</li>
+<li><code>[a-zA-Z\_][0-9a-zA-Z\_]&#123;0, 19&#125;</code>更精确地限制了变量的长度是1-20个字符（前面1个字符+后面最多19个字符）。</li>
+</ul>
+</li>
+<li><code>()</code> 表示分组，可以用group()函数来提取分组</li>
+</ul>
+<h2 id="python正则函数"><a class="markdownIt-Anchor" href="#python正则函数"></a> python正则函数</h2>
+<h3 id="rematch匹配函数"><a class="markdownIt-Anchor" href="#rematch匹配函数"></a> <strong>re.match匹配函数</strong></h3>
+<p>re.match 尝试从字符串的起始位置匹配一个模式，如果不是起始位置匹配成功的话，match()就返回none。</p>
+<p><strong>函数语法</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs python">re.match(pattern, string, flags=<span class="hljs-number">0</span>)<br></code></pre></div></td></tr></table></figure>
 <p><strong>函数参数说明</strong>：</p>
 <p>pattern：匹配的正则表达式</p>
 <p>string：要匹配的字符串。</p>
 <p>flags：标志位，用于控制正则表达式的匹配方式，如：是否区分大小写，多行匹配等等。</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://www.notion.so/dd264ff59535459ba4190e27eefb9e10">完整标志位说明</a></li>
+</li>
 </ul>
 <h3 id="research搜索函数"><a class="markdownIt-Anchor" href="#research搜索函数"></a> <strong>re.search搜索函数</strong></h3>
 <p>re.search 扫描整个字符串并返回第一个成功的匹配。</p>
@@ -493,6 +500,8 @@
                     <i class="iconfont icon-category"></i>
                     
                       <a class="hover-with-bg" href="/categories/Memo/">Memo</a>
+                    
+                      <a class="hover-with-bg" href="/categories/Memo/Learing-Record/">Learing Record</a>
                     
                   </div>
                 
