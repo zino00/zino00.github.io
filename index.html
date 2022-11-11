@@ -179,32 +179,27 @@
   <div class="row mx-auto index-card">
     
     
-    <article class="col-12 col-md-12 mx-auto index-info">
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/posts/716baf74/" target="_self">
+          <img src="/index_img/rop.png" srcset="/img/loading.gif" lazyload alt="ROP_Emporium详解">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/posts/0/" target="_self">
-          
+        <a href="/posts/716baf74/" target="_self">
+          ROP_Emporium详解
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/posts/0/" target="_self">
+        <a href="/posts/716baf74/" target="_self">
           
           
             
           
-           Challenge 1
- ret2win32
-checksec查看文件保护措施
-
-用ida看下代码
-
-发现read存在栈溢出，缓冲区大小为0x28
-同时存在可以直接利用的函数
-
-
-所以构造exp如下
-123456789101112from pwn import *from LibcSearcher import *# elf = ELF(&#x27;./ciscn_2019_en_2&#x27;
+          记录练习ROP_Emporium的解题过程
         </a>
       </p>
 
@@ -212,12 +207,34 @@ checksec查看文件保护措施
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2022-11-03 14:49" pubdate>
-              2022-11-03
+            <time datetime="2022-11-11 14:04" pubdate>
+              2022-11-11
             </time>
           </div>
         
         
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/CTF/">CTF</a>
+            
+              <a href="/categories/CTF/Pwn/">Pwn</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/pwn/">pwn</a>
+            
+              <a href="/tags/CTF/">CTF</a>
+            
+              <a href="/tags/%E6%A0%88%E6%BA%A2%E5%87%BA/">栈溢出</a>
+            
+              <a href="/tags/ROP/">ROP</a>
+            
+          </div>
         
       </div>
     </article>
