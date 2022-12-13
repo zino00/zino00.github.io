@@ -367,12 +367,15 @@
 <p><code>KDIR</code> 用来标识内核源码目录，提供驱动编译所需环境</p>
 </li>
 <li>
-<div class="hljs code-wrapper"><pre class="highlight"><code class>$(MAKE) -C $(KDIR) M=$(PWD) modules
-<figure class="highlight autohotkey"><table><tr><td class="gutter hljs"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs autohotkey"><br>  - `-C` 表示进入到指定的内核目录<br>  - `M` 指定驱动源码的环境，M 并不是 Makefile 的选项，而是内核根目录下 Makefile 中使用的变量。这会使得该 Makefile 在构造模块之前返回到 M 指定的目录，并在指定的目录中生成驱动模块。<br><br>编译驱动<br><br>```sh<br>make<br></code></pre></div></td></tr></table></figure>
-
-</code></pre>
+<p><code>$(MAKE) -C $(KDIR) M=$(PWD) modules</code></p>
+<ul>
+<li><code>-C</code> 表示进入到指定的内核目录</li>
+<li><code>M</code> 指定驱动源码的环境，M 并不是 Makefile 的选项，而是内核根目录下 Makefile 中使用的变量。这会使得该 Makefile 在构造模块之前返回到 M 指定的目录，并在指定的目录中生成驱动模块。</li>
+</ul>
 </li>
 </ul>
+<p>编译驱动</p>
+<figure class="highlight sh"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs sh">make<br></code></pre></div></td></tr></table></figure>
 <p><strong>加载驱动</strong>将生成的 ko 文件拷贝到 busybox 的 <code>_install</code> 目录下，然后对启动脚本进行修改，添加 <code>insmod /ko_test.ko</code> ，具体如下</p>
 <p>也可以不添加这一行，qemu启动后手动insmod进去，效果是一样的。</p>
 <figure class="highlight tcl"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs tcl"><span class="hljs-comment">#!/bin/sh</span><br>echo <span class="hljs-string">&quot;INIT SCRIPT&quot;</span><br>mkdir /tmp<br>mount -t <span class="hljs-keyword">proc</span><span class="hljs-title"> none</span> /<span class="hljs-keyword">proc</span><span class="hljs-title"></span><br><span class="hljs-title">mount</span> -t<span class="hljs-title"> sysfs</span> none /sys<span class="hljs-title"></span><br><span class="hljs-title">mount</span> -t<span class="hljs-title"> devtmpfs</span> none /dev<span class="hljs-title"></span><br><span class="hljs-title">mount</span> -t<span class="hljs-title"> debugfs</span> none /sys/kernel/debug<span class="hljs-title"></span><br><span class="hljs-title">mount</span> -t<span class="hljs-title"> tmpfs</span> none /tmp<span class="hljs-title"></span><br><span class="hljs-title">insmod</span> /ko_test.ko<span class="hljs-title"></span><br><span class="hljs-title">echo</span> -e &quot;Boot<span class="hljs-title"> took</span> $(cut -d&#x27; &#x27; -f1 /<span class="hljs-keyword">proc</span>/uptime)<span class="hljs-title"> seconds&quot;</span><br>setsid /bin/cttyhack<span class="hljs-title"> setuidgid</span> 1000 /bin/sh<span class="hljs-title"></span><br><span class="hljs-title">poweroff</span> -f<br></code></pre></div></td></tr></table></figure>
