@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.3k 字
+      1.4k 字
     </span>
   
 
@@ -323,6 +323,12 @@
 <p>可以看到，<code>afl-gcc</code>最终调用<code>gcc</code>，并定义了一些宏，设置了一些参数。其中最关键的就是<code>-B /root/src/afl-2.52b</code>这条。根据<code>gcc --help</code>可知，<code>-B</code>选项用于设置编译器的搜索路径，这里便是设置成<code>/root/src/afl-2.52b</code>(是我设置的环境变量<code>AFL_PATH</code>的值，即AFL目录，因为我没有make install)。</p>
 <p>如果了解编译过程，那么就知道把源代码编译成二进制，主要是经过”源代码”-&gt;”汇编代码”-&gt;”二进制”这样的过程。而将汇编代码编译成为二进制的工具，即为汇编器assembler。Linux系统下的常用汇编器是<code>as</code>。不过，编译完成AFL后，在其目录下也会存在一个<code>as</code>文件，并作为符号链接指向<code>afl-as</code>。所以，如果通过<code>-B</code>选项为gcc设置了搜索路径，那么<code>afl-as</code>便会作为汇编器，执行实际的汇编操作。</p>
 <p>所以，AFL的代码插桩，就是在将源文件编译为汇编代码后，通过<code>afl-as</code>完成。</p>
+<p><img src="/posts/7e08c437/image-20230220142937347.png" srcset="/img/loading.gif" lazyload alt="image-20230220142937347"></p>
+<h1 id="2afl-as"><a class="markdownIt-Anchor" href="#2afl-as"></a> 2.afl-as</h1>
+<h2 id="edit_params-2"><a class="markdownIt-Anchor" href="#edit_params-2"></a> edit_params</h2>
+<h2 id="add_instrumentation"><a class="markdownIt-Anchor" href="#add_instrumentation"></a> add_instrumentation</h2>
+<h2 id="main"><a class="markdownIt-Anchor" href="#main"></a> main</h2>
+<p><img src="/posts/7e08c437/image-20230220143201904.png" srcset="/img/loading.gif" lazyload alt="image-20230220143201904"></p>
 
             </div>
             <hr>
