@@ -2,15 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://zino00.github.io/posts/a74f845e/</loc>
-    
-    <lastmod>2023-05-04</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://zino00.github.io/posts/764dc2d/</loc>
     
     <lastmod>2023-04-10</lastmod>
@@ -770,13 +761,6 @@
   </url>
   
   <url>
-    <loc>https://zino00.github.io/tags/%E4%BF%9D%E7%A0%94/</loc>
-    <lastmod>2023-05-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://zino00.github.io/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</loc>
     <lastmod>2023-05-04</lastmod>
     <changefreq>weekly</changefreq>
@@ -899,13 +883,6 @@
   
   <url>
     <loc>https://zino00.github.io/categories/CTF/Pwn/</loc>
-    <lastmod>2023-05-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://zino00.github.io/categories/memo/</loc>
     <lastmod>2023-05-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
