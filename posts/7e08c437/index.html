@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      5.4k 字
+      7.6k 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      66
+      93
        分钟
     </span>
   
@@ -515,18 +515,229 @@
 <p>初始化<code>count_class_lookup16</code>数组，该数组的作用是帮助快速归类统计路径覆盖的数量</p>
 <h3 id="setup_dirs_fds"><a class="markdownIt-Anchor" href="#setup_dirs_fds"></a> setup_dirs_fds</h3>
 <p>从输入文件夹中读取所有文件，然后将它们排队进行测试。</p>
+<ul>
+<li>如果sync_id存在，且创建sync_dir文件夹，设置权限为0700（读写执行）
+<ul>
+<li>如果报错，且errno不是EEXIST，则抛出异常。</li>
+</ul>
+</li>
+<li>创建out_dir，设置权限为0700（读写执行）
+<ul>
+<li>如果报错，且errno不是EEXIST，则抛出异常。</li>
+</ul>
+</li>
+<li>创建queue文件夹，设置权限为0700（读写执行）
+<ul>
+<li>创建<code>out_dir/queue/.state/</code>,设置权限为0700,该文件夹主要<strong>保存用于session resume和related tasks的queue metadata</strong>
+<ul>
+<li>创建<code>out_dir/queue/.state/deterministic_done/</code>,设置权限为0700,该文件夹<strong>标记过去经历过deterministic fuzzing的queue entries</strong>。</li>
+<li>创建<code>out_dir/queue/.state/auto_extras/</code>,设置权限为0700,<strong>Directory with the auto-selected dictionary entries.</strong></li>
+<li>创建<code>out_dir/queue/.state/redundant_edges/</code>,设置权限为0700,<strong>保存当前被认为是多余的路径集合</strong></li>
+<li>创建<code>out_dir/queue/.state/variable_behavior/</code>,设置权限为0700,<strong>The set of paths showing variable behavior.</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>如果sync_id存在
+<ul>
+<li>创建<code>out_dir/.synced/</code>,设置权限为0700,<strong>同步文件夹，用于跟踪cooperating fuzzers.</strong></li>
+</ul>
+</li>
+<li>建立crashes文件夹
+<ul>
+<li>创建<code>out_dir/crashes</code>文件夹，设置权限为0700,用于记录crashes</li>
+</ul>
+</li>
+<li>建立hangs文件夹
+<ul>
+<li>创建<code>out_dir/hangs</code>文件夹，设置权限为0700,用于记录hangs</li>
+</ul>
+</li>
+<li>通常有用的文件描述符
+<ul>
+<li><code>dev_null_fd = open(&quot;/dev/null&quot;, O_RDWR);</code>以读写模式打开<code>/dev/null</code></li>
+<li><code>dev_urandom_fd = open(&quot;/dev/urandom&quot;, O_RDONLY);</code>,以只读模式打开<code>/dev/urandom</code></li>
+</ul>
+</li>
+<li>建立Gnuplot输出文件夹
+<ul>
+<li><code>fd = open(tmp, O_WRONLY | O_CREAT | O_EXCL, 0600);</code>以只写方式打开<code>out_dir/plot_data</code>文件，如果文件不存在，就创建，并获取句柄</li>
+<li><code>plot_file = fdopen(fd, &quot;w&quot;);</code>根据句柄得到FILE* plot_file</li>
+<li>向其中写入<code># unix_time, cycles_done, cur_path, paths_total, pending_total, pending_favs, map_size, unique_crashes, unique_hangs, max_depth, execs_per_sec\n</code></li>
+</ul>
+</li>
+</ul>
 <h3 id="read_testcases"><a class="markdownIt-Anchor" href="#read_testcases"></a> read_testcases</h3>
 <p>逐个读取种子目录下的输入文件列表，并调用<code>add_to_queue</code>函数将相关信息（文件名称、大小等）存入到全局的种子队列<code>queue</code>当中，作为后续模糊测试的种子来源。单个种子信息保存在结构体<code>queue_entry</code>当中，形成单链表。</p>
+<p>从输入文件夹中读取所有文件，然后将它们排队进行测试。</p>
+<ul>
+<li>
+<p>尝试访问<code>in_dir/queue</code>文件夹，如果存在就重新设置in_dir为<code>in_dir/queue</code></p>
+<ul>
+<li>Auto-detect non-in-place resumption attempts.</li>
+</ul>
+</li>
+<li>
+<p>扫描in_dir，并将结果保存在<code>struct dirent **nl</code>里</p>
+<ul>
+<li>不使用readdir,因为测试用例的顺序将随机地有些变化,并且将难以控制。</li>
+</ul>
+</li>
+<li>
+<p>遍历nl,nl[i]-&gt;d_name的值为input文件夹下的文件名字符串</p>
+<ul>
+<li>
+<p><code>u8 *fn = alloc_printf(&quot;%s/%s&quot;, in_dir, nl[i]-&gt;d_name);</code></p>
+</li>
+<li>
+<p><code>u8 *dfn = alloc_printf(&quot;%s/.state/deterministic_done/%s&quot;, in_dir, nl[i]-&gt;d_name);</code></p>
+</li>
+<li>
+<p>如果<code>shuffle_queue</code>的值为真，且nl_cnt大于1，则<code>shuffle_ptrs((void **) nl, nl_cnt)</code>，字面意思上就是重排nl里的指针的位置。</p>
+</li>
+<li>
+<p>通过文件属性过滤掉<code>.</code>和<code>..</code>这样的regular文件，并检查文件大小，如果文件大小大于MAX_FILE，默认是1024*1024字节，即1M</p>
+</li>
+<li>
+<p>通过access检查<code>in_dir/.state/deterministic_done/nl[i]-&gt;d_name</code>是否存在，这应该是为了用在resume恢复扫描使用</p>
+<ul>
+<li>如果存在就设置passed_det为1</li>
+<li>这个检查是用来判断是否这个entry已完成deterministic fuzzing。在恢复异常终止的扫描时，我们不想重复deterministic fuzzing，因为这将毫无意义，而且可能非常耗时</li>
+</ul>
+</li>
+<li>
+<p>add_to_queue(fn, st.st_size, passed_det);</p>
+</li>
+<li>
+<p>如果queued_paths为0，则代表输入文件夹为0，抛出异常</p>
+</li>
+<li>
+<p>设置last_path_time为0</p>
+</li>
+<li>
+<p>queued_at_start的值设置为queued_paths</p>
+<ul>
+<li>Total number of initial inputs</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 <h3 id="add_to_queueu8-fname-u32-len-u8-passed_det"><a class="markdownIt-Anchor" href="#add_to_queueu8-fname-u32-len-u8-passed_det"></a> add_to_queue(u8 *fname, u32 len, u8 passed_det)</h3>
+<ul>
+<li>
+<p>queue_entry是一个链表数据结构</p>
+</li>
+<li>
+<p>先通过calloc动态分配一个queue_entry结构体，并初始化其fname为文件名fn，len为文件大小，depth为cur_depth + 1,passed_det为传递进来的passed_det</p>
+<figure class="highlight xl"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs xl"><span class="hljs-function"><span class="hljs-title">q</span>-&gt;</span>fname = fname;<br><span class="hljs-function"><span class="hljs-title">q</span>-&gt;</span>len = len;<br><span class="hljs-function"><span class="hljs-title">q</span>-&gt;</span>depth = cur_depth + <span class="hljs-number">1</span>;<br><span class="hljs-function"><span class="hljs-title">q</span>-&gt;</span>passed_det = passed_det;<br></code></pre></div></td></tr></table></figure>
+</li>
+<li>
+<p>如果<code>q-&gt;depth &gt; max_depth</code>，则设置max_depth为q-&gt;depth</p>
+</li>
+<li>
+<p>如果queue_top不为空，则设置<code>queue_top-&gt;next为q，queue_top = q;</code></p>
+<p>，否则<code>q_prev100 = queue = queue_top = q;</code></p>
+<figure class="highlight awk"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs awk">static struct queue_entry *queue,     <span class="hljs-regexp">/* Fuzzing queue (linked list)      */</span><br>*queue_top, <span class="hljs-regexp">/* Top of the list                  */</span><br>*q_prev100; <span class="hljs-regexp">/* Previous 100 marker              */</span><br></code></pre></div></td></tr></table></figure>
+</li>
+<li>
+<p>queue计数器queued_paths和待fuzz的样例计数器pending_not_fuzzed加一</p>
+</li>
+<li>
+<p>cycles_wo_finds设置为0</p>
+<ul>
+<li>Cycles without any new paths</li>
+</ul>
+</li>
+<li>
+<p>如果<code>queued_paths % 100</code>得到0，则设置<code>q_prev100-&gt;next_100 = q; q_prev100 = q;</code></p>
+</li>
+<li>
+<p>设置last_path_time为当前时间。</p>
+</li>
+</ul>
 <h3 id="load_auto"><a class="markdownIt-Anchor" href="#load_auto"></a> load_auto</h3>
 <p>尝试在输入目录下寻找自动生成的字典文件，调用<code>maybe_add_auto</code>将相应的字典加入到全局变量<code>a_extras</code>中，用于后续字典模式的变异当中。</p>
+<p>load自动生成的提取出来的词典token</p>
+<ul>
+<li>遍历循环从i等于0到USE_AUTO_EXTRAS，默认50
+<ul>
+<li>以只读模式尝试打开文件名为<code>alloc_printf(&quot;%s/.state/auto_extras/auto_%06u&quot;, in_dir, i)</code>的文件</li>
+<li>如果打开失败，则结束</li>
+<li>如果打开成功，则从fd读取最多<code>MAX_AUTO_EXTRA+1</code>个字节到tmp数组里，默认MAX_AUTO_EXTRA为32，这是单个auto extra文件的最大大小，读取出的长度保存到len里。</li>
+<li>maybe_add_auto(tmp, len);<br>
+};</li>
+</ul>
+</li>
+</ul>
 <h3 id="maybe_add_autou8-mem-u32-len"><a class="markdownIt-Anchor" href="#maybe_add_autou8-mem-u32-len"></a> maybe_add_auto(u8 *mem, u32 len)</h3>
+<ul>
+<li>
+<p>如果用户设置了MAX_AUTO_EXTRAS或者USE_AUTO_EXTRAS为0，则直接返回。</p>
+</li>
+<li>
+<p>循环遍历i从1到len，将tmp[0]和mem[i]异或，如果相同，则结束循环。</p>
+</li>
+<li>
+<p>如果结束时i=0，即tmp[0]和tmp[1]就相同，就直接返回。这里我推断tmp应该是从小到大排序的字节流。</p>
+</li>
+<li>
+<p>如果len的长度为2，就和interesting_16数组里的元素比较，如果和其中某一个相同，就直接return。</p>
+</li>
+<li>
+<p>如果len的长度为4，就和interesting_32数组里的元素比较，如果和其中某一个相同，就直接return。</p>
+</li>
+<li>
+<p>将tmp和现有的extras数组里的元素比较，利用extras数组里保存的元素是按照size大小，从小到大排序这个特性，来优化代码。</p>
+<ul>
+<li>遍历extras数组，比较<code>memcmp_nocase(extras[i].data, mem, len)</code>,如果有一个相同，就直接return。</li>
+<li>static struct extra_data <em>extras; /</em> Extra tokens to fuzz with */</li>
+</ul>
+</li>
+<li>
+<p>设置auto_changed为1</p>
+</li>
+<li>
+<p>遍历a_extras数组，比较<code>memcmp_nocase(a_extras[i].data, mem, len)</code></p>
+<p>,如果相同，就将其hit_cnt值加一，这是代表在语料中被use的次数,然后跳转到</p>
+<p><code>sort_a_extras</code></p>
+<ul>
+<li>
+<p>static struct extra_data a_extras; /Automatically selected extras */</p>
+<figure class="highlight rust"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs rust"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">extra_data</span></span> &#123;<br><span class="hljs-built_in">u8</span> *data;                           <span class="hljs-comment">/* Dictionary token data            */</span><br><span class="hljs-built_in">u32</span> len;                            <span class="hljs-comment">/* Dictionary token length          */</span><br><span class="hljs-built_in">u32</span> hit_cnt;                        <span class="hljs-comment">/* Use count in the corpus          */</span><br></code></pre></div></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li>
+<p>此时我们可能在处理一个不在之前的任何a_extras或者extras数组里的新entry了，处理逻辑是</p>
+<ul>
+<li>先比较a_extras_cnt和MAX_AUTO_EXTRAS，如果小于就代表a_extras数组没有填满，直接拷贝tmp和len，来构造出一个新项，加入到a_extras数组里</li>
+<li>否则的话，就从a_extras数组的后半部分里，随机替换掉一个元素的a_extras[i].data为ck_memdup(mem, len)，并将len设置为len，hit_cnt设置为0。</li>
+</ul>
+</li>
+</ul>
 <h3 id="pivot_inputs"><a class="markdownIt-Anchor" href="#pivot_inputs"></a> pivot_inputs</h3>
 <p>根据相应的种子文件路径在输出目录下创建链接或拷贝至该目录下，形成<code>orignal</code>文件，文件命名的规则是<code>%s/queue/id:%06u,orig:%s&quot;, out_dir, id, use_name</code>，并更新至对应的种子信息结构体<code>queue_entry</code>中。</p>
 <h3 id="load_extras"><a class="markdownIt-Anchor" href="#load_extras"></a> load_extras</h3>
 <p>如果指定了<code>-x</code>参数（字典模式），加载对应的字典到全局变量<code>extras</code>当中，用于后续字典模式的变异当中。</p>
 <h3 id="find_timeout"><a class="markdownIt-Anchor" href="#find_timeout"></a> find_timeout</h3>
 <p>如果指定了<code>resuming_fuzz</code>即从输出目录当中恢复模糊测试状态，会从之前的模糊测试状态<code>fuzzer_stats</code>文件中计算中<code>timeout</code>值，保存在<code>exec_tmout</code>中。</p>
+<p>如果timeout_given没有被设置，则进入find_timeout<br>
+这个想法是，在不指定-t的情况下resuming sessions时，我们不希望一遍又一遍地自动调整超时时间，以防止超时值因随机波动而增长</p>
+<ul>
+<li>如果resuming_fuzz为0，则直接return</li>
+<li>如果in_place_resume为1，则<code>fn = alloc_printf(&quot;%s/fuzzer_stats&quot;, out_dir);</code>，否则<code>fn = alloc_printf(&quot;%s/../fuzzer_stats&quot;, in_dir);</code></li>
+<li>以只读方式打开fd，读取内容到tmp[4096]里，并在里面搜索”exec_timeout : “，如果搜索不到就直接返回，如果搜索到了，就读取这个timeout的数值，如果大于4就设置为exec_tmout的值。
+<ul>
+<li>EXP_ST u32 exec_tmout = EXEC_TIMEOUT; /* Configurable exec timeout (ms) */</li>
+</ul>
+</li>
+<li>timeout_given = 3;
+<ul>
+<li>timeout_given, /* Specific timeout given? */</li>
+</ul>
+</li>
+</ul>
 <h3 id="detect_file_args"><a class="markdownIt-Anchor" href="#detect_file_args"></a> detect_file_args</h3>
 <p>检测输入的命令行中是否包含<code>@@</code>参数</p>
 <p><code>@@</code>表明输入来源于文件</p>
@@ -539,7 +750,104 @@
 <p>对二进制进行一系列的检查，包括检查二进制是否是<code>bash</code>文件、是否是<code>ELF</code>文件、是否包含共享内存标志、是否包含插桩的标志等。</p>
 <h3 id="perform_dry_run"><a class="markdownIt-Anchor" href="#perform_dry_run"></a> perform_dry_run</h3>
 <p>将每个种子文件作为输入，运行目标程序一次，查看系统运行的状态是否正确；该函数里面调用的<code>calibrate_case</code>函数是具体运行样本的函数，<code>calibrate_case</code>函数对样本的运行状态进行校验，这个函数比较重要，后续也会重点进行分析。</p>
+<p>执行所有的测试用例，以检查是否按预期工作</p>
+<ul>
+<li>
+<p>读取环境变量AFL_SKIP_CRASHES到skip_crashes，设置cal_failures为0</p>
+</li>
+<li>
+<p>遍历queue</p>
+<ul>
+<li>
+<p>打开q-&gt;fname，并读取到分配的内存use_mem里</p>
+</li>
+<li>
+<p>res = calibrate_case(argv, q, use_mem, 0, 1);</p>
+<ul>
+<li>校准测试用例，见下文</li>
+</ul>
+</li>
+<li>
+<p>如果stop_soon被置为1，就直接return</p>
+</li>
+<li>
+<p>如果res的结果为<code>crash_mode</code>或者<code>FAULT_NOBITS</code></p>
+<ul>
+<li>打印<code>SAYF(&quot;len = %u, map size = %u, exec speed = %llu us\n&quot;, q-&gt;len, q-&gt;bitmap_size, q-&gt;exec_us);</code></li>
+</ul>
+</li>
+<li>
+<p>依据res的结果查看是哪种错误并进行判断。一共有以下几种错误类型</p>
+<ul>
+<li>
+<p>FAULT_NONE</p>
+<ul>
+<li>
+<p>如果q是头结点，即第一个测试用例，则<code>check_map_coverage</code></p>
+<p>，用以评估map coverage</p>
+<ul>
+<li>计数trace_bits发现的路径数，如果小于100，就直接返回</li>
+<li>在trace_bits的数组后半段，如果有值就直接返回。</li>
+<li>抛出警告<code>WARNF(&quot;Recompile binary with newer version of afl to improve coverage!&quot;)</code></li>
+</ul>
+</li>
+<li>
+<p>如果是crash_mode，则抛出异常，<code>FATAL(&quot;Test case '%s' does *NOT* crash&quot;, fn);</code>，该文件不崩溃</p>
+</li>
+</ul>
+</li>
+<li>
+<p>FAULT_TMOUT</p>
+<ul>
+<li>如果指定了-t参数，则timeout_given值为2
+<ul>
+<li>抛出警告<code>WARNF(&quot;Test case results in a timeout (skipping)&quot;);</code>，并设置q的cal_failed为CAL_CHANCES，cal_failures计数器加一。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>FAULT_CRASH</p>
+<ul>
+<li>如果没有指定mem_limit，则可能抛出建议增加内存的建议</li>
+<li>但不管指定了还是没有，都会抛出异常<code>FATAL(&quot;Test case '%s' results in a crash&quot;, fn);</code></li>
+</ul>
+</li>
+<li>
+<p>FAULT_ERROR</p>
+<ul>
+<li>抛出异常<code>Unable to execute target application</code></li>
+</ul>
+</li>
+<li>
+<p>FAULT_NOINST</p>
+<ul>
+<li>这个样例运行没有出现任何路径信息，抛出异常<code>No instrumentation detected</code></li>
+</ul>
+</li>
+<li>
+<p>FAULT_NOBITS</p>
+<ul>
+<li>如果这个样例有出现路径信息，但是没有任何新路径，抛出警告<code>WARNF(&quot;No new instrumentation output, test case may be useless.&quot;)</code>，认为这是无用路径。useless_at_start计数器加一</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>如果这个样例q的var_behavior为真，则代表它多次运行，同样的输入条件下，却出现不同的覆盖信息。</p>
+<ul>
+<li>抛出警告<code>WARNF(&quot;Instrumentation output varies across runs.&quot;);</code>，代表这个样例的路径输出可变</li>
+</ul>
+</li>
+<li>
+<p>然后读取下一个queue，继续测试，直到结束。</p>
+<figure class="highlight awk"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs awk">enum &#123;<br><span class="hljs-regexp">/* 00 */</span> FAULT_NONE,<br><span class="hljs-regexp">/* 01 */</span> FAULT_TMOUT,<br><span class="hljs-regexp">/* 02 */</span> FAULT_CRASH,<br><span class="hljs-regexp">/* 03 */</span> FAULT_ERROR,<br><span class="hljs-regexp">/* 04 */</span> FAULT_NOINST,<br><span class="hljs-regexp">/* 05 */</span> FAULT_NOBITS &#125;;<br></code></pre></div></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
 <h3 id="u8-calibrate_casechar-argv-struct-queue_entry-q-u8-use_mem-u32-handicap-u8-from_queue"><a class="markdownIt-Anchor" href="#u8-calibrate_casechar-argv-struct-queue_entry-q-u8-use_mem-u32-handicap-u8-from_queue"></a> u8 calibrate_case(char **argv, struct queue_entry *q, u8 *use_mem, u32 handicap, u8 from_queue)</h3>
+<p>这个函数评估input文件夹下的case，来发现这些testcase的行为是否异常；以及在发现新的路径时，用以评估这个新发现的testcase的行为是否是可变（这里的可变是指多次执行这个case，发现的路径不同）等等</p>
 <h3 id="init_forkserver"><a class="markdownIt-Anchor" href="#init_forkserver"></a> init_forkserver</h3>
 <h3 id="has_new_bitsu8-virgin_map"><a class="markdownIt-Anchor" href="#has_new_bitsu8-virgin_map"></a> has_new_bits(u8 *virgin_map)</h3>
 <h3 id="u32-count_bytesu8-mem"><a class="markdownIt-Anchor" href="#u32-count_bytesu8-mem"></a> u32 count_bytes(u8 *mem)</h3>

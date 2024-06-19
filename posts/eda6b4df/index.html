@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.9k 字
+      2.5k 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      22
+      29
        分钟
     </span>
   
@@ -332,6 +332,7 @@
 <p>10）syscall [args]: 调用系统调用，args可以指定系统调用号，或者系统名称</p>
 </blockquote>
 <h3 id="打印指令"><a class="markdownIt-Anchor" href="#打印指令"></a> 打印指令</h3>
+<h4 id="查看内存结构vmmap"><a class="markdownIt-Anchor" href="#查看内存结构vmmap"></a> 查看内存结构vmmap</h4>
 <h4 id="查看内存指令x"><a class="markdownIt-Anchor" href="#查看内存指令x"></a> <strong>查看内存指令x：</strong></h4>
 <ul>
 <li>
@@ -342,7 +343,7 @@
 <li>f代表显示数据的格式，f和u的顺序可以互换，也可以只有一个或者不带n，用的时候很灵活
 <ul>
 <li>x 按十六进制格式显示变量。<br>
-d 按十进制格式显示变量。<br>
+d 按十进制格式显示变量。	<br>
 u 按十六进制格式显示无符号整型。<br>
 o 按八进制格式显示变量。<br>
 t 按二进制格式显示变量。<br>
@@ -456,6 +457,82 @@ i 显示汇编指令。</li>
 </li>
 </ul>
 <p>参考链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/Breeze_CAT/article/details/103789233">gdb+pwndbg食用指南</a></p>
+<h3 id="dump"><a class="markdownIt-Anchor" href="#dump"></a> dump</h3>
+<h4 id="dump-binary"><a class="markdownIt-Anchor" href="#dump-binary"></a> <code>dump binary</code></h4>
+<h5 id="dump-binary-memory"><a class="markdownIt-Anchor" href="#dump-binary-memory"></a> <code>dump binary memory</code></h5>
+<ul>
+<li><strong>功能</strong>：将目标代码或数据写入原始二进制文件。</li>
+<li><strong>用法</strong>：将内存内容或表达式的值以二进制形式保存。</li>
+</ul>
+<p>语法</p>
+<figure class="highlight xml"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs xml">dump binary memory <span class="hljs-tag">&lt;<span class="hljs-name">filename</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">start-address</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">end-address</span>&gt;</span><br></code></pre></div></td></tr></table></figure>
+<ul>
+<li><code>&lt;filename&gt;</code>：输出文件的名称。</li>
+<li><code>&lt;start-address&gt;</code>：要转储的内存区域的起始地址。</li>
+<li><code>&lt;end-address&gt;</code>：要转储的内存区域的结束地址。</li>
+</ul>
+<p>示例</p>
+<p>假设您想将从地址 <code>0x600000</code> 到 <code>0x600100</code> 的内存内容写入文件 <code>memory_dump.bin</code>，可以使用以下命令：</p>
+<figure class="highlight dns"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs dns">(gdb) dump binary memory memory_dump.bin <span class="hljs-number">0x600000</span> <span class="hljs-number">0x600100</span><br></code></pre></div></td></tr></table></figure>
+<p>这会将从 <code>0x600000</code> 到 <code>0x600100</code> 的内存内容写入 <code>memory_dump.bin</code> 文件</p>
+<h5 id="dump-binary-value"><a class="markdownIt-Anchor" href="#dump-binary-value"></a> <code>dump binary value</code></h5>
+<p><code>dump binary value</code> 用于将一个表达式的值写入一个原始二进制文件。这对于保存计算结果或特定变量的值非常有用。</p>
+<p>语法</p>
+<figure class="highlight xml"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs xml">dump binary value <span class="hljs-tag">&lt;<span class="hljs-name">filename</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">expression</span>&gt;</span><br></code></pre></div></td></tr></table></figure>
+<ul>
+<li><code>&lt;filename&gt;</code>：输出文件的名称。</li>
+<li><code>&lt;expression&gt;</code>：要转储的表达式，其结果将写入文件。</li>
+</ul>
+<p>示例</p>
+<p>假设您有一个变量 <code>my_var</code> 并且想将其值写入文件 <code>value_dump.bin</code>，可以使用以下命令：</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs mipsasm">(gdb) dump <span class="hljs-keyword">binary </span>value value_dump.<span class="hljs-keyword">bin </span>my_var<br></code></pre></div></td></tr></table></figure>
+<p>这会将变量 <code>my_var</code> 的值写入 <code>value_dump.bin</code> 文件。</p>
+<h4 id="dump-ihex"><a class="markdownIt-Anchor" href="#dump-ihex"></a> <code>dump ihex</code></h4>
+<ul>
+<li><strong>功能</strong>：将目标代码或数据写入 Intel HEX 文件。</li>
+<li><strong>用法</strong>：适用于需要以 Intel HEX 格式保存数据的场景，常用于嵌入式系统。</li>
+</ul>
+<h4 id="dump-memory"><a class="markdownIt-Anchor" href="#dump-memory"></a> <code>dump memory</code></h4>
+<ul>
+<li>
+<p><strong>功能</strong>：将内存的内容写入原始二进制文件。</p>
+</li>
+<li>
+<p><strong>用法</strong>：保存指定内存范围的内容，通常用于调试时捕获特定内存状态。</p>
+</li>
+<li>
+<p>示例</p>
+<figure class="highlight xml"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs xml">dump memory <span class="hljs-tag">&lt;<span class="hljs-name">filename</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">start-address</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">end-address</span>&gt;</span><br></code></pre></div></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="dump-srec"><a class="markdownIt-Anchor" href="#dump-srec"></a> <code>dump srec</code></h4>
+<ul>
+<li><strong>功能</strong>：将目标代码或数据写入 Motorola S-record 文件。</li>
+<li><strong>用法</strong>：适用于需要以 Motorola S-record 格式保存数据的场景，常用于嵌入式系统。</li>
+</ul>
+<h4 id="dump-tekhex"><a class="markdownIt-Anchor" href="#dump-tekhex"></a> <code>dump tekhex</code></h4>
+<ul>
+<li><strong>功能</strong>：将目标代码或数据写入 Tektronix HEX 文件。</li>
+<li><strong>用法</strong>：适用于需要以 Tektronix HEX 格式保存数据的场景。</li>
+</ul>
+<h4 id="dump-value"><a class="markdownIt-Anchor" href="#dump-value"></a> <code>dump value</code></h4>
+<ul>
+<li>
+<p><strong>功能</strong>：将表达式的值写入原始二进制文件。</p>
+</li>
+<li>
+<p><strong>用法</strong>：保存变量或表达式的当前值。</p>
+</li>
+<li>
+<p>示例</p>
+<figure class="highlight xml"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs xml">dump value <span class="hljs-tag">&lt;<span class="hljs-name">filename</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">expression</span>&gt;</span><br></code></pre></div></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="dump-verilog"><a class="markdownIt-Anchor" href="#dump-verilog"></a> <code>dump verilog</code></h4>
+<ul>
+<li><strong>功能</strong>：将目标代码或数据写入 Verilog HEX 文件。</li>
+<li><strong>用法</strong>：适用于需要以 Verilog HEX 格式保存数据的场景，常用于硬件设计和仿真。</li>
+</ul>
 
             </div>
             <hr>

